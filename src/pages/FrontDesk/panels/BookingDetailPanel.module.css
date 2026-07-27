@@ -1,0 +1,766 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  z-index: 90;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.15s ease;
+}
+
+.panel {
+  width: min(1040px, 100%);
+  height: 100%;
+  background: var(--fd-surface);
+  box-shadow: var(--fd-shadow-modal);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .panel {
+    animation: none;
+  }
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--fd-border);
+  flex: none;
+}
+
+.tabs {
+  display: flex;
+  gap: 22px;
+}
+
+.tab {
+  border: none;
+  background: none;
+  padding: 4px 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tabActive {
+  color: var(--fd-primary);
+  border-bottom-color: var(--fd-primary);
+}
+
+.topActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.balance {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+  white-space: nowrap;
+}
+
+.topDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--fd-border-strong);
+  margin: 0 4px;
+}
+
+.iconBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: var(--fd-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  background: #f3f4f6;
+  color: var(--fd-text);
+}
+
+.bookingInfoCard {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  min-width: 220px;
+}
+
+.bookingInfoTitle {
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 2px;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  align-content: start;
+  gap: 0;
+}
+
+@media (max-width: 820px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col {
+  padding: 20px;
+  border-right: 1px solid var(--fd-border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.col:last-child {
+  border-right: none;
+}
+
+.roomHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.roomTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fd-danger);
+}
+
+.roomName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.primaryBtnAssign,
+.primaryBtnCheckin,
+.primaryBtnCheckout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: none;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryBtnAssign {
+  background: var(--fd-primary);
+}
+
+.primaryBtnCheckin {
+  background: var(--fd-danger);
+}
+
+.primaryBtnCheckout {
+  background: var(--fd-teal);
+}
+
+.primaryBtnAssign:hover,
+.primaryBtnCheckin:hover,
+.primaryBtnCheckout:hover {
+  filter: brightness(0.94);
+}
+
+.metaRowBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+}
+
+.metaRowBtn:hover {
+  color: var(--fd-primary);
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+}
+
+.guestCountRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+}
+
+.addGuestBtn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fd-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.addGuestBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+.guestList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guestRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--fd-danger);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guestName {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--fd-text);
+}
+
+.guestNameHidden {
+  filter: blur(4px);
+  user-select: none;
+}
+
+.guestIconBtn,
+.guestRemoveBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: none;
+  background: #f3f4f6;
+  color: var(--fd-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.guestRemoveBtn {
+  background: var(--fd-danger-soft);
+  color: var(--fd-danger);
+}
+
+.guestIconBtn:hover {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+.guestRemoveBtn:hover {
+  filter: brightness(0.95);
+}
+
+.fieldLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-muted);
+}
+
+.noteBox {
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  min-height: 70px;
+  resize: vertical;
+  font-family: inherit;
+  color: var(--fd-text);
+}
+
+.noteBox:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--fd-bg);
+  border: 1px solid var(--fd-border);
+  border-radius: 999px;
+  padding: 4px 6px 4px 10px;
+  font-size: 12px;
+  color: var(--fd-text-secondary);
+}
+
+.tag button {
+  border: none;
+  background: none;
+  color: var(--fd-text-muted);
+  display: flex;
+  cursor: pointer;
+}
+
+.tag button:hover {
+  color: var(--fd-danger);
+}
+
+.bookingId {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+}
+
+.saveBtn {
+  align-self: flex-start;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: var(--fd-radius-sm);
+  border: none;
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+.serviceHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.addServiceBtn {
+  margin-left: auto;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--fd-border-strong);
+  background: #f3f4f6;
+  color: var(--fd-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addServiceBtn:hover {
+  background: #eaebee;
+}
+
+.serviceTotalLine {
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  margin-top: -8px;
+}
+
+.serviceEmpty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--fd-text-muted);
+  font-size: 13px;
+  border: 1px dashed var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  min-height: 140px;
+}
+
+.serviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.serviceItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  padding: 8px 10px;
+  background: var(--fd-bg);
+  border-radius: var(--fd-radius-sm);
+}
+
+.muted {
+  color: var(--fd-text-muted);
+  font-size: 12.5px;
+}
+
+/* Payment tab */
+
+.paymentLayout {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+}
+
+@media (max-width: 820px) {
+  .paymentLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.paymentMain {
+  padding: 20px 24px;
+  border-right: 1px solid var(--fd-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.paymentSide {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.asOfTabs {
+  display: flex;
+  border-radius: var(--fd-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--fd-border-strong);
+  margin-bottom: 18px;
+}
+
+.asOfTab {
+  flex: 1;
+  height: 38px;
+  border: none;
+  background: #fff;
+  color: var(--fd-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.asOfTabActive {
+  background: var(--fd-primary);
+  color: #fff;
+}
+
+.invoiceHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.invoiceHead span {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.invoiceHead strong {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.billSection {
+  margin-bottom: 12px;
+}
+
+.billSectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 6px;
+}
+
+.billSectionHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.billSectionToggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-primary);
+  cursor: pointer;
+}
+
+.billAddServiceBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--fd-border-strong);
+  background: #fff;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.billAddServiceBtn:hover {
+  background: #f3f4f6;
+  color: var(--fd-text);
+}
+
+.billRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  padding: 6px 0;
+}
+
+.billRowTotal {
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: var(--fd-primary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.discountInput {
+  width: 110px;
+  height: 30px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.discountAmount {
+  color: var(--fd-text-secondary);
+  font-weight: 600;
+}
+
+.discountAmountActive {
+  color: var(--fd-warning);
+}
+
+.vatRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.vatRow input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--fd-primary);
+}
+
+.vatLabel {
+  margin-left: auto;
+  color: var(--fd-text-secondary);
+  font-size: 12.5px;
+}
+
+.billSummary {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--fd-border);
+}
+
+.modeRow {
+  display: flex;
+  gap: 18px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.radioLabel input {
+  accent-color: var(--fd-primary);
+}
+
+.payFieldsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.payField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.payLabel {
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+.paySelect,
+.payInput {
+  height: 38px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 8px;
+  font-size: 13px;
+  color: var(--fd-text);
+}
+
+.payNoteInput {
+  height: 38px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--fd-text);
+}
+
+.payBtn {
+  height: 42px;
+  border-radius: var(--fd-radius-sm);
+  border: none;
+  background: var(--fd-success);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.payBtn:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.payBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paidHistory {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--fd-border);
+}
+
+.paidHistoryTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 8px;
+}
+
+.paidEmpty {
+  font-size: 13px;
+  color: var(--fd-text-muted);
+}
+
+.paidRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--fd-border);
+}

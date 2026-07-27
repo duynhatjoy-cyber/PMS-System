@@ -1,0 +1,37 @@
+.badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Split-flap seam — the badge reads as one board tile, not a soft SaaS pill. */
+.badge::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.arrival {
+  background: var(--fd-violet);
+}
+
+.departure {
+  background: var(--fd-danger);
+}
+
+.inhouse {
+  background: var(--fd-success);
+}

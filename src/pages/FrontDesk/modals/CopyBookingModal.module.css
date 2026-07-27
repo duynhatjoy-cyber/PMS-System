@@ -1,0 +1,50 @@
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 720px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.colTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}
+
+.staticRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--fd-border);
+}
+
+.readRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  padding: 9px 0;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.readRow strong {
+  color: var(--fd-text);
+  font-weight: 600;
+}

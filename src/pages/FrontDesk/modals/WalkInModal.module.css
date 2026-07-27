@@ -1,0 +1,379 @@
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 14px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.stepItem:last-child .stepLine {
+  display: none;
+}
+
+.stepDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex: none;
+}
+
+.stepDot.done {
+  background: var(--fd-success);
+  color: #fff;
+}
+
+.stepDot.current {
+  background: var(--fd-primary);
+  color: #fff;
+}
+
+.stepDot.upcoming {
+  background: #eef0f3;
+  color: var(--fd-text-muted);
+}
+
+.stepLabel {
+  font-size: 12.5px;
+  margin: 0 8px;
+  white-space: nowrap;
+}
+
+.stepLabel.done {
+  color: var(--fd-success);
+  font-weight: 600;
+}
+
+.stepLabel.current {
+  color: var(--fd-primary);
+  font-weight: 700;
+}
+
+.stepLabel.upcoming {
+  color: var(--fd-text-muted);
+}
+
+.stepLine {
+  width: 20px;
+  height: 1px;
+  background: var(--fd-border-strong);
+  margin-right: 8px;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 3px;
+  gap: 3px;
+}
+
+.segmentBtn {
+  flex: 1;
+  height: 34px;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.segmentActive {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary-hover);
+}
+
+.counterCard {
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 14px 16px;
+  background: var(--fd-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.counterLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.counterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--fd-text);
+}
+
+.counterControl {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.counterControl button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--fd-border-strong);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--fd-text);
+}
+
+.counterControl button:hover {
+  background: var(--fd-primary-soft);
+  border-color: var(--fd-primary);
+  color: var(--fd-primary);
+}
+
+.counterControl span {
+  min-width: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.summaryLine {
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+}
+
+.durationLine {
+  font-size: 13.5px;
+  color: var(--fd-text);
+  background: var(--fd-primary-soft);
+  border-radius: var(--fd-radius-sm);
+  padding: 9px 12px;
+}
+
+.durationLine strong {
+  color: var(--fd-primary-hover);
+}
+
+.guestSearchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-muted);
+}
+
+.guestSearchBox:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.guestSearchBox input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--fd-text);
+}
+
+.guestResults {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  overflow: hidden;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.guestResultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: #fff;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.guestResultItem:hover {
+  background: var(--fd-bg);
+}
+
+.guestResultPhone {
+  color: var(--fd-text-muted);
+  font-size: 12.5px;
+}
+
+.createNewLink {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: var(--fd-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.createNewLink:hover {
+  color: var(--fd-primary-hover);
+}
+
+.guestChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--fd-primary-soft);
+  border-radius: var(--fd-radius-sm);
+  padding: 12px 14px;
+}
+
+.guestChipName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fd-primary-hover);
+}
+
+.guestChipPhone {
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  margin-top: 2px;
+}
+
+.guestChipChange {
+  border: none;
+  background: none;
+  color: var(--fd-primary-hover);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.newGuestBox {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 14px;
+  background: var(--fd-bg);
+}
+
+.roomList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.roomOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-md);
+  padding: 14px 16px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.roomOptionActive {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+}
+
+.roomName {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.roomTag {
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+  margin-top: 2px;
+}
+
+.roomPriceCol {
+  text-align: right;
+}
+
+.roomPrice {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fd-primary);
+}
+
+.roomAvail {
+  font-size: 12px;
+  color: var(--fd-success);
+  margin-top: 2px;
+}
+
+.reviewList {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--fd-border);
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+}
+
+.reviewRow strong {
+  color: var(--fd-text);
+  font-weight: 600;
+}
+
+.estimate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--fd-border);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.estimate strong {
+  color: var(--fd-primary);
+  text-decoration: underline;
+  font-size: 18px;
+}
