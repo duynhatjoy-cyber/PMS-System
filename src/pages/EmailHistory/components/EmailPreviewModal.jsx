@@ -1,4 +1,5 @@
 import ModalShell from "../../FrontDesk/modals/ModalShell";
+import EmailRenderedContent from "../../../components/EmailRenderedContent";
 import { buildPreviewHtml } from "../../../data/emailHistoryData";
 import styles from "../EmailHistory.module.css";
 
@@ -9,7 +10,7 @@ function EmailPreviewModal({ entry, onClose }) {
     <ModalShell title="Xem trước email" onClose={onClose} width={620}>
       <div className={styles.previewBanner}>Nhà Của My</div>
 
-      <div className={styles.previewBody} dangerouslySetInnerHTML={{ __html: html }} />
+      <EmailRenderedContent html={html} className={styles.previewBody} />
 
       <div className={styles.previewFooter}>
         <div className={styles.previewFooterLabel}>*** MỌI THẮC MẮC XIN LIÊN HỆ ***</div>
