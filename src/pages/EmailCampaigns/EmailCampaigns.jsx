@@ -1,6 +1,8 @@
 import { useState } from "react";
 import CampaignListPanel from "./components/CampaignListPanel";
 import CampaignEditorPanel from "./components/CampaignEditorPanel";
+import PauseConfirmModal from "./components/PauseConfirmModal";
+import DevicePreviewModal from "./components/DevicePreviewModal";
 import Toast from "../FrontDesk/components/Toast";
 import { EMAIL_CAMPAIGNS } from "../../data/emailCampaignData";
 import styles from "./EmailCampaigns.module.css";
@@ -9,6 +11,8 @@ function EmailCampaigns() {
   const [campaigns, setCampaigns] = useState(EMAIL_CAMPAIGNS);
   const [showDeleted, setShowDeleted] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [pauseTarget, setPauseTarget] = useState(null);
+  const [previewRequest, setPreviewRequest] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
 
   function toast(message) {
@@ -44,6 +48,12 @@ function EmailCampaigns() {
     toast("Đã lưu chiến dịch email");
   }
 
+  function handleConfirmPause() {
+    handleToggleStatus(pauseTarget.id);
+    setPauseTarget(null);
+    toast("Đã tạm dừng chiến dịch email");
+  }
+
   const editingCampaign = editingId ? campaigns.find((c) => c.id === editingId) : null;
 
   return (
@@ -61,7 +71,24 @@ function EmailCampaigns() {
           onToggleShowDeleted={() => setShowDeleted((v) => !v)}
           onCreate={handleCreate}
           onSelect={(id) => setEditingId(id)}
-          onToggleStatus={handleToggleStatus}
+          onRequestPause={setPauseTarget}
+          onPreviewDevice={(campaign, device) => setPreviewRequest({ campaign, device })}
+        />
+      )}
+
+      {pauseTarget && (
+        <PauseConfirmModal
+          campaign={pauseTarget}
+          onClose={() => setPauseTarget(null)}
+          onConfirm={handleConfirmPause}
+        />
+      )}
+
+      {previewRequest && (
+        <DevicePreviewModal
+          campaign={previewRequest.campaign}
+          device={previewRequest.device}
+          onClose={() => setPreviewRequest(null)}
         />
       )}
 

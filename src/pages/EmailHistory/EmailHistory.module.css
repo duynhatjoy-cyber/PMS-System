@@ -456,52 +456,6 @@
 
 .previewBody {
   margin-top: 18px;
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: var(--fd-text);
-}
-
-.previewBody p {
-  margin: 0 0 10px;
-}
-
-.previewBody :global(.cf-confirm-title) {
-  font-weight: 700;
-  font-size: 15px;
-  margin-bottom: 4px;
-}
-
-.previewBody :global(.cf-section-title) {
-  margin: 18px 0 8px;
-  padding: 8px 12px;
-  background: #f4f5f7;
-  border-left: 3px solid var(--fd-primary);
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.previewBody :global(.cf-muted) {
-  color: var(--fd-text-secondary);
-}
-
-.previewBody :global(.cf-hotel-info) {
-  float: right;
-  margin: 4px 0 12px;
-  font-size: 13px;
-}
-
-.previewBody :global(.cf-hotel-info td) {
-  padding: 2px 0;
-  text-align: right;
-}
-
-.previewBody :global(.cf-detail-table) {
-  border-collapse: collapse;
-}
-
-.previewBody :global(.cf-detail-table td) {
-  padding: 3px 10px 3px 0;
-  font-size: 13.5px;
 }
 
 .previewFooter {

@@ -7,7 +7,8 @@ function CampaignListPanel({
   onToggleShowDeleted,
   onCreate,
   onSelect,
-  onToggleStatus,
+  onRequestPause,
+  onPreviewDevice,
 }) {
   return (
     <div>
@@ -43,20 +44,35 @@ function CampaignListPanel({
                     type="button"
                     className={styles.statusBtn}
                     title="Tạm dừng chiến dịch"
-                    onClick={() => onToggleStatus(c.id)}
+                    onClick={() => onRequestPause(c)}
                   >
                     <CirclePause size={18} />
                   </button>
                 )}
-                <span className={styles.deviceIcon} title="Xem trên máy tính">
+                <button
+                  type="button"
+                  className={styles.deviceIcon}
+                  title="Xem trên máy tính"
+                  onClick={() => onPreviewDevice(c, "desktop")}
+                >
                   <Monitor size={18} />
-                </span>
-                <span className={styles.deviceIcon} title="Xem trên máy tính bảng">
+                </button>
+                <button
+                  type="button"
+                  className={styles.deviceIcon}
+                  title="Xem trên máy tính bảng"
+                  onClick={() => onPreviewDevice(c, "tablet")}
+                >
                   <Tablet size={18} />
-                </span>
-                <span className={styles.deviceIcon} title="Xem trên điện thoại">
+                </button>
+                <button
+                  type="button"
+                  className={styles.deviceIcon}
+                  title="Xem trên điện thoại"
+                  onClick={() => onPreviewDevice(c, "mobile")}
+                >
                   <Smartphone size={18} />
-                </span>
+                </button>
               </div>
             </div>
           ))

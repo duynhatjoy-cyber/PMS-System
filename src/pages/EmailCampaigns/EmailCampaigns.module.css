@@ -26,6 +26,72 @@
   gap: 20px;
 }
 
+/* =========================
+   DEVICE PREVIEW MODAL
+========================= */
+
+.deviceModalTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deviceFrame {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.mailSubject {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--fd-text);
+  margin-bottom: 14px;
+}
+
+.mailMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.mailAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--fd-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mailMetaText {
+  min-width: 0;
+}
+
+.mailSender {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.mailAddr {
+  font-weight: 400;
+  color: var(--fd-text-muted);
+}
+
+.mailTo {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
 .checkboxRow {
   display: flex;
   align-items: center;
@@ -155,11 +221,19 @@
 .deviceIcon {
   width: 32px;
   height: 32px;
+  border: none;
+  background: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--fd-text-muted);
   border-radius: 8px;
+  cursor: pointer;
+}
+
+.deviceIcon:hover {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
 }
 
 .emptyState {
@@ -495,6 +569,69 @@
 .scheduleTileActive .scheduleIcon {
   background: var(--fd-primary-soft);
   color: var(--fd-primary);
+}
+
+.scheduleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.scheduleTilesRow {
+  display: flex;
+  gap: 36px;
+}
+
+.scheduleDetailRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid var(--fd-border);
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.radioOption input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--fd-primary);
+}
+
+.dayField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.requiredMark {
+  color: var(--fd-danger);
+}
+
+.dayInput {
+  width: 90px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  font-size: 14px;
+  color: var(--fd-text);
+  background: #fff;
+}
+
+.dayInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
 }
 
 .sendConfigGrid {

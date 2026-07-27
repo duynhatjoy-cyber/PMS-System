@@ -27,7 +27,9 @@ const TRIGGER_ICONS = {
 function CampaignEditorPanel({ campaign, onBack, onSave }) {
   const [trigger, setTrigger] = useState(campaign.trigger || "upcoming");
   const [subject, setSubject] = useState(campaign.subject || "");
-  const [sendMode, setSendMode] = useState("draft"); // "auto" | "draft"
+  const [sendMode, setSendMode] = useState(campaign.sendMode || "draft"); // "auto" | "draft"
+  const [sendAnchor, setSendAnchor] = useState(campaign.sendAnchor || "before_arrival");
+  const [sendDays, setSendDays] = useState(campaign.sendDays ?? 1);
   const [sendFrom, setSendFrom] = useState(campaign.sendFrom || "Khachsan.com");
   const [cc, setCc] = useState(campaign.cc || "");
   const [bcc, setBcc] = useState(campaign.bcc || "");
@@ -159,6 +161,9 @@ function CampaignEditorPanel({ campaign, onBack, onSave }) {
       title: subject || campaign.title,
       bodyHtml: bodyByTriggerRef.current[trigger] || campaign.bodyHtml,
       bodyByTrigger: bodyByTriggerRef.current,
+      sendMode,
+      sendAnchor,
+      sendDays,
       sendFrom,
       cc,
       bcc,
@@ -267,26 +272,66 @@ function CampaignEditorPanel({ campaign, onBack, onSave }) {
         </div>
 
         <div className={styles.bottomRow}>
-          <button
-            type="button"
-            className={`${styles.scheduleTile} ${sendMode === "auto" ? styles.scheduleTileActive : ""}`}
-            onClick={() => setSendMode("auto")}
-          >
-            <span className={styles.scheduleIcon}>
-              <Clock size={20} strokeWidth={1.7} />
-            </span>
-            Tiến trình tự động gửi
-          </button>
-          <button
-            type="button"
-            className={`${styles.scheduleTile} ${sendMode === "draft" ? styles.scheduleTileActive : ""}`}
-            onClick={() => setSendMode("draft")}
-          >
-            <span className={styles.scheduleIcon}>
-              <Download size={20} strokeWidth={1.7} />
-            </span>
-            Lưu lại gửi sau
-          </button>
+          <div className={styles.scheduleGroup}>
+            <div className={styles.scheduleTilesRow}>
+              <button
+                type="button"
+                className={`${styles.scheduleTile} ${sendMode === "auto" ? styles.scheduleTileActive : ""}`}
+                onClick={() => setSendMode("auto")}
+              >
+                <span className={styles.scheduleIcon}>
+                  <Clock size={20} strokeWidth={1.7} />
+                </span>
+                Tiến trình tự động gửi
+              </button>
+              <button
+                type="button"
+                className={`${styles.scheduleTile} ${sendMode === "draft" ? styles.scheduleTileActive : ""}`}
+                onClick={() => setSendMode("draft")}
+              >
+                <span className={styles.scheduleIcon}>
+                  <Download size={20} strokeWidth={1.7} />
+                </span>
+                Lưu lại gửi sau
+              </button>
+            </div>
+
+            {sendMode === "auto" && (
+              <div className={styles.scheduleDetailRow}>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="sendAnchor"
+                    checked={sendAnchor === "before_arrival"}
+                    onChange={() => setSendAnchor("before_arrival")}
+                  />
+                  Trước ngày đến
+                </label>
+                <label className={styles.radioOption}>
+                  <input
+                    type="radio"
+                    name="sendAnchor"
+                    checked={sendAnchor === "after_booking"}
+                    onChange={() => setSendAnchor("after_booking")}
+                  />
+                  Sau ngày đặt
+                </label>
+
+                <div className={styles.dayField}>
+                  <span className={styles.fieldLabel}>
+                    Ngày <span className={styles.requiredMark}>*</span>
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    className={styles.dayInput}
+                    value={sendDays}
+                    onChange={(e) => setSendDays(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className={styles.sendConfigGrid}>
             <div className={styles.sendField}>
