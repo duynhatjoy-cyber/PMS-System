@@ -1,0 +1,349 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.primaryBtn {
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+.ghostBtn {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghostBtn:hover {
+  background: var(--fd-bg);
+}
+
+/* =========================
+   LIST
+========================= */
+
+.listCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+
+.listRow:last-child {
+  border-bottom: none;
+}
+
+.listRow:hover {
+  background: var(--fd-bg);
+}
+
+.rowTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.rowSubtitle {
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.statusBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--fd-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 999px;
+  flex: none;
+}
+
+.statusBtn:hover {
+  background: var(--fd-primary-soft);
+}
+
+.emptyState {
+  padding: 40px 22px;
+  text-align: center;
+  color: var(--fd-text-secondary);
+  font-size: 13.5px;
+}
+
+/* =========================
+   EDITOR - TOP BAR + TABS
+========================= */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.editorTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.editorTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabBar {
+  display: flex;
+  background: #f4f5f7;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 0 12px;
+  overflow-x: auto;
+}
+
+.tab {
+  border: none;
+  background: none;
+  padding: 15px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tab:hover {
+  color: var(--fd-text);
+}
+
+.tabActive {
+  color: var(--fd-primary);
+  border-bottom-color: var(--fd-primary);
+}
+
+/* =========================
+   EDITOR - SMTP CARD
+========================= */
+
+.editorCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 24px;
+}
+
+.smtpGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px 32px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+}
+
+.fieldInputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 12px;
+}
+
+.fieldInputRow:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.fieldInput {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--fd-text);
+  background: transparent;
+}
+
+.fieldSelect {
+  flex: 1;
+  height: 40px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--fd-text);
+  background: transparent;
+}
+
+.charCount {
+  flex: none;
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  white-space: nowrap;
+}
+
+/* =========================
+   EDITOR - SIGNATURE (CHỮ KÝ)
+========================= */
+
+.signatureCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.signatureBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signatureLabel {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--fd-text-secondary);
+}
+
+.composer {
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  overflow: hidden;
+  background: var(--fd-surface);
+}
+
+.contentArea {
+  min-height: 160px;
+  padding: 24px 28px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--fd-text);
+  outline: none;
+}
+
+.contentArea p {
+  margin: 0 0 10px;
+}
+
+.contentArea :global(.cf-tag) {
+  display: inline-block;
+  background: #fef6d0;
+  color: var(--fd-text);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contentArea :global(.cf-muted) {
+  color: var(--fd-text-secondary);
+}
+
+.contentArea :global(.cfg-banner) {
+  background: var(--fd-primary);
+  color: #fff;
+  padding: 28px;
+  border-radius: var(--fd-radius-sm);
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.contentArea :global(.cfg-banner) :global(.cf-tag) {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1024px) {
+  .smtpGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .smtpGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 18px 16px 28px;
+  }
+}

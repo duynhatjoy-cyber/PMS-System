@@ -1,0 +1,178 @@
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 12px;
+  height: 40px;
+  color: var(--fd-text-muted);
+  margin-bottom: 14px;
+}
+
+.searchBar input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  flex: 1;
+  color: var(--fd-text);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--fd-border);
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+
+.tab {
+  border: none;
+  background: none;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabActive {
+  color: var(--fd-primary);
+  border-bottom-color: var(--fd-primary);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 18px;
+}
+
+@media (max-width: 640px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid transparent;
+  background: none;
+  padding: 10px 12px;
+  border-radius: var(--fd-radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--fd-text);
+  text-align: left;
+}
+
+.listItem:hover {
+  background: var(--fd-bg);
+  border-color: var(--fd-border);
+}
+
+.price {
+  color: var(--fd-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.invoice {
+  border-left: 1px solid var(--fd-border);
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.invoiceTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 10px;
+}
+
+.invoiceEmpty {
+  font-size: 13px;
+  color: var(--fd-text-muted);
+  padding: 24px 0;
+  text-align: center;
+}
+
+.invoiceList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.invoiceRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.invoiceRowMain {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--fd-text);
+}
+
+.qtyControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qtyControl button {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--fd-border-strong);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.qtyControl span {
+  min-width: 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.removeBtn {
+  margin-left: auto;
+  border: none !important;
+  color: var(--fd-danger);
+}
+
+.invoiceFooter {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--fd-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invoiceTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fd-text);
+}

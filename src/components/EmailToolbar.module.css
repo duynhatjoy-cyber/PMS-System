@@ -1,0 +1,67 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  background: #f4f5f7;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.toolbarBtn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: none;
+  color: var(--fd-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: default;
+}
+
+.toolbarBtn:hover {
+  background: #e7e9ec;
+  color: var(--fd-text);
+}
+
+.toolbarSelect {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  cursor: default;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--fd-border-strong);
+  margin: 0 4px;
+}
+
+.toolbarSwatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--fd-text-secondary);
+}
+
+.toolbarSwatch::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--fd-danger);
+}

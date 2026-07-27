@@ -56,6 +56,12 @@ const menuSections = [
         expandable: true,
         children: ["Tạo hóa đơn"],
       },
+      {
+        label: "Email marketing",
+        icon: Mail,
+        expandable: true,
+        children: ["Chiến dịch email", "Lịch sử", "Cấu hình"],
+      },
     ],
   },
   {
@@ -88,22 +94,7 @@ const menuSections = [
       { label: "Báo cáo", icon: ChartNoAxesColumn },
     ],
   },
-  {
-    title: "KÊNH PHÂN PHỐI",
-    items: [
-      { label: "Giá phòng", icon: Tag },
-      { label: "Lịch CMS", icon: CalendarRange },
-      { label: "Đặt phòng OTA", icon: Inbox },
-      {
-        label: "Email marketing",
-        icon: Mail,
-        expandable: true,
-        children: ["Chiến dịch email", "Lịch sử", "Cấu hình"],
-      },
-      { label: "Phòng", icon: Building2 },
-      { label: "Import", icon: CloudUpload },
-    ],
-  },
+
   {
     title: "CÀI ĐẶT",
     items: [
@@ -196,7 +187,7 @@ function SidebarItem({
   );
 }
 
-function Sidebar() {
+function Sidebar({ onNavigate }) {
   const [activeKey, setActiveKey] = useState("LỄ TÂN::Front Desk");
   const [openKey, setOpenKey] = useState(null);
 
@@ -210,10 +201,13 @@ function Sidebar() {
     } else {
       setOpenKey(null);
     }
+
+    onNavigate?.(itemKey);
   }
 
   function handleSelectChild(childKey) {
     setActiveKey(childKey);
+    onNavigate?.(childKey);
   }
 
   return (

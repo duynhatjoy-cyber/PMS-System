@@ -1,0 +1,587 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxRow input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--fd-primary);
+}
+
+.primaryBtn {
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+.ghostBtn {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghostBtn:hover {
+  background: var(--fd-bg);
+}
+
+/* =========================
+   LIST
+========================= */
+
+.listCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+
+.listRow:last-child {
+  border-bottom: none;
+}
+
+.listRow:hover {
+  background: var(--fd-bg);
+}
+
+.rowText {
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.rowSubtitle {
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.statusBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--fd-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.statusBtn:hover {
+  background: var(--fd-primary-soft);
+}
+
+.deviceIcon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fd-text-muted);
+  border-radius: 8px;
+}
+
+.emptyState {
+  padding: 40px 22px;
+  text-align: center;
+  color: var(--fd-text-secondary);
+  font-size: 13.5px;
+}
+
+/* =========================
+   EDITOR - TOP BAR
+========================= */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.editorTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.editorTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =========================
+   EDITOR - TRIGGER TABS
+========================= */
+
+.triggerRow {
+  display: flex;
+  align-items: stretch;
+  gap: 36px;
+  padding: 20px 24px 4px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.triggerTile {
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 0 16px;
+  cursor: pointer;
+  color: var(--fd-text-muted);
+  border-bottom: 3px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.triggerIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+}
+
+.triggerTileActive {
+  color: var(--fd-primary);
+  border-bottom-color: var(--fd-primary);
+}
+
+.triggerTileActive .triggerIcon {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+/* =========================
+   EDITOR - CARD / TITLE FIELD
+========================= */
+
+.editorCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.titleFieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titleFieldTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fieldLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+}
+
+.copyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  color: var(--fd-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.copyLink:hover {
+  color: var(--fd-primary-hover);
+}
+
+.titleInputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 0 12px;
+}
+
+.titleInputRow:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.titleInput {
+  flex: 1;
+  height: 40px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--fd-text);
+  background: transparent;
+}
+
+.charCount {
+  flex: none;
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  white-space: nowrap;
+}
+
+/* =========================
+   EDITOR - TOOLBAR + BODY
+========================= */
+
+.editorMain {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 18px;
+  align-items: start;
+}
+
+.composer {
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  overflow: hidden;
+  background: var(--fd-surface);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.contentArea {
+  min-height: 460px;
+  max-height: 620px;
+  overflow-y: auto;
+  padding: 24px 28px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--fd-text);
+  outline: none;
+}
+
+.contentArea :global(.cf-confirm-title) {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.contentArea :global(.cf-section-title) {
+  margin: 18px 0 8px;
+  padding: 8px 12px;
+  background: #f4f5f7;
+  border-left: 3px solid var(--fd-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.contentArea :global(.cf-muted) {
+  color: var(--fd-text-secondary);
+}
+
+.contentArea :global(.cf-hotel-info) {
+  float: right;
+  margin: 4px 0 12px;
+  font-size: 13px;
+}
+
+.contentArea :global(.cf-hotel-info td) {
+  padding: 2px 0;
+  text-align: right;
+}
+
+.contentArea :global(.cf-detail-table) {
+  border-collapse: collapse;
+}
+
+.contentArea :global(.cf-detail-table td) {
+  padding: 3px 10px 3px 0;
+  font-size: 13.5px;
+}
+
+.contentArea :global(.cf-tag) {
+  display: inline-block;
+  background: #fef6d0;
+  color: var(--fd-text);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contentArea p {
+  margin: 0 0 10px;
+}
+
+/* =========================
+   EDITOR - TAG SIDEBAR
+========================= */
+
+.tagSidebar {
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  background: var(--fd-surface);
+  box-shadow: var(--fd-shadow-card);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.tagGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tagGroupTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--fd-violet);
+}
+
+.tagBtn {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  padding: 3px 0;
+  font-size: 13px;
+  color: var(--fd-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tagBtn:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   EDITOR - BOTTOM ROW
+========================= */
+
+.bottomRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.scheduleTile {
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--fd-text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  width: 96px;
+}
+
+.scheduleIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+}
+
+.scheduleTileActive {
+  color: var(--fd-primary);
+}
+
+.scheduleTileActive .scheduleIcon {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+.sendConfigGrid {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sendField {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sendFieldLabel {
+  flex: none;
+  width: 96px;
+  font-size: 13px;
+  color: var(--fd-text-muted);
+}
+
+.sendInputRow {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text-secondary);
+}
+
+.sendInputRow:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.sendInputRow input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  background: transparent;
+}
+
+.cmsCheckboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.cmsCheckboxRow input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--fd-primary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1024px) {
+  .editorMain {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .triggerRow {
+    gap: 20px;
+    padding: 16px 14px 4px;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+  }
+}

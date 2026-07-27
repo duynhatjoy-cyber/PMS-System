@@ -1,0 +1,365 @@
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+  margin-bottom: 22px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+}
+
+.underlineInput,
+.underlineSelect {
+  border: none;
+  border-bottom: 1px dashed var(--fd-border-strong);
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--fd-text);
+  background: transparent;
+  font-family: inherit;
+}
+
+.underlineInput:focus,
+.underlineSelect:focus {
+  outline: none;
+  border-bottom-color: var(--fd-primary);
+}
+
+.underlineInput::placeholder,
+.underlineTextarea::placeholder {
+  color: var(--fd-text-muted);
+}
+
+.underlineInput[readOnly] {
+  color: var(--fd-text-muted);
+}
+
+.underlineTextarea {
+  border: none;
+  border-bottom: 1px dashed var(--fd-border-strong);
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--fd-text);
+  background: transparent;
+  font-family: inherit;
+  resize: none;
+  min-height: 20px;
+}
+
+.underlineTextarea:focus {
+  outline: none;
+  border-bottom-color: var(--fd-primary);
+}
+
+.charCount {
+  align-self: flex-end;
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+.readonlyBox {
+  background: #f4f5f7;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--fd-text-muted);
+}
+
+.datetimeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px dashed var(--fd-border-strong);
+  padding: 6px 0;
+  color: var(--fd-text);
+  font-size: 14px;
+}
+
+.datetimeRow svg {
+  color: var(--fd-text-muted);
+  margin-left: auto;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.table thead th {
+  text-align: left;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+  padding: 10px 12px;
+  background: #f4f5f7;
+  border-bottom: 1px solid var(--fd-border);
+  white-space: nowrap;
+}
+
+.thAction {
+  width: 44px;
+  text-align: right !important;
+}
+
+.addRowBtn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: var(--fd-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addRowBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+.table tbody td {
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  border-bottom: 1px solid var(--fd-border);
+  vertical-align: middle;
+}
+
+.chipCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chipSelect {
+  flex: 1;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--fd-text);
+  background: #fff;
+}
+
+.chipClearBtn,
+.chipAddBtn {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--fd-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chipClearBtn:hover,
+.chipAddBtn:hover {
+  background: #f4f5f7;
+}
+
+.numInput {
+  width: 90px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--fd-text);
+  text-align: right;
+}
+
+.numInput:focus,
+.chipSelect:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.textInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--fd-text);
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.thanhTien {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.removeBtn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: none;
+  color: var(--fd-danger);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.totalRow td {
+  padding: 10px 12px;
+  font-weight: 700;
+  color: var(--fd-text);
+  text-align: right;
+}
+
+.footerBtns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btnWarning {
+  background: var(--fd-warning);
+  color: #fff;
+}
+
+.btnWarning:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.printSheet {
+  border: 1px dashed var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.printHotel {
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--fd-text);
+  margin-bottom: 2px;
+}
+
+.printTitle {
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--fd-text);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.printMeta {
+  text-align: center;
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+  margin-bottom: 18px;
+}
+
+.printRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--fd-border);
+  font-size: 13.5px;
+}
+
+.printRow:last-child {
+  border-bottom: none;
+}
+
+.printLabel {
+  color: var(--fd-text-secondary);
+}
+
+.printValue {
+  font-weight: 600;
+  color: var(--fd-text);
+  text-align: right;
+}
+
+.contextLine {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fd-text);
+  margin-bottom: 16px;
+}
+
+.innerTabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--fd-border);
+  margin-bottom: 16px;
+}
+
+.innerTab {
+  padding: 10px 4px;
+  margin-right: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.innerTab:hover {
+  color: var(--fd-text);
+}
+
+.innerTabActive {
+  color: var(--fd-primary);
+  border-bottom-color: var(--fd-primary);
+}
+
+.subHeadRow th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--fd-text-secondary) !important;
+  background: #fafafb !important;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

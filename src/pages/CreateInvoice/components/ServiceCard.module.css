@@ -1,0 +1,46 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: var(--fd-surface);
+  text-align: left;
+  font-family: inherit;
+}
+
+.card:hover {
+  border-color: var(--fd-primary);
+}
+
+.name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--fd-text);
+  background: #eef1f6;
+  line-height: 1.3;
+}
+
+.priceBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 32px;
+  background: var(--fd-navy);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.editIcon {
+  color: #cbd5e1;
+}

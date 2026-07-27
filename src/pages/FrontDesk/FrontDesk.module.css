@@ -1,0 +1,293 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.segmented {
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--fd-border);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.segmentBtn {
+  height: 34px;
+  padding: 0 16px;
+  border: none;
+  background: none;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.segmentActive {
+  background: var(--fd-navy);
+  color: #fff;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dateNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  padding: 5px 8px;
+}
+
+.dateLabel {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.navIconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--fd-border);
+  background: #fff;
+  color: var(--fd-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.navIconBtn:hover {
+  background: #f4f5f7;
+  color: var(--fd-text);
+}
+
+.dateNav .navIconBtn {
+  border: none;
+  width: 28px;
+  height: 28px;
+}
+
+.walkInBtn {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--fd-radius-sm);
+  border: none;
+  background: var(--fd-navy);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.walkInBtn:hover {
+  background: var(--fd-navy-hover);
+}
+
+.statsRow,
+.statsRowSecondary {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.valueBlue {
+  color: var(--fd-violet);
+}
+
+.valueOrange {
+  color: var(--fd-warning);
+}
+
+.valueGreen {
+  color: var(--fd-success);
+}
+
+.valueRed {
+  color: var(--fd-danger);
+}
+
+.valuePrimary {
+  color: var(--fd-primary);
+}
+
+.tableCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.tabList {
+  display: flex;
+  gap: 8px;
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--fd-border);
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.tabBtn:hover {
+  background: #f6f7f8;
+}
+
+.tabBtnActive {
+  background: var(--fd-primary);
+  border-color: var(--fd-primary);
+  color: #fff;
+}
+
+.tabCount {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 12px;
+}
+
+.tabBtnActive .tabCount {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.searchGroup {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-muted);
+  min-width: 240px;
+}
+
+.searchBox input {
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  flex: 1;
+  color: var(--fd-text);
+}
+
+.guestFilterBox {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  color: var(--fd-text);
+  width: 160px;
+}
+
+.guestFilterBox:focus,
+.searchBox:focus-within {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.floorplanPlaceholder {
+  background: var(--fd-surface);
+  border: 1px dashed var(--fd-border-strong);
+  border-radius: var(--fd-radius-lg);
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.floorplanTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 8px;
+}
+
+.floorplanSub {
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 18px 16px 32px;
+  }
+
+  .statsRow,
+  .statsRowSecondary {
+    flex-direction: column;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchGroup {
+    flex-direction: column;
+  }
+
+  .guestFilterBox {
+    width: 100%;
+  }
+}

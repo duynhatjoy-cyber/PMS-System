@@ -4,6 +4,52 @@
   padding: 0;
 }
 
+:root {
+  /* "Front Desk Board" content-area theme — arrivals/departures board palette.
+     Header/Sidebar keep their own hardcoded colors and are untouched by this. */
+  --fd-bg: #f7f6f2;
+  --fd-surface: #ffffff;
+  --fd-border: #ececec;
+  --fd-border-strong: #e2e4e9;
+  --fd-text: #111827;
+  --fd-text-secondary: #6b7280;
+  --fd-text-muted: #98a1b3;
+
+  --fd-navy: #1c2430;
+  --fd-navy-hover: #29323f;
+
+  --fd-primary: #a8631f;
+  --fd-primary-hover: #8b4f16;
+  --fd-primary-soft: #f7ead9;
+
+  --fd-violet: #3b5f7a;
+  --fd-violet-soft: #e6edf2;
+
+  --fd-teal: #0f6e5c;
+  --fd-teal-hover: #0c5a4a;
+
+  --fd-success: #1e7a4c;
+  --fd-success-soft: #e6f4ec;
+
+  --fd-danger: #b23a2e;
+  --fd-danger-soft: #f9e9e7;
+
+  --fd-warning: #c99a2e;
+  --fd-warning-soft: #f8f0da;
+
+  --fd-radius-sm: 6px;
+  --fd-radius-md: 10px;
+  --fd-radius-lg: 14px;
+
+  --fd-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 1px rgba(16, 24, 40, 0.03);
+  --fd-shadow-modal: 0 24px 60px -12px rgba(15, 23, 42, 0.35);
+  --fd-shadow-pop: 0 8px 24px -6px rgba(15, 23, 42, 0.18);
+}
+
+.fd-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
 html,
 body,
 #root {

@@ -1,0 +1,47 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  background: var(--fd-bg);
+  border: 1px solid var(--fd-border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+}
+
+.room {
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.flag {
+  width: 18px;
+  height: 13px;
+  border-radius: 3px;
+  background: var(--fd-danger);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guest {
+  font-weight: 600;
+  color: var(--fd-text);
+}
