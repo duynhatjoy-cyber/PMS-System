@@ -3,6 +3,14 @@
 // selecting one prompts for a custom price before it's added to the cart.
 export const SERVICE_TABS = ["Tất cả", "Minibar", "Dịch vụ khác", "Dịch vụ mở rộng"];
 
+// Short corner-badge label per category, shown on each ServiceCard so a mixed
+// "Tất cả" grid still reads at a glance which category an item belongs to.
+export const CATEGORY_BADGES = {
+  Minibar: { label: "MB", tone: "minibar" },
+  "Dịch vụ khác": { label: "DVK", tone: "other" },
+  "Dịch vụ mở rộng": { label: "DVM", tone: "extra" },
+};
+
 export const SERVICE_CATALOG = [
   { id: "coca-pepsi", name: "Coca/Pepsi", price: 15000, category: "Minibar" },
   { id: "nuoc-suoi-550", name: "Nước suối 550ml", price: 10000, category: "Minibar" },
@@ -28,6 +36,6 @@ export const SERVICE_CATALOG = [
   { id: "sting-rockstar", name: "Sting/Rockstar", price: 15000, category: "Minibar" },
 ];
 
-export const PAYMENT_METHODS = ["Tiền mặt", "Chuyển khoản", "Thẻ / Quẹt máy POS"];
+export const PAYMENT_METHODS = ["Tiền mặt", "Chuyển khoản", "Thẻ / Quẹt máy POS" , "Công nợ"];
 export const CURRENCIES = ["VND", "USD"];
 export const COUNTER_OPTIONS = ["Thanh toán tại quầy", "Thanh toán online"];
