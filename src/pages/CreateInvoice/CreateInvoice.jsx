@@ -226,7 +226,7 @@ function CreateInvoice() {
           <div className={styles.payForm}>
             {paymentTab === "pay" ? (
               <>
-                <div className={styles.payRow3}>
+                <div className={styles.payRow2}>
                   <div className={shared.field}>
                     <label className={shared.label}>Hình thức TT</label>
                     <select
@@ -252,17 +252,17 @@ function CreateInvoice() {
                       ))}
                     </select>
                   </div>
+                </div>
 
-                  <div className={styles.underlineField}>
-                    <label className={shared.label}>Số tiền phải trả</label>
-                    <input
-                      type="number"
-                      min="0"
-                      className={styles.underlineInput}
-                      value={payAmount}
-                      onChange={(e) => setPayAmount(e.target.value)}
-                    />
-                  </div>
+                <div className={shared.field}>
+                  <label className={shared.label}>Số tiền phải trả</label>
+                  <input
+                    type="number"
+                    min="0"
+                    className={`${shared.input} ${styles.amountInput}`}
+                    value={payAmount}
+                    onChange={(e) => setPayAmount(e.target.value)}
+                  />
                 </div>
 
                 <div className={shared.field}>
