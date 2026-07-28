@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { KEY_BY_PATH, PATH_BY_KEY } from "../routesConfig";
+import { usePinnedReports } from "../context/PinnedReportsContext";
+import { REPORTS_BY_ID } from "../pages/Reports/data/reportsData";
 import {
   CalendarDays,
   ClipboardList,
@@ -20,19 +22,17 @@ import {
   BookOpenText,
   ChartNoAxesColumn,
   DollarSign,
-  Tag,
-  CalendarRange,
-  Inbox,
   Mail,
-  Building2,
-  CloudUpload,
   Settings,
   SlidersHorizontal,
   CreditCard,
   CircleUserRound,
   ChevronDown,
   ChevronRight,
+  MoreHorizontal,
 } from "lucide-react";
+
+const REPORTS_ITEM_KEY = "PHÂN TÍCH::Báo cáo";
 
 const menuSections = [
   {
@@ -167,19 +167,24 @@ function SidebarItem({
       {hasChildren && isOpen && (
         <div className="submenu">
           {item.children.map((child) => {
-            const childKey = `${itemKey}::${child}`;
+            const isPlain = typeof child === "string";
+            const childLabel = isPlain ? child : child.label;
+            const ChildIcon = isPlain ? null : child.icon;
+            const childKey = `${itemKey}::${childLabel}`;
+
             return (
               <div
                 className={`submenu-item ${
                   activeKey === childKey ? "active" : ""
                 }`}
-                key={child}
+                key={childLabel}
                 onClick={(e) => {
                   e.stopPropagation();
                   onSelectChild(childKey);
                 }}
               >
-                {child}
+                {ChildIcon && <ChildIcon size={14} strokeWidth={1.8} />}
+                {childLabel}
               </div>
             );
           })}
@@ -197,7 +202,9 @@ function getParentKey(key) {
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { pinnedIds } = usePinnedReports();
   const routeKey = KEY_BY_PATH[location.pathname];
+  const pinnedReportChildren = pinnedIds.map((id) => REPORTS_BY_ID[id]).filter(Boolean);
 
   const [activeKey, setActiveKey] = useState(
     routeKey || "LỄ TÂN::Front Desk"
@@ -208,12 +215,23 @@ function Sidebar() {
 
   // Đồng bộ mục đang chọn/submenu đang mở theo URL hiện tại
   // (ví dụ khi tải lại trang hoặc dùng nút back/forward của trình duyệt).
-  useEffect(() => {
-    if (routeKey) {
-      setActiveKey(routeKey);
-      setOpenKey(getParentKey(routeKey));
+  const [syncedRouteKey, setSyncedRouteKey] = useState(routeKey);
+  if (routeKey && routeKey !== syncedRouteKey) {
+    setSyncedRouteKey(routeKey);
+    setActiveKey(routeKey);
+    setOpenKey(getParentKey(routeKey));
+  }
+
+  // Vừa ghim thêm một báo cáo mới: tự sổ submenu "Báo cáo" ra để người dùng
+  // thấy ngay kết quả, không phải tự bấm mở lại.
+  const [syncedPinCount, setSyncedPinCount] = useState(pinnedReportChildren.length);
+  if (pinnedReportChildren.length !== syncedPinCount) {
+    const didAddPin = pinnedReportChildren.length > syncedPinCount;
+    setSyncedPinCount(pinnedReportChildren.length);
+    if (didAddPin) {
+      setOpenKey(REPORTS_ITEM_KEY);
     }
-  }, [routeKey]);
+  }
 
   function goToRoute(key) {
     const path = PATH_BY_KEY[key];
@@ -235,6 +253,13 @@ function Sidebar() {
 
   function handleSelectChild(childKey) {
     setActiveKey(childKey);
+
+    // Các báo cáo đã ghim đều trỏ về trang Báo cáo, không có route riêng.
+    if (childKey.startsWith(`${REPORTS_ITEM_KEY}::`)) {
+      goToRoute(REPORTS_ITEM_KEY);
+      return;
+    }
+
     goToRoute(childKey);
   }
 
@@ -252,11 +277,24 @@ function Sidebar() {
 
             {section.items.map((item) => {
               const itemKey = `${section.title}::${item.label}`;
+
+              const effectiveItem =
+                itemKey === REPORTS_ITEM_KEY && pinnedReportChildren.length > 0
+                  ? {
+                      ...item,
+                      expandable: true,
+                      children: [
+                        ...pinnedReportChildren.map((r) => ({ label: r.label, icon: r.icon })),
+                        { label: "Xem thêm báo cáo", icon: MoreHorizontal },
+                      ],
+                    }
+                  : item;
+
               return (
                 <SidebarItem
                   key={itemKey}
                   itemKey={itemKey}
-                  item={item}
+                  item={effectiveItem}
                   isOpen={openKey === itemKey}
                   isActive={activeKey === itemKey}
                   activeKey={activeKey}

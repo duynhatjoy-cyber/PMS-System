@@ -12,6 +12,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 14px;
+  margin-bottom: 20px;
 }
 
 .title {

@@ -134,10 +134,15 @@
   display: flex;
   align-items: center;
   height: 40px;
-  border: 1px solid var(--fd-border-strong);
+  border: 1px solid transparent;
   border-radius: var(--fd-radius-sm);
   overflow: hidden;
-  background: #fff;
+  background: var(--fd-bg);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dateInputBox:hover {
+  background: #f0efe9;
 }
 
 .dateInputBox input {
@@ -157,14 +162,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f5f7;
-  border-left: 1px solid var(--fd-border-strong);
+  border: none;
+  background: transparent;
   color: var(--fd-text-secondary);
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .dateIconBtn:hover {
-  background: #ececee;
+  background: rgba(17, 24, 39, 0.05);
 }
 
 .calendarPopover {
@@ -269,10 +275,15 @@
 }
 
 .selectBox:focus,
-.dateInputBox:focus-within,
 .textBox:focus {
   outline: none;
   border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.dateInputBox:focus-within {
+  outline: none;
+  background: #fff;
   box-shadow: 0 0 0 3px var(--fd-primary-soft);
 }
 

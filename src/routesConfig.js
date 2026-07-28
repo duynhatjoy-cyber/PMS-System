@@ -9,6 +9,7 @@ import EmailConfig from "./pages/EmailConfig/EmailConfig";
 import TaxFeeConfig from "./pages/TaxFeeConfig/TaxFeeConfig";
 import Statistics from "./pages/Statistics/Statistics";
 import Revenue from "./pages/Revenue/Revenue";
+import Reports from "./pages/Reports/Reports";
 
 // Mỗi mục trong Sidebar (xác định bằng "key" ghép từ section::item::child)
 // được gắn với một URL riêng và component trang tương ứng.
@@ -67,6 +68,11 @@ export const ROUTES = [
     key: "PHÂN TÍCH::Doanh thu",
     path: "/phan-tich/doanh-thu",
     Component: Revenue,
+  },
+  {
+    key: "PHÂN TÍCH::Báo cáo",
+    path: "/phan-tich/bao-cao",
+    Component: Reports,
   },
 ];
 
