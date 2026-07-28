@@ -1,0 +1,77 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--fd-text-secondary);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowLabel {
+  flex: none;
+  width: 132px;
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  line-height: 1.35;
+}
+
+.track {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.barLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 12px;
+}
+
+.bar {
+  height: 10px;
+  min-width: 3px;
+  border-radius: 0 4px 4px 0;
+  transition: width 0.15s ease;
+}
+
+.valueLabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

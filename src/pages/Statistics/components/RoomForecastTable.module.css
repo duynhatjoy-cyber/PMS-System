@@ -1,0 +1,45 @@
+.scroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.table th,
+.table td {
+  padding: 8px 10px;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.table th {
+  font-weight: 700;
+  color: var(--fd-text-secondary);
+  background: var(--fd-bg);
+}
+
+.table td {
+  color: var(--fd-text);
+}
+
+.stickyCol {
+  position: sticky;
+  left: 0;
+  text-align: left;
+  background: var(--fd-surface);
+  font-weight: 600;
+}
+
+.table th.stickyCol {
+  background: var(--fd-bg);
+}
+
+.negative {
+  color: var(--fd-danger);
+  font-weight: 700;
+}

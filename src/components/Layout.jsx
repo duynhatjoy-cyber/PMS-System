@@ -1,10 +1,10 @@
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
-function Layout({ children, onNavigate }) {
+function Layout({ children }) {
   return (
     <div className="app-layout">
-      <Sidebar onNavigate={onNavigate} />
+      <Sidebar />
 
       <div className="main-layout">
         <Header />

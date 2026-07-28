@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { KEY_BY_PATH, PATH_BY_KEY } from "../routesConfig";
 import {
   CalendarDays,
   ClipboardList,
@@ -187,9 +189,36 @@ function SidebarItem({
   );
 }
 
-function Sidebar({ onNavigate }) {
-  const [activeKey, setActiveKey] = useState("LỄ TÂN::Front Desk");
-  const [openKey, setOpenKey] = useState(null);
+function getParentKey(key) {
+  const parts = key.split("::");
+  return parts.length > 2 ? parts.slice(0, 2).join("::") : null;
+}
+
+function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const routeKey = KEY_BY_PATH[location.pathname];
+
+  const [activeKey, setActiveKey] = useState(
+    routeKey || "LỄ TÂN::Front Desk"
+  );
+  const [openKey, setOpenKey] = useState(
+    getParentKey(routeKey || "LỄ TÂN::Front Desk")
+  );
+
+  // Đồng bộ mục đang chọn/submenu đang mở theo URL hiện tại
+  // (ví dụ khi tải lại trang hoặc dùng nút back/forward của trình duyệt).
+  useEffect(() => {
+    if (routeKey) {
+      setActiveKey(routeKey);
+      setOpenKey(getParentKey(routeKey));
+    }
+  }, [routeKey]);
+
+  function goToRoute(key) {
+    const path = PATH_BY_KEY[key];
+    if (path) navigate(path);
+  }
 
   function handleSelect(itemKey, hasChildren) {
     setActiveKey(itemKey);
@@ -200,14 +229,13 @@ function Sidebar({ onNavigate }) {
       setOpenKey((prev) => (prev === itemKey ? null : itemKey));
     } else {
       setOpenKey(null);
+      goToRoute(itemKey);
     }
-
-    onNavigate?.(itemKey);
   }
 
   function handleSelectChild(childKey) {
     setActiveKey(childKey);
-    onNavigate?.(childKey);
+    goToRoute(childKey);
   }
 
   return (

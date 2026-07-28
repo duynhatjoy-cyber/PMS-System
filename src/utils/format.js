@@ -55,3 +55,48 @@ export function parseDMY(value) {
   if (!d || !m || !y) return null;
   return new Date(y, m - 1, d);
 }
+
+export function formatCompactVND(amount) {
+  if (amount >= 1_000_000) return `${Math.round(amount / 1_000_000)}M`;
+  if (amount >= 1_000) return `${Math.round(amount / 1_000)}K`;
+  return String(Math.round(amount));
+}
+
+export function addMonths(date, months) {
+  const next = new Date(date);
+  next.setDate(1);
+  next.setMonth(next.getMonth() + months);
+  return next;
+}
+
+export function startOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+export function endOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+export function startOfWeekMonday(date) {
+  const next = startOfDay(date);
+  const offset = (next.getDay() + 6) % 7;
+  return addDays(next, -offset);
+}
+
+export function startOfQuarter(date) {
+  const quarterMonth = Math.floor(date.getMonth() / 3) * 3;
+  return new Date(date.getFullYear(), quarterMonth, 1);
+}
+
+export function endOfQuarter(date) {
+  const quarterMonth = Math.floor(date.getMonth() / 3) * 3;
+  return new Date(date.getFullYear(), quarterMonth + 3, 0);
+}
+
+export function startOfYear(date) {
+  return new Date(date.getFullYear(), 0, 1);
+}
+
+export function endOfYear(date) {
+  return new Date(date.getFullYear(), 11, 31);
+}
