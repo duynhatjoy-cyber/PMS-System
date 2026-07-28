@@ -8,35 +8,35 @@ export const CAMPAIGN_TRIGGERS = [
 export const EMAIL_CAMPAIGNS = [
   {
     id: "cf-1",
-    title: "Reservation Confirmation email to Guest/Booker",
+    title: "Booking Confirmation Email for Guest/Booker",
     subtitle: "Lưu lại gửi sau",
     trigger: "upcoming",
     status: "inactive",
-    subject: "Reservation Confirmation email to Guest/Booker",
+    subject: "Booking Confirmation Email for Guest/Booker",
   },
   {
     id: "cf-2",
-    title: "Thank You email to Guest/Booker upon checking out from Hotel",
+    title: "Post-Checkout Thank You Email for Guest/Booker",
     subtitle: "Lưu lại gửi sau",
     trigger: "departed",
     status: "inactive",
-    subject: "Thank You email to Guest/Booker upon checking out from Hotel",
+    subject: "Post-Checkout Thank You Email for Guest/Booker",
   },
   {
     id: "cf-3",
-    title: "Thank You email to Guest/Booker upon checking in from Hotel",
+    title: "Welcome Email for Guest/Booker After Check-In",
     subtitle: "Lưu lại gửi sau",
     trigger: "inhouse",
     status: "inactive",
-    subject: "Thank You email to Guest/Booker upon checking in from Hotel",
+    subject: "Welcome Email for Guest/Booker After Check-In",
   },
   {
     id: "cf-4",
-    title: "RESERVATION CONFIRMATION / XÁC NHẬN ĐẶT PHÒNG",
+    title: "Booking Confirmation / Xác nhận đặt phòng",
     subtitle: "Lưu lại gửi sau",
     trigger: "upcoming",
     status: "active",
-    subject: "RESERVATION CONFIRMATION / XÁC NHẬN ĐẶT PHÒNG",
+    subject: "Booking Confirmation / Xác nhận đặt phòng",
   },
 ];
 
