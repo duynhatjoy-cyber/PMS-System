@@ -1,0 +1,55 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  flex: none;
+}
+
+.chip:active {
+  cursor: grabbing;
+}
+
+.chipTax {
+  background: var(--fd-success-soft);
+  color: var(--fd-success);
+}
+
+.chipFee {
+  background: var(--fd-violet-soft);
+  color: var(--fd-violet);
+}
+
+.gripIcon {
+  opacity: 0.55;
+}
+
+.chipPercent {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.08);
+  color: inherit;
+  cursor: pointer;
+  margin-left: 2px;
+  flex: none;
+}
+
+.removeBtn:hover {
+  background: rgba(0, 0, 0, 0.16);
+}

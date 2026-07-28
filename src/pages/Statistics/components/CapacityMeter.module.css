@@ -1,0 +1,55 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.track {
+  height: 16px;
+  display: flex;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--fd-bg);
+}
+
+.segment {
+  height: 100%;
+  margin-right: 2px;
+  transition: width 0.15s ease;
+}
+
+.segment:last-child {
+  margin-right: 0;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+}
+
+.swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.legendLabel {
+  color: var(--fd-text-secondary);
+}
+
+.legendValue {
+  font-weight: 700;
+  color: var(--fd-text);
+  font-variant-numeric: tabular-nums;
+}
