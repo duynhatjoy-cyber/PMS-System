@@ -50,6 +50,19 @@
   --fd-warning: #c99a2e;
   --fd-warning-soft: #f8f0da;
 
+  /* Room-map booking-status palette (Sơ đồ phòng) — distinct hues per stay
+     status, on top of the danger/warning tones already used for in-house/overdue.
+     Each has a soft tint for the "pastel fill + accent border/text" bar style —
+     calmer next to the cream page background than a solid saturated fill. */
+  --fd-status-blue: #2f6fed;
+  --fd-status-blue-soft: #e9f0fd;
+  --fd-status-purple: #7c3aed;
+  --fd-status-purple-soft: #f1eafd;
+  --fd-status-pink: #c2478a;
+  --fd-status-pink-soft: #fbeaf3;
+  --fd-status-gray: #64748b;
+  --fd-status-gray-soft: #eef1f4;
+
   --fd-radius-sm: 6px;
   --fd-radius-md: 10px;
   --fd-radius-lg: 14px;
