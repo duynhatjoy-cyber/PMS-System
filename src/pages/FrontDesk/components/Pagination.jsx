@@ -30,6 +30,7 @@ function Pagination({ page, pageSize, total, onPageChange, onPageSizeChange }) {
         <button
           type="button"
           className={styles.navBtn}
+          title="Trang trước"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
         >
@@ -38,6 +39,7 @@ function Pagination({ page, pageSize, total, onPageChange, onPageSizeChange }) {
         <button
           type="button"
           className={styles.navBtn}
+          title="Trang sau"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
         >

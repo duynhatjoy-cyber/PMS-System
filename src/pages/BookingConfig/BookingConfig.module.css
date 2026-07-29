@@ -1,0 +1,925 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+/* =========================
+   TOP TABS (Sơ đồ phòng / Phân loại booking)
+========================= */
+
+.topTabs {
+  display: flex;
+  gap: 4px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 5px;
+  width: fit-content;
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 10px 18px;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.topTab:hover {
+  color: var(--fd-text);
+}
+
+.topTabActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+/* =========================
+   LAYOUT: sub-nav trái + nội dung phải
+========================= */
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.subNav {
+  flex: none;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 8px;
+  box-shadow: var(--fd-shadow-card);
+}
+
+.subNavItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  padding: 11px 12px;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.subNavItem svg {
+  flex: none;
+  color: var(--fd-text-muted);
+}
+
+.subNavItem:hover {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+}
+
+.subNavItemActive {
+  border-left-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+.subNavItemActive svg {
+  color: var(--fd-primary);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   PANEL HEADER + ACTIONS
+========================= */
+
+.panelHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panelTitle {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.panelSubtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+.ghostBtn {
+  height: 38px;
+  padding: 0 16px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghostBtn:hover {
+  background: var(--fd-bg);
+  border-color: var(--fd-primary);
+  color: var(--fd-primary);
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+  border-top: 1px solid var(--fd-border);
+}
+
+.cancelBtn {
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background: var(--fd-bg);
+}
+
+.saveBtn {
+  height: 42px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background: var(--fd-primary-hover);
+}
+
+/* =========================
+   PREVIEW SECTION (dùng chung 2 panel)
+========================= */
+
+.previewCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.previewHeadRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.previewLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.previewHint {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.previewSourceSelect {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13px;
+  font-weight: 600;
+  flex: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+}
+
+.previewStage {
+  padding: 22px;
+  display: flex;
+  justify-content: center;
+  background: var(--fd-bg);
+  border-radius: var(--fd-radius-md);
+  border: 1px dashed var(--fd-border-strong);
+}
+
+/* Booking card mẫu — không phải sơ đồ phòng thật, chỉ minh hoạ cấu hình */
+
+.bookingCard {
+  width: 260px;
+  background: #fff;
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-pop);
+  overflow: hidden;
+  display: flex;
+}
+
+.cardCode {
+  flex: none;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 4px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.cardCodeRoomType {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.cardCodeRoomNum {
+  font-size: 17px;
+}
+
+.cardBody {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.cardSourceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--fd-danger);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.cardStatusBadge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.cardGuestRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.cardFlag {
+  width: 20px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--fd-danger);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.cardGuestSub {
+  font-weight: 500;
+  color: var(--fd-text-secondary);
+}
+
+.cardMetaLine {
+  font-size: 11.5px;
+  color: var(--fd-text-secondary);
+}
+
+.cardPrice {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+/* =========================
+   THÔNG TIN HIỂN THỊ — field groups
+========================= */
+
+.fieldGroupsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.fieldGroup {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.fieldGroupTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--fd-text-muted);
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.optionRow input {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  accent-color: var(--fd-primary);
+}
+
+@media (max-width: 1200px) {
+  .fieldGroupsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================
+   MÀU ĐẶT PHÒNG — bảng trạng thái + swatch
+========================= */
+
+.colorLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.colorTableCard {
+  flex: 1;
+  min-width: 0;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.colorTable {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.colorTable th {
+  text-align: left;
+  padding: 12px 18px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--fd-text-muted);
+  background: var(--fd-bg);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.colorTable td {
+  padding: 10px 18px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.colorTable th:nth-child(2),
+.colorTable th:nth-child(3),
+.colorTable td:nth-child(2),
+.colorTable td:nth-child(3) {
+  text-align: center;
+}
+
+.colorTable tr:last-child td {
+  border-bottom: none;
+}
+
+.statusLabelCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.swatchGroup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.swatchLabel {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--fd-radius-sm);
+  border: 1px solid var(--fd-border-strong);
+  cursor: pointer;
+  display: block;
+}
+
+.hiddenColorInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.swatchHex {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fd-text-muted);
+}
+
+.changeColorLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.changeColorLabel:hover {
+  background: var(--fd-bg);
+  border-color: var(--fd-primary);
+  color: var(--fd-primary);
+}
+
+.colorPreviewCol {
+  flex: none;
+  width: 260px;
+}
+
+.miniGridCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.miniGridHint {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  margin-bottom: 6px;
+}
+
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.miniTile {
+  padding: 8px 10px;
+  border-radius: var(--fd-radius-sm);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.miniTileRoom {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.miniTileLabel {
+  font-size: 10.5px;
+  opacity: 0.9;
+}
+
+/* =========================
+   NHÓM NGUỒN — 3 cột master-detail
+========================= */
+
+.threeCol {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.groupCol {
+  flex: none;
+  width: 240px;
+}
+
+.sourceCol {
+  flex: none;
+  width: 300px;
+}
+
+.detailCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.listCard {
+  height: 100%;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.listCardHead {
+  padding: 14px 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.groupItem {
+  text-align: left;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+
+.groupItem:last-child {
+  border-bottom: none;
+}
+
+.groupItem:hover {
+  background: var(--fd-surface-hover);
+}
+
+.groupItemActive {
+  background: var(--fd-primary-soft);
+}
+
+.groupItemTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.groupItemActive .groupItemTitle {
+  color: var(--fd-primary);
+}
+
+.groupItemDesc {
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--fd-text-muted);
+}
+
+.sourceToolbar {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.searchInput {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  font-size: 12.5px;
+  color: var(--fd-text);
+}
+
+.addSourceBtn {
+  height: 34px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  font-size: 12.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.addSourceBtn:hover {
+  background: var(--fd-primary);
+  color: #fff;
+}
+
+.sourceScroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sourceRow {
+  width: 100%;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+  text-align: left;
+}
+
+.sourceRow:hover {
+  background: var(--fd-surface-hover);
+}
+
+.sourceRowActive {
+  background: var(--fd-primary-soft);
+}
+
+.sourceAvatar {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sourceName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.detailCard {
+  height: 100%;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detailTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.banner {
+  padding: 12px 14px;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-violet-soft);
+  color: var(--fd-violet);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 28px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+}
+
+.fieldInput {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  color: var(--fd-text);
+  background: #fff;
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.fieldInput:disabled {
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+  cursor: not-allowed;
+}
+
+/* =========================
+   PHÂN KHÚC KHÁCH HÀNG
+========================= */
+
+.segmentLayout {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.segmentCol {
+  flex: none;
+  width: 280px;
+}
+
+.segmentRow {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+
+.segmentRow:last-child {
+  border-bottom: none;
+}
+
+.segmentRow:hover {
+  background: var(--fd-surface-hover);
+}
+
+.segmentRowActive {
+  background: var(--fd-primary-soft);
+}
+
+.segmentRowTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.segmentRowActive .segmentRowTitle {
+  color: var(--fd-primary);
+}
+
+.segmentRowSub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .layout,
+  .colorLayout,
+  .threeCol,
+  .segmentLayout {
+    flex-direction: column;
+  }
+
+  .subNav,
+  .groupCol,
+  .sourceCol,
+  .colorPreviewCol,
+  .segmentCol {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .fieldGroupsGrid,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,6 +3,10 @@ import styles from "./RoomForecastTable.module.css";
 function RoomForecastTable({ dates, rows }) {
   return (
     <div className={styles.scroll}>
+      <div className={styles.legend}>
+        Số phòng trống theo ngày. Số âm (màu đỏ) nghĩa là loại phòng đó đã nhận đặt vượt quá số
+        phòng hiện có — cần sắp xếp lại hoặc liên hệ khách.
+      </div>
       <table className={styles.table}>
         <thead>
           <tr>

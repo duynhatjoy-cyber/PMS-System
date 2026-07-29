@@ -63,6 +63,7 @@ function EmailCampaigns() {
           campaign={editingCampaign}
           onBack={() => setEditingId(null)}
           onSave={(patch) => handleSaveCampaign(editingCampaign.id, patch)}
+          onToast={toast}
         />
       ) : (
         <CampaignListPanel

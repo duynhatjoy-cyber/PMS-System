@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatCompactVND, formatCurrency } from "../../../utils/format";
 import { buildTicks } from "./chartMath";
 import styles from "./RevenueBarChart.module.css";
@@ -5,6 +6,7 @@ import styles from "./RevenueBarChart.module.css";
 const PLOT_HEIGHT = 260;
 
 function RevenueBarChart({ data }) {
+  const [activeDay, setActiveDay] = useState(null);
   const maxValue = Math.max(1, ...data.flatMap((d) => [d.current || 0, d.previous || 0]));
   const ticks = buildTicks(maxValue).slice().reverse();
   const niceMax = ticks[0] || 1;
@@ -37,9 +39,14 @@ function RevenueBarChart({ data }) {
           <div className={styles.columns}>
             {data.map((d) => (
               <div className={styles.column} key={d.day}>
-                <div className={styles.barsGroup}>
+                <div
+                  className={styles.barsGroup}
+                  onClick={() => setActiveDay((cur) => (cur === d.day ? null : d.day))}
+                >
                   {(d.current != null || d.previous != null) && (
-                    <div className={styles.tooltip}>
+                    <div
+                      className={`${styles.tooltip} ${activeDay === d.day ? styles.tooltipVisible : ""}`}
+                    >
                       <strong>Ngày {d.day}</strong>
                       {d.current != null && (
                         <span>

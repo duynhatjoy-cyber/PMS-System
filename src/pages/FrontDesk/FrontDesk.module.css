@@ -89,7 +89,7 @@
 }
 
 .navIconBtn:hover {
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
 }
 
@@ -137,10 +137,6 @@
   color: var(--fd-success);
 }
 
-.valueRed {
-  color: var(--fd-danger);
-}
-
 .valuePrimary {
   color: var(--fd-primary);
 }
@@ -183,7 +179,7 @@
 }
 
 .tabBtn:hover {
-  background: #f6f7f8;
+  background: var(--fd-surface-hover);
 }
 
 .tabBtnActive {

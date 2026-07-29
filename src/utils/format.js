@@ -50,10 +50,8 @@ export function isSameDay(a, b) {
   );
 }
 
-export function parseDMY(value) {
-  const [d, m, y] = value.split("/").map(Number);
-  if (!d || !m || !y) return null;
-  return new Date(y, m - 1, d);
+export function toLocalInputValue(date) {
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}T${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
 }
 
 export function formatCompactVND(amount) {

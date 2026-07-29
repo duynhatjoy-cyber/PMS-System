@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CreditCard, Calendar, Clock, Plus, Trash2, Check, X, ArrowRight } from "lucide-react";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { CASH_DENOMINATIONS, computeCashBalance } from "../../../data/cashFundData";
-import { formatDMY } from "../../../utils/format";
+import { formatDMY, formatCurrency } from "../../../utils/format";
 import warehouseModalStyles from "../../Warehouse/modals/WarehouseModal.module.css";
 import styles from "../CashFund.module.css";
 
@@ -149,6 +149,10 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
         </div>
 
         {innerTab === "details" ? (
+          <>
+          <div className={warehouseModalStyles.tableHint}>
+            Số dư theo sổ quỹ: số tiền mặt đang có theo sổ sách. Chênh lệch: phần lệch giữa số đếm thực tế và sổ sách — "Thừa" nếu đếm được nhiều hơn, "Thiếu" nếu ít hơn.
+          </div>
           <div className={warehouseModalStyles.tableWrap}>
             <table className={warehouseModalStyles.table}>
               <thead>
@@ -165,7 +169,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
                   <td>I</td>
                   <td colSpan={2}>Số dư theo sổ quỹ tiền mặt (VND)</td>
                   <td className={warehouseModalStyles.thanhTien}>
-                    {cashBalance.toLocaleString("en-US")}
+                    {formatCurrency(cashBalance)}
                   </td>
                   <td />
                   <td />
@@ -175,7 +179,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
                   <td>II</td>
                   <td colSpan={2}>Số kiểm kê thực tế tiền (VND)</td>
                   <td className={warehouseModalStyles.thanhTien}>
-                    {countedTotal.toLocaleString("en-US")}
+                    {formatCurrency(countedTotal)}
                   </td>
                   <td />
                   <td>
@@ -197,7 +201,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
                         >
                           {CASH_DENOMINATIONS.map((d) => (
                             <option key={d} value={d}>
-                              {d.toLocaleString("en-US")}đ
+                              {formatCurrency(d)}
                             </option>
                           ))}
                         </select>
@@ -212,7 +216,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
                       </div>
                     </td>
                     <td className={warehouseModalStyles.thanhTien}>
-                      {((Number(line.qty) || 0) * line.denom).toLocaleString("en-US")}
+                      {formatCurrency((Number(line.qty) || 0) * line.denom)}
                     </td>
                     <td>
                       <input
@@ -238,7 +242,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
                   <td>IV</td>
                   <td colSpan={2}>Chênh lệch</td>
                   <td className={warehouseModalStyles.thanhTien}>
-                    VND {Math.abs(diff).toLocaleString("en-US")}
+                    {formatCurrency(Math.abs(diff))}
                   </td>
                   <td />
                   <td />
@@ -246,6 +250,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
               </tbody>
             </table>
           </div>
+          </>
         ) : (
           <div className={warehouseModalStyles.tableWrap}>
             <table className={warehouseModalStyles.table}>
@@ -268,7 +273,7 @@ function CashCheckForm({ existingCount, onCancel, onSave }) {
         <div className={styles.bottomBar}>
           <span className={styles.diffLabel}>
             <ArrowRight size={16} />
-            {diffLabel} VND {Math.abs(diff).toLocaleString("en-US")}
+            {diffLabel} {formatCurrency(Math.abs(diff))}
           </span>
           <div className={styles.bottomActions}>
             <button

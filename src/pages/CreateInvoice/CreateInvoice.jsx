@@ -8,6 +8,7 @@ import {
   COUNTER_OPTIONS,
 } from "../../data/invoiceServiceData";
 import { formatCurrency } from "../../utils/format";
+import EmptyState from "../../components/EmptyState";
 import ServiceCard from "./components/ServiceCard";
 import EditPriceModal from "./components/EditPriceModal";
 import Toast from "../FrontDesk/components/Toast";
@@ -152,7 +153,7 @@ function CreateInvoice() {
 
           <div className={styles.catalogScroll}>
             {filteredItems.length === 0 ? (
-              <div className={styles.emptyState}>Không tìm thấy dịch vụ phù hợp</div>
+              <EmptyState message="Không tìm thấy dịch vụ phù hợp" hint="Thử đổi tab danh mục hoặc từ khóa tìm kiếm." />
             ) : (
               <div className={styles.cardGrid}>
                 {filteredItems.map((item) => (

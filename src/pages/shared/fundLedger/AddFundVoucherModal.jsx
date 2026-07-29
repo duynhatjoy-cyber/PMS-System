@@ -2,16 +2,30 @@ import { useState } from "react";
 import { Calendar, Clock } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
-import { formatDateTimeDMY } from "../../../utils/format";
+import { formatDateTimeDMY, formatCurrency } from "../../../utils/format";
 import styles from "../../Warehouse/modals/WarehouseModal.module.css";
 
-function generateTicketNo(type) {
-  const prefix = type === "chi" ? "PCM" : "PTM";
+function generateTicketNo(type, ticketPrefixThu, ticketPrefixChi) {
+  const prefix = type === "chi" ? ticketPrefixChi : ticketPrefixThu;
   return `${prefix}${Math.floor(10000 + Math.random() * 89999)}`;
 }
 
-function AddCashVoucherModal({ type, onClose, onSave }) {
+// Shared "Lập phiếu thu/chi" modal for BankFund and CashFund. They differ
+// only in: whether an account select is shown (bank has one, cash doesn't,
+// controlled by `accountOptions` being present), the generated ticket-number
+// prefixes, and the unit suffix appended to the auto-generated reason text
+// ("Chuyển khoản NH" vs "Tiền mặt").
+function AddFundVoucherModal({
+  type,
+  accountOptions,
+  ticketPrefixThu,
+  ticketPrefixChi,
+  unitSuffix,
+  onClose,
+  onSave,
+}) {
   const [voucherDate] = useState(() => new Date());
+  const [account, setAccount] = useState(accountOptions ? accountOptions[0] : undefined);
   const [target, setTarget] = useState("");
   const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
@@ -21,16 +35,19 @@ function AddCashVoucherModal({ type, onClose, onSave }) {
 
   function handleSave() {
     if (!canSave) return;
-    const ticketNo = generateTicketNo(type);
-    onSave({
+    const ticketNo = generateTicketNo(type, ticketPrefixThu, ticketPrefixChi);
+    const voucher = {
       id: ticketNo,
       ticketNo,
       dateTime: voucherDate,
       amount: Number(amount),
-      reason: reason || `${target} ${type === "chi" ? "nhận chi" : "nộp"} VND ${Number(amount).toLocaleString("en-US")} (Tiền mặt)`,
+      reason:
+        reason || `${target} ${type === "chi" ? "nhận chi" : "nộp"} ${formatCurrency(Number(amount))} ${unitSuffix}`,
       type,
       creator: target,
-    });
+    };
+    if (accountOptions) voucher.account = account;
+    onSave(voucher);
   }
 
   return (
@@ -47,6 +64,23 @@ function AddCashVoucherModal({ type, onClose, onSave }) {
               placeholder="Tên khách / nhân viên"
             />
           </div>
+
+          {accountOptions && (
+            <div className={styles.field}>
+              <label className={styles.label}>Tài khoản</label>
+              <select
+                className={styles.underlineSelect}
+                value={account}
+                onChange={(e) => setAccount(e.target.value)}
+              >
+                {accountOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className={styles.field}>
             <label className={styles.label}>Số tiền (*)</label>
@@ -105,4 +139,4 @@ function AddCashVoucherModal({ type, onClose, onSave }) {
   );
 }
 
-export default AddCashVoucherModal;
+export default AddFundVoucherModal;

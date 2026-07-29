@@ -67,7 +67,7 @@ function PrintPreviewModal({ title, ticketNo, date, fields, onClose }) {
         <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={handlePrint}>
           IN PHIẾU
         </button>
-        <button type="button" className={`${shared.btn} ${styles.btnWarning}`} onClick={onClose}>
+        <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
           ĐÓNG
         </button>
       </div>

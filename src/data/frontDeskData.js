@@ -35,6 +35,12 @@ export const ratePlans = [
 
 export const bookingSources = ["Walk-in", "Lễ Tân", "OTA", "Traveloka", "Booking.com"];
 
+export const AVAILABLE_ROOMS = {
+  double: ["101", "102", "103", "201", "202", "210"],
+  twin: ["305", "306"],
+  family: ["106", "108", "109", "110", "507"],
+};
+
 // Flat nightly room rate used across the mock dataset (no per-room-type
 // pricing model exists yet — every booking bills at this rate).
 export const NIGHTLY_RATE = 700000;

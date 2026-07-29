@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Check, Minus, Plus, Search } from "lucide-react";
 import ModalShell from "./ModalShell";
 import { roomTypes, ratePlans, bookingSources, guestDirectory } from "../../../data/frontDeskData";
-import { formatCurrency, formatDMY, formatDateTimeDMY } from "../../../utils/format";
+import { formatCurrency, formatDMY, formatDateTimeDMY, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
 import styles from "./WalkInModal.module.css";
 
@@ -14,12 +14,8 @@ const STAY_TYPES = [
   { id: "hour", label: "Theo giờ", unit: "giờ" },
 ];
 
-function pad(n) {
-  return String(n).padStart(2, "0");
-}
-
 function toDateTimeInputValue(date, hh, mm) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(hh)}:${pad(mm)}`;
+  return toLocalInputValue(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hh, mm));
 }
 
 function toDateOnly(dateTimeValue) {
@@ -133,7 +129,7 @@ function WalkInModal({ defaultCheckIn, onClose, onConfirm }) {
     });
   }
 
-  const footer = useMemo(() => {
+  const footer = (() => {
     if (step === 0) {
       return (
         <>
@@ -195,8 +191,7 @@ function WalkInModal({ defaultCheckIn, onClose, onConfirm }) {
         </button>
       </>
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, canGoStep1, canGoStep2, canGoStep3]);
+  })();
 
   return (
     <ModalShell

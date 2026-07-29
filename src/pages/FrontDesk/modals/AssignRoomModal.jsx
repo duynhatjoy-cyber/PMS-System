@@ -1,14 +1,8 @@
 import { useMemo, useState } from "react";
 import ModalShell from "./ModalShell";
 import BookingIdentityHeader from "./BookingIdentityHeader";
-import { roomTypes, ratePlans } from "../../../data/frontDeskData";
+import { roomTypes, ratePlans, AVAILABLE_ROOMS } from "../../../data/frontDeskData";
 import shared from "./shared.module.css";
-
-const AVAILABLE_ROOMS = {
-  double: ["101", "102", "103", "201", "202", "210"],
-  twin: ["305", "306"],
-  family: ["106", "108", "109", "110", "507"],
-};
 
 function AssignRoomModal({ booking, onClose, onSave }) {
   const [roomTypeId, setRoomTypeId] = useState(roomTypes[0].id);
@@ -41,7 +35,7 @@ function AssignRoomModal({ booking, onClose, onSave }) {
         </>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className={shared.stack}>
         <div className={shared.field}>
           <span className={shared.label}>Loại phòng</span>
           <select

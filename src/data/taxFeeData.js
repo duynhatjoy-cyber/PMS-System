@@ -3,15 +3,6 @@ export const TAX_FEE_TYPES = [
   { value: "fee", label: "Phí" },
 ];
 
-export const SERVICE_REVENUE_SOURCES = [
-  "Đền bù",
-  "Dịch vụ khác",
-  "Dịch vụ mở rộng",
-  "Giặt là",
-  "Minibar",
-  "Dịch vụ phòng",
-];
-
 export const INITIAL_TAX_FEES = [
   {
     id: "vat",

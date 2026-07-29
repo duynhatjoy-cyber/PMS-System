@@ -8,27 +8,27 @@ export const CAMPAIGN_TRIGGERS = [
 export const EMAIL_CAMPAIGNS = [
   {
     id: "cf-1",
-    title: "Booking Confirmation Email for Guest/Booker",
+    title: "Email xác nhận đặt phòng cho khách",
     subtitle: "Lưu lại gửi sau",
     trigger: "upcoming",
     status: "inactive",
-    subject: "Booking Confirmation Email for Guest/Booker",
+    subject: "Email xác nhận đặt phòng cho khách",
   },
   {
     id: "cf-2",
-    title: "Post-Checkout Thank You Email for Guest/Booker",
+    title: "Email cảm ơn sau khi khách trả phòng",
     subtitle: "Lưu lại gửi sau",
     trigger: "departed",
     status: "inactive",
-    subject: "Post-Checkout Thank You Email for Guest/Booker",
+    subject: "Email cảm ơn sau khi khách trả phòng",
   },
   {
     id: "cf-3",
-    title: "Welcome Email for Guest/Booker After Check-In",
+    title: "Email chào mừng khách sau khi nhận phòng",
     subtitle: "Lưu lại gửi sau",
     trigger: "inhouse",
     status: "inactive",
-    subject: "Welcome Email for Guest/Booker After Check-In",
+    subject: "Email chào mừng khách sau khi nhận phòng",
   },
   {
     id: "cf-4",
@@ -40,7 +40,7 @@ export const EMAIL_CAMPAIGNS = [
   },
 ];
 
-export const HOTEL_TAGS = [
+const HOTEL_TAGS = [
   "Hotel_Name",
   "Hotel_Phone",
   "Hotel_Email",
@@ -50,7 +50,7 @@ export const HOTEL_TAGS = [
   "TimeOutPrivate",
 ];
 
-export const GUEST_TAGS = [
+const GUEST_TAGS = [
   "Guest_Name",
   "Guest_Address",
   "Guest_Birthday",
@@ -61,7 +61,7 @@ export const GUEST_TAGS = [
   "Guest_Country",
 ];
 
-export const ROOM_TAGS = [
+const ROOM_TAGS = [
   "ArrivalDate",
   "DepartureDate",
   "Booking_number",
@@ -95,21 +95,21 @@ export const ROOM_TAGS = [
   "Service_Cost",
 ];
 
-export const SERVICE_TAGS = [
+const SERVICE_TAGS = [
   "Service_Name",
   "Number_Of_Services",
   "Price_Service_Per_Unit",
   "Service_Cost",
 ];
 
-export const MISC_TAGS = [
+const MISC_TAGS = [
   "Total_Service_Price",
   "Total_Room_Price",
   "Total_Price",
   "Remaining_Amount",
 ];
 
-export const MISC_BLOCK_TAGS = [
+const MISC_BLOCK_TAGS = [
   { open: "listroom", close: "/listroom" },
   { open: "listservice", close: "/listservice" },
 ];
@@ -120,11 +120,11 @@ export const MERGE_TAG_GROUPS = [
   { key: "guest", title: "Khách", tags: GUEST_TAGS },
   { key: "room", title: "Thông tin phòng", tags: ROOM_TAGS, hideForTriggers: ["birthday"] },
   { key: "service", title: "Thông tin dịch vụ", tags: SERVICE_TAGS },
-  { key: "misc", title: "Another_Email_Marketing_Info", tags: MISC_TAGS, blockTags: MISC_BLOCK_TAGS },
+  { key: "misc", title: "Thông tin khác", tags: MISC_TAGS, blockTags: MISC_BLOCK_TAGS },
 ];
 
 // Sắp đến: xác nhận đặt phòng, gửi trước ngày nhận phòng.
-export const TEMPLATE_UPCOMING = `
+const TEMPLATE_UPCOMING = `
 <p class="cf-confirm-title">CONFIRM BOOKING</p>
 <p>BOOKING REFERENCE NO : <span class="cf-tag">[Booking_number]</span></p>
 <p>Kindly print this confirmation and have it ready upon check-in at the Hotel</p>
@@ -159,7 +159,7 @@ export const TEMPLATE_UPCOMING = `
 `.trim();
 
 // Sau khi đi: cảm ơn khách sau khi trả phòng, tóm tắt kỳ nghỉ và mời đánh giá.
-export const TEMPLATE_DEPARTED = `
+const TEMPLATE_DEPARTED = `
 <p class="cf-confirm-title">THANK YOU FOR STAYING WITH US</p>
 <p>Dear <span class="cf-tag">[Guest_Name]</span>,</p>
 <p>Thank you for choosing <strong><span class="cf-tag">[Hotel_Name]</span></strong> for your recent stay. We hope you had a pleasant experience and we look forward to welcoming you back soon.</p>
@@ -190,7 +190,7 @@ export const TEMPLATE_DEPARTED = `
 `.trim();
 
 // Đang ở: chào mừng khách ngay sau khi nhận phòng, cung cấp thông tin cần thiết cho kỳ nghỉ.
-export const TEMPLATE_INHOUSE = `
+const TEMPLATE_INHOUSE = `
 <p class="cf-confirm-title">WELCOME TO <span class="cf-tag">[Hotel_Name]</span></p>
 <p>Dear <span class="cf-tag">[Guest_Name]</span>,</p>
 <p>We are delighted to welcome you. Below are your stay details for your reference during your time with us.</p>
@@ -211,7 +211,7 @@ export const TEMPLATE_INHOUSE = `
 `.trim();
 
 // Sinh nhật: lời chúc mừng sinh nhật, không dùng thông tin phòng.
-export const TEMPLATE_BIRTHDAY = `
+const TEMPLATE_BIRTHDAY = `
 <p class="cf-confirm-title">HAPPY BIRTHDAY, <span class="cf-tag">[Guest_Name]</span>!</p>
 <p>Dear <span class="cf-tag">[Guest_Name]</span>,</p>
 <p>The entire team at <strong><span class="cf-tag">[Hotel_Name]</span></strong> wishes you a very happy birthday! To celebrate, we would love to welcome you back for a special stay.</p>

@@ -7,6 +7,10 @@ import EmailCampaigns from "./pages/EmailCampaigns/EmailCampaigns";
 import EmailHistory from "./pages/EmailHistory/EmailHistory";
 import EmailConfig from "./pages/EmailConfig/EmailConfig";
 import TaxFeeConfig from "./pages/TaxFeeConfig/TaxFeeConfig";
+import BookingConfig from "./pages/BookingConfig/BookingConfig";
+import ThuChiConfig from "./pages/ThuChiConfig/ThuChiConfig";
+import DichVuConfig from "./pages/DichVuConfig/DichVuConfig";
+import WarehouseConfig from "./pages/WarehouseConfig/WarehouseConfig";
 import Statistics from "./pages/Statistics/Statistics";
 import Revenue from "./pages/Revenue/Revenue";
 import Reports from "./pages/Reports/Reports";
@@ -58,6 +62,26 @@ export const ROUTES = [
     key: "CÀI ĐẶT::Cấu hình PMS::Thuế/Phí",
     path: "/cau-hinh/thue-phi",
     Component: TaxFeeConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý đặt phòng",
+    path: "/cau-hinh/quan-ly-dat-phong",
+    Component: BookingConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Dịch vụ",
+    path: "/cau-hinh/dich-vu",
+    Component: DichVuConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Thu chi",
+    path: "/cau-hinh/thu-chi",
+    Component: ThuChiConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
+    path: "/cau-hinh/quan-ly-kho",
+    Component: WarehouseConfig,
   },
   {
     key: "PHÂN TÍCH::Thống kê",

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ModalShell from "./ModalShell";
+import { formatCurrency } from "../../../utils/format";
 import shared from "./shared.module.css";
 
 const COPY = {
@@ -56,7 +57,7 @@ function ConfirmActionModal({ variant, booking, remaining = 0, onClose, onConfir
       }
     >
       {variant === "cancel" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className={shared.stack}>
           <div className={shared.field}>
             <span className={shared.label}>Mô tả lý do (Bắt buộc)</span>
             <textarea
@@ -78,28 +79,28 @@ function ConfirmActionModal({ variant, booking, remaining = 0, onClose, onConfir
       )}
 
       {variant === "unassign" && (
-        <p style={{ fontSize: 14, color: "var(--fd-text)", lineHeight: 1.6 }}>
+        <p className={shared.bodyText}>
           Bạn có chắc muốn bỏ gán phòng <strong>{booking?.room}</strong> khỏi đặt phòng{" "}
           <strong>#{booking?.bookingCode}</strong>? Đặt phòng sẽ chuyển về trạng thái chưa gán phòng.
         </p>
       )}
 
       {variant === "clean" && (
-        <p style={{ fontSize: 14, color: "var(--fd-text)", lineHeight: 1.6 }}>
+        <p className={shared.bodyText}>
           Bạn có muốn chuyển phòng <strong>{booking?.room}</strong> sang trạng thái{" "}
           <strong>Sạch</strong> không?
         </p>
       )}
 
       {variant === "checkout" && (
-        <p style={{ fontSize: 14, color: "var(--fd-text)", lineHeight: 1.6 }}>
+        <p className={shared.bodyText}>
           Xác nhận trả phòng <strong>{booking?.room}</strong> cho khách{" "}
           <strong>{booking?.guest.name}</strong>?
           {remaining > 0 && (
             <>
               {" "}
               Khách vẫn còn <strong style={{ color: "var(--fd-danger)" }}>
-                {remaining.toLocaleString("vi-VN")}đ
+                {formatCurrency(remaining)}
               </strong>{" "}
               chưa thanh toán.
             </>

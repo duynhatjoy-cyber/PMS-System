@@ -2,16 +2,15 @@ import { useState } from "react";
 import { Calendar, Plus, X, Trash2 } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
-import { MATERIALS, WAREHOUSES, STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
+import { MATERIALS, STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
+import { useActiveWarehouseNames } from "../../../context/WarehouseConfigContext";
 import { formatDMY } from "../../../utils/format";
+import useLineItems from "../hooks/useLineItems";
+import generateTicketNo from "../ticketNo";
 import styles from "./WarehouseModal.module.css";
 
 function emptyLine(id) {
   return { id, materialId: "", counted: "", reason: "" };
-}
-
-function generateTicketNo() {
-  return `KK${Math.floor(10000 + Math.random() * 8999)}`;
 }
 
 function systemQty(materialId) {
@@ -27,34 +26,21 @@ function resolutionLabel(diff) {
 }
 
 function AddStockCheckModal({ onClose, onSave, onToast }) {
+  const activeWarehouseNames = useActiveWarehouseNames();
   const [checkDate] = useState(() => new Date());
   const [innerTab, setInnerTab] = useState("materials");
   const [purpose, setPurpose] = useState("");
-  const [warehouse, setWarehouse] = useState(WAREHOUSES[0]);
-  const [dueDate] = useState(checkDate);
-  const [checkDay] = useState(checkDate);
+  const [warehouse, setWarehouse] = useState(activeWarehouseNames[0]);
+  const dueDate = checkDate;
+  const checkDay = checkDate;
   const [conclusion, setConclusion] = useState("");
-  const [lines, setLines] = useState([emptyLine(1)]);
-  const [nextId, setNextId] = useState(2);
-
-  function updateLine(id, patch) {
-    setLines((prev) => prev.map((line) => (line.id === id ? { ...line, ...patch } : line)));
-  }
-
-  function addLine() {
-    setLines((prev) => [...prev, emptyLine(nextId)]);
-    setNextId((n) => n + 1);
-  }
-
-  function removeLine(id) {
-    setLines((prev) => (prev.length > 1 ? prev.filter((line) => line.id !== id) : prev));
-  }
+  const { lines, updateLine, addLine, removeLine } = useLineItems(emptyLine);
 
   const canSave = Boolean(warehouse) && lines.some((line) => line.materialId && line.counted !== "");
 
   function handleSave(status) {
     if (!canSave) return;
-    const ticketNo = generateTicketNo();
+    const ticketNo = generateTicketNo("KK");
     onSave({
       id: ticketNo,
       ticketNo,
@@ -90,7 +76,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
               value={warehouse}
               onChange={(e) => setWarehouse(e.target.value)}
             >
-              {WAREHOUSES.map((w) => (
+              {activeWarehouseNames.map((w) => (
                 <option key={w} value={w}>
                   {w}
                 </option>
@@ -282,7 +268,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
         >
           XỬ LÝ
         </button>
-        <button type="button" className={`${shared.btn} ${styles.btnWarning}`} onClick={onClose}>
+        <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
           BỎ QUA
         </button>
       </div>

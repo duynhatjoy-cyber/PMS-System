@@ -1,0 +1,283 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+/* =========================
+   3 CỘT: Loại dịch vụ / Nhóm dịch vụ / Dịch vụ
+========================= */
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.typeCol {
+  flex: none;
+  width: 220px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.colHeadBar {
+  padding: 12px 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.typeItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid var(--fd-border);
+  background: none;
+  padding: 13px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.typeItem:last-child {
+  border-bottom: none;
+}
+
+.typeItem:hover {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+}
+
+.typeItemActive {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+  font-weight: 700;
+}
+
+.groupsCol {
+  flex: none;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.servicesCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colHead {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.itemCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 12px 14px;
+}
+
+.itemCardBtn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.itemCardActive {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+}
+
+.itemName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.itemCardActive .itemName {
+  color: var(--fd-primary);
+}
+
+.itemMeta {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+}
+
+.itemInactive {
+  opacity: 0.6;
+}
+
+.inactiveTag {
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.addLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  border: none;
+  background: none;
+  padding: 4px 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-primary);
+  cursor: pointer;
+}
+
+.addLinkBtn:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   FORM FIELDS (dùng trong popup)
+========================= */
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.formSectionTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formHint {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  line-height: 1.5;
+  margin: -6px 0 0;
+}
+
+/* =========================
+   POPUP CHỌN NHÓM / LOẠI DỊCH VỤ (chuyển nhóm)
+========================= */
+
+.moveList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.moveOption {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.moveOption:hover {
+  background: var(--fd-surface-hover);
+}
+
+.moveOptionActive {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .layout {
+    flex-wrap: wrap;
+  }
+
+  .typeCol {
+    width: 100%;
+  }
+
+  .groupsCol {
+    width: calc(50% - 10px);
+  }
+
+  .servicesCol {
+    width: 100%;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .groupsCol {
+    width: 100%;
+  }
+}

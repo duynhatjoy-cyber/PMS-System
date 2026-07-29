@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
-import { formatDMY } from "../../../utils/format";
-import styles from "../EmailHistory.module.css";
+import { formatDMY, isSameDay } from "../utils/format";
+import useOutsideClick from "../utils/useOutsideClick";
 
 const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const WEEKDAY_FULL = [
@@ -40,29 +40,15 @@ function buildMonthGrid(viewYear, viewMonth) {
   });
 }
 
-function isSameDate(a, b) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-function DateField({ label, value, onChange }) {
+// `styles` is the calling page's own CSS module — each page keeps its exact
+// existing look; this component only shares the calendar-picker behavior.
+function DateField({ label, value, onChange, styles, showFooter = false }) {
   const [open, setOpen] = useState(false);
   const [viewYear, setViewYear] = useState(value.getFullYear());
   const [viewMonth, setViewMonth] = useState(value.getMonth());
   const wrapRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    if (open) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  useOutsideClick(open, [wrapRef], () => setOpen(false));
 
   function toggleOpen() {
     if (!open) {
@@ -126,7 +112,7 @@ function DateField({ label, value, onChange }) {
               ))}
               {days.map((day) => {
                 const outside = day.getMonth() !== viewMonth;
-                const selected = isSameDate(day, value);
+                const selected = isSameDay(day, value);
                 return (
                   <button
                     key={day.toISOString()}
@@ -141,6 +127,13 @@ function DateField({ label, value, onChange }) {
                 );
               })}
             </div>
+
+            {showFooter && (
+              <div className={styles.calendarFooter}>
+                {WEEKDAY_FULL[value.getDay()]}, {MONTH_FULL[value.getMonth()]} {value.getDate()},{" "}
+                {value.getFullYear()}
+              </div>
+            )}
           </div>
         )}
       </div>

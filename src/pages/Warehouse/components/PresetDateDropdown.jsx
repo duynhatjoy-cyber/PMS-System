@@ -1,21 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { DATE_PRESETS } from "../../../data/warehouseData";
+import useOutsideClick from "../../../utils/useOutsideClick";
 import styles from "../Warehouse.module.css";
 
 function PresetDateDropdown({ value, onChange }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    if (open) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  useOutsideClick(open, [wrapRef], () => setOpen(false));
 
   return (
     <div className={styles.presetWrap} ref={wrapRef}>

@@ -110,7 +110,7 @@
 }
 
 .iconBtn:hover {
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
 }
 
@@ -307,7 +307,7 @@
   height: 26px;
   border-radius: 6px;
   border: none;
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text-secondary);
   display: flex;
   align-items: center;
@@ -418,7 +418,7 @@
   padding: 0 10px;
   border-radius: 6px;
   border: 1px solid var(--fd-border-strong);
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
   font-size: 12px;
   font-weight: 600;
@@ -587,7 +587,7 @@
 }
 
 .billAddServiceBtn:hover {
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
 }
 
@@ -703,6 +703,17 @@
   padding: 0 8px;
   font-size: 13px;
   color: var(--fd-text);
+}
+
+.paySelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 26px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 14px;
 }
 
 .payNoteInput {

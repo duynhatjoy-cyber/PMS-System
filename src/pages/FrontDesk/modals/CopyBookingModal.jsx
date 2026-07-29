@@ -1,20 +1,9 @@
 import { useMemo, useState } from "react";
 import ModalShell from "./ModalShell";
-import { roomTypes, ratePlans } from "../../../data/frontDeskData";
-import { formatCurrency, formatDateTimeDMY } from "../../../utils/format";
+import { roomTypes, ratePlans, AVAILABLE_ROOMS } from "../../../data/frontDeskData";
+import { formatCurrency, formatDateTimeDMY, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
 import styles from "./CopyBookingModal.module.css";
-
-const AVAILABLE_ROOMS = {
-  double: ["101", "102", "103", "201", "202", "210"],
-  twin: ["305", "306"],
-  family: ["106", "108", "109", "110", "507"],
-};
-
-function toLocalInputValue(date) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
 
 function CopyBookingModal({ booking, onClose, onConfirm }) {
   const [roomTypeId, setRoomTypeId] = useState(roomTypes[0].id);

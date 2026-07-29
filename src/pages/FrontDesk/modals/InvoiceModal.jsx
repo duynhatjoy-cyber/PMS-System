@@ -12,7 +12,8 @@ import {
   SlidersHorizontal,
   Eye,
 } from "lucide-react";
-import { formatCurrency, formatDMY, formatDateTimeDMY } from "../../../utils/format";
+import { formatCurrency, formatDMY, formatDateTimeDMY, startOfDay, addDays } from "../../../utils/format";
+import { NIGHTLY_RATE } from "../../../data/frontDeskData";
 import styles from "./InvoiceModal.module.css";
 
 const HOTEL = {
@@ -21,20 +22,6 @@ const HOTEL = {
   email: "contact@nhacuamyhotel.vn",
   phone: "0254 3 522 866",
 };
-
-const NIGHTLY_RATE = 700000;
-
-function startOfDay(date) {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-function addDays(date, days) {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
 
 function buildNights(checkIn, effectiveEnd) {
   const nights = [];
