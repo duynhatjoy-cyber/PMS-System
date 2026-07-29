@@ -78,7 +78,7 @@
 .weekdayRow,
 .dayGrid {
   display: grid;
-  grid-template-columns: repeat(7, 32px);
+  grid-template-columns: repeat(7, 36px);
 }
 
 .weekdayRow span {
@@ -90,8 +90,8 @@
 }
 
 .day {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

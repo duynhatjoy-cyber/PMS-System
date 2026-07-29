@@ -17,7 +17,7 @@
 .content :global(.cf-section-title) {
   margin: 18px 0 8px;
   padding: 8px 12px;
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
   border-left: 3px solid var(--fd-primary);
   font-size: 13.5px;
   font-weight: 700;

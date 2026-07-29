@@ -13,12 +13,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   cursor: pointer;
 }
 
 .iconBtn:hover {
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
 }
 
@@ -70,5 +69,5 @@
 }
 
 .menuItem:hover {
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
 }

@@ -5,6 +5,7 @@ import GuestCell from "./GuestCell";
 import RowActionMenu from "./RowActionMenu";
 import PrintMenu from "./PrintMenu";
 import { formatDateTimeDMY, formatElapsed } from "../../../utils/format";
+import EmptyState from "../../../components/EmptyState";
 import styles from "./ReservationTable.module.css";
 
 const TAB_META = {
@@ -26,10 +27,7 @@ function ReservationTable({ tab, rows, onOpenGuest, getMenuItems, onPrintOption 
 
   if (rows.length === 0) {
     return (
-      <div className={styles.empty}>
-        <div className={styles.emptyTitle}>Không có dữ liệu</div>
-        <div className={styles.emptySub}>Không tìm thấy đặt phòng phù hợp trong danh sách này.</div>
-      </div>
+      <EmptyState message="Không có dữ liệu" hint="Không tìm thấy đặt phòng phù hợp trong danh sách này." />
     );
   }
 

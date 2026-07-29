@@ -4,13 +4,19 @@
   height: 100%;
 }
 
+.tableHint {
+  padding: 10px 4px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
 /* =========================
    TAB BAR
 ========================= */
 
 .tabBar {
   display: flex;
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
   border-bottom: 1px solid var(--fd-border);
   padding: 0 32px;
   overflow-x: auto;
@@ -91,7 +97,7 @@
 }
 
 .presetBtn:hover {
-  background: #f6f7f8;
+  background: var(--fd-surface-hover);
 }
 
 .presetMenu {
@@ -274,6 +280,20 @@
   min-width: 150px;
 }
 
+/* Replaces the browser's native dropdown arrow (inconsistent size/position
+   across selects) with one fixed chevron, so every dropdown in the page
+   lines up the same way. Applied alongside .selectBox only where needed. */
+.selectArrow {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
 .selectBox:focus,
 .textBox:focus {
   outline: none;
@@ -324,6 +344,25 @@
    TABLE
 ========================= */
 
+/* Card wrapper used only where panels opt in (wraps tableWrap + pagination).
+   Scoped via descendant selectors below so it never affects the bare
+   .tableWrap/.table usage shared with CashFund/BankFund. */
+.tableCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.tableCard .tableWrap {
+  border-top: none;
+}
+
+.tableCard .table tbody tr:hover td {
+  background: var(--fd-surface-hover);
+}
+
 .tableWrap {
   overflow-x: auto;
   border-top: 1px solid var(--fd-border);
@@ -341,7 +380,7 @@
   font-weight: 700;
   color: var(--fd-text);
   padding: 12px 16px;
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
   border-bottom: 1px solid var(--fd-border);
   white-space: nowrap;
 }
@@ -409,8 +448,34 @@
 }
 
 .totalRow td {
+  padding: 14px 16px;
   font-weight: 700;
   color: var(--fd-text);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusDone {
+  color: var(--fd-success);
+  background: var(--fd-success-soft);
+}
+
+.statusPending {
+  color: var(--fd-warning);
+  background: var(--fd-warning-soft);
+}
+
+.negativeValue {
+  color: var(--fd-danger);
+  font-weight: 700;
 }
 
 .viewBtn {

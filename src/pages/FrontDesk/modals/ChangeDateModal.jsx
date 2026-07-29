@@ -1,12 +1,8 @@
 import { useState } from "react";
 import ModalShell from "./ModalShell";
 import BookingIdentityHeader from "./BookingIdentityHeader";
+import { toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
-
-function toLocalInputValue(date) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
 
 function ChangeDateModal({ booking, onClose, onSave }) {
   const [checkIn, setCheckIn] = useState(toLocalInputValue(booking.checkIn));
@@ -36,7 +32,7 @@ function ChangeDateModal({ booking, onClose, onSave }) {
         </>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className={shared.stack}>
         <div className={shared.field}>
           <span className={shared.label}>Sẽ đến</span>
           <input

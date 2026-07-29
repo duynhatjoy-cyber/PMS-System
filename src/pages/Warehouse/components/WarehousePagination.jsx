@@ -3,7 +3,7 @@ import styles from "./WarehousePagination.module.css";
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
-const DEFAULT_LABELS = { page: "Page:", rowsPerPage: "Rows per page:", of: "of" };
+const DEFAULT_LABELS = { page: "Trang:", rowsPerPage: "Số dòng mỗi trang:", of: "trên" };
 
 function WarehousePagination({ page, pageSize, total, onPageChange, onPageSizeChange, labels }) {
   const L = { ...DEFAULT_LABELS, ...labels };
@@ -50,6 +50,8 @@ function WarehousePagination({ page, pageSize, total, onPageChange, onPageSizeCh
       <button
         type="button"
         className={styles.navBtn}
+        title="Trang trước"
+        aria-label="Trang trước"
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
@@ -58,6 +60,8 @@ function WarehousePagination({ page, pageSize, total, onPageChange, onPageSizeCh
       <button
         type="button"
         className={styles.navBtn}
+        title="Trang sau"
+        aria-label="Trang sau"
         disabled={page >= totalPages}
         onClick={() => onPageChange(page + 1)}
       >

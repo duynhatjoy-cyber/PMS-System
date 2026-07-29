@@ -16,17 +16,7 @@ export const DATE_PRESETS = [
 
 export const STATUS_OPTIONS = ["Tất cả", "Đã xử lý", "Chưa xử lý"];
 
-export const WAREHOUSES = ["Kho khách sạn"];
-
-export const TRANSFER_DESTINATIONS = ["Tủ minibar", "Kho khách sạn"];
-
 export const STOCK_OUT_DOC_TYPES = ["Xuất kho bán hàng", "Xuất hủy", "Xuất khác"];
-
-export const SUPPLIERS = [
-  { name: "Công ty TNHH Thương mại Minh Phát", address: "12 Nguyễn Văn Trỗi, Q. Phú Nhuận, TP.HCM" },
-  { name: "Đại lý nước giải khát Tân Bình", address: "45 Lý Thường Kiệt, Q. Tân Bình, TP.HCM" },
-  { name: "Nhà phân phối Bảo An", address: "8 Trường Sa, Q.3, TP.HCM" },
-];
 
 // { id, name, unit } — unit "" matches items with no unit set in the reference.
 export const MATERIALS = [

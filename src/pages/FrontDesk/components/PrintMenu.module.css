@@ -17,7 +17,7 @@
 }
 
 .iconBtn:hover {
-  background: #f3f4f6;
+  background: var(--fd-surface-hover);
   color: var(--fd-text);
 }
 
@@ -49,5 +49,5 @@
 }
 
 .menuItem:hover {
-  background: #f4f5f7;
+  background: var(--fd-surface-hover);
 }

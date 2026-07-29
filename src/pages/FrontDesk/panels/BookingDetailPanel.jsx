@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import IconPopup from "../components/IconPopup";
 import PrintMenu from "../components/PrintMenu";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import { computeBill } from "../../../utils/billing";
 import { formatCurrency, formatDateTimeDMY } from "../../../utils/format";
 import styles from "./BookingDetailPanel.module.css";
@@ -45,6 +46,7 @@ function BookingDetailPanel({
   const [note, setNote] = useState(booking.notes || "");
   const [tags, setTags] = useState(["Traveloka", "OTA", "Central Hotel"]);
   const [hideNames, setHideNames] = useState(false);
+  const [removeGuestTarget, setRemoveGuestTarget] = useState(null);
 
   const [payAsOf, setPayAsOf] = useState("now");
   const [discount, setDiscount] = useState(0);
@@ -242,7 +244,7 @@ function BookingDetailPanel({
                     <button
                       type="button"
                       className={styles.guestRemoveBtn}
-                      onClick={() => onRemoveGuest(booking, g.id)}
+                      onClick={() => setRemoveGuestTarget(g)}
                       title="Xoá khách"
                     >
                       <X size={13} />
@@ -501,6 +503,20 @@ function BookingDetailPanel({
           </div>
         )}
       </aside>
+
+      {removeGuestTarget && (
+        <ConfirmDialog
+          title="Xoá khách"
+          message={`Bạn có chắc muốn xoá khách "${removeGuestTarget.name}" khỏi đặt phòng này?`}
+          confirmLabel="Xoá khách"
+          danger
+          onConfirm={() => {
+            onRemoveGuest(booking, removeGuestTarget.id);
+            setRemoveGuestTarget(null);
+          }}
+          onClose={() => setRemoveGuestTarget(null)}
+        />
+      )}
     </div>
   );
 }

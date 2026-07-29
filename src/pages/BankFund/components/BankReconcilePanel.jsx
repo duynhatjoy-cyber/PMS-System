@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
 import { BANK_RECONCILE_ROWS, BANK_ACCOUNT_OPTIONS, OPENING_BANK_BALANCE } from "../../../data/bankFundData";
+import { formatCurrency } from "../../../utils/format";
+import EmptyState from "../../../components/EmptyState";
 import warehouseStyles from "../../Warehouse/Warehouse.module.css";
 import cashStyles from "../../CashFund/CashFund.module.css";
 
@@ -47,7 +49,7 @@ function BankReconcilePanel({ onToast }) {
         <div className={warehouseStyles.field}>
           <label className={warehouseStyles.fieldLabel}>Tài khoản ngân hàng</label>
           <select
-            className={warehouseStyles.selectBox}
+            className={`${warehouseStyles.selectBox} ${warehouseStyles.selectArrow}`}
             value={accountFilter}
             onChange={(e) => setAccountFilter(e.target.value)}
           >
@@ -72,7 +74,11 @@ function BankReconcilePanel({ onToast }) {
 
         <div className={warehouseStyles.field}>
           <label className={warehouseStyles.fieldLabel}>Trạng thái</label>
-          <select className={warehouseStyles.selectBox} value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            className={`${warehouseStyles.selectBox} ${warehouseStyles.selectArrow}`}
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
@@ -85,6 +91,10 @@ function BankReconcilePanel({ onToast }) {
           <Search size={15} />
           TÌM KIẾM
         </button>
+      </div>
+
+      <div className={warehouseStyles.tableHint}>
+        Đối chiếu: xác nhận một phiếu thu/chi đã khớp với giao dịch thực tế trên sao kê ngân hàng.
       </div>
 
       <div className={warehouseStyles.tableWrap}>
@@ -104,7 +114,9 @@ function BankReconcilePanel({ onToast }) {
           <tbody>
             {filteredRows.length === 0 ? (
               <tr className={warehouseStyles.emptyRow}>
-                <td colSpan={8}>Không tìm thấy phiếu</td>
+                <td colSpan={8}>
+                  <EmptyState message="Không tìm thấy phiếu" hint="Thử đổi bộ lọc tài khoản, trạng thái hoặc từ khóa tìm kiếm." />
+                </td>
               </tr>
             ) : (
               filteredRows.map((row, index) => (
@@ -114,7 +126,7 @@ function BankReconcilePanel({ onToast }) {
                   <td>{row.dateTime}</td>
                   <td>
                     <select
-                      className={warehouseStyles.selectBox}
+                      className={`${warehouseStyles.selectBox} ${warehouseStyles.selectArrow}`}
                       value={row.account}
                       onChange={(e) => updateAccount(row.id, e.target.value)}
                     >
@@ -126,8 +138,8 @@ function BankReconcilePanel({ onToast }) {
                     </select>
                   </td>
                   <td>{row.reason}</td>
-                  <td className={warehouseStyles.numCell}>{row.amount.toLocaleString("en-US")}</td>
-                  <td className={warehouseStyles.numCell}>{row.amount.toLocaleString("en-US")}</td>
+                  <td className={warehouseStyles.numCell}>{formatCurrency(row.amount)}</td>
+                  <td className={warehouseStyles.numCell}>{formatCurrency(row.amount)}</td>
                   <td>
                     {!row.reconciled && (
                       <button
@@ -151,22 +163,22 @@ function BankReconcilePanel({ onToast }) {
         <div className={cashStyles.summaryBox}>
           <div className={cashStyles.summaryRow}>
             <span>I. Số dư đầu kỳ ngày:</span>
-            <span>VND {OPENING_BANK_BALANCE.toLocaleString("en-US")}</span>
+            <span>{formatCurrency(OPENING_BANK_BALANCE)}</span>
           </div>
           <div className={cashStyles.summaryRow}>
             <span>II. Tổng tiền thu đối chiếu trong kỳ:</span>
-            <span>VND {totalThu.toLocaleString("en-US")}</span>
+            <span>{formatCurrency(totalThu)}</span>
           </div>
           <div className={cashStyles.summaryRow}>
             <span>III. Tổng tiền chi đối chiếu trong kỳ:</span>
-            <span>VND {totalChi.toLocaleString("en-US")}</span>
+            <span>{formatCurrency(totalChi)}</span>
           </div>
         </div>
 
         <div className={cashStyles.summaryBox}>
           <div className={cashStyles.summaryRow}>
             <span>IV. Số dư cuối kỳ sau đối chiếu (I + II - III):</span>
-            <span>VND {closingBooks.toLocaleString("en-US")}</span>
+            <span>{formatCurrency(closingBooks)}</span>
           </div>
           <div className={cashStyles.summaryRow}>
             <span>V. Số dư cuối kỳ trên sổ ngân hàng:</span>
@@ -179,7 +191,7 @@ function BankReconcilePanel({ onToast }) {
           </div>
           <div className={`${cashStyles.summaryRow} ${cashStyles.summaryRowTotal}`}>
             <span>VI. Chênh lệch (IV - V):</span>
-            <span>VND {diff.toLocaleString("en-US")}</span>
+            <span>{formatCurrency(diff)}</span>
           </div>
         </div>
       </div>

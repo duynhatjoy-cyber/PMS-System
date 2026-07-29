@@ -9,7 +9,7 @@ const TABS = [
   { key: "signature", label: "Chữ ký" },
 ];
 
-function ConfigEditorPanel({ config, onBack, onSave }) {
+function ConfigEditorPanel({ config, onBack, onSave, onToast }) {
   const [tab, setTab] = useState("smtp");
   const [type, setType] = useState(config.type || "gmail");
   const [displayName, setDisplayName] = useState(config.name || "");
@@ -161,7 +161,7 @@ function ConfigEditorPanel({ config, onBack, onSave }) {
           <div className={styles.signatureBlock}>
             <span className={styles.signatureLabel}>ĐẦU EMAIL</span>
             <div className={styles.composer}>
-              <EmailToolbar />
+              <EmailToolbar onToast={onToast} />
               <div ref={headerRef} className={styles.contentArea} contentEditable suppressContentEditableWarning />
             </div>
           </div>
@@ -169,7 +169,7 @@ function ConfigEditorPanel({ config, onBack, onSave }) {
           <div className={styles.signatureBlock}>
             <span className={styles.signatureLabel}>CUỐI EMAIL</span>
             <div className={styles.composer}>
-              <EmailToolbar />
+              <EmailToolbar onToast={onToast} />
               <div ref={footerRef} className={styles.contentArea} contentEditable suppressContentEditableWarning />
             </div>
           </div>

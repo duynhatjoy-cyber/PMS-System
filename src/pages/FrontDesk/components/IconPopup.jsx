@@ -1,21 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import useMenuFlip from "../hooks/useMenuFlip";
+import useOutsideClick from "../../../utils/useOutsideClick";
 import styles from "./IconPopup.module.css";
 
-function IconPopup({ icon: Icon, label, title, items, children, filled, align = "right" }) {
+function IconPopup({ icon: Icon, title, items, children, filled, align = "right" }) {
   const [open, setOpen] = useState(false);
   const { rootRef, menuRef } = useMenuFlip(open, align);
 
-  useEffect(() => {
-    if (!open) return;
-    function handleClickOutside(e) {
-      if (rootRef.current?.contains(e.target) || menuRef.current?.contains(e.target)) return;
-      setOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open, rootRef, menuRef]);
+  useOutsideClick(open, [rootRef, menuRef], () => setOpen(false));
 
   return (
     <div className={styles.wrap} ref={rootRef}>
@@ -26,7 +19,6 @@ function IconPopup({ icon: Icon, label, title, items, children, filled, align = 
         title={title}
       >
         <Icon size={16} />
-        {label && <span>{label}</span>}
       </button>
 
       {open &&

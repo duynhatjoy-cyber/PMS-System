@@ -1,4 +1,5 @@
 import { Monitor, Tablet, Smartphone, CirclePause, Plus } from "lucide-react";
+import EmptyState from "../../../components/EmptyState";
 import styles from "../EmailCampaigns.module.css";
 
 function CampaignListPanel({
@@ -29,7 +30,7 @@ function CampaignListPanel({
 
       <div className={styles.listCard}>
         {campaigns.length === 0 ? (
-          <div className={styles.emptyState}>Chưa có chiến dịch email nào</div>
+          <EmptyState message="Chưa có chiến dịch email nào" hint="Nhấn THÊM ở góc trên để tạo chiến dịch đầu tiên." />
         ) : (
           campaigns.map((c) => (
             <div key={c.id} className={styles.listRow} onClick={() => onSelect(c.id)}>

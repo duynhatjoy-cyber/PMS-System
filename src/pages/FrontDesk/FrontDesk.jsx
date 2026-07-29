@@ -322,6 +322,7 @@ function FrontDesk() {
             <button
               type="button"
               className={styles.navIconBtn}
+              title="Ngày trước"
               onClick={() => setSelectedDate((d) => addDays(d, -1))}
             >
               <ChevronLeft size={16} />
@@ -330,6 +331,7 @@ function FrontDesk() {
             <button
               type="button"
               className={styles.navIconBtn}
+              title="Ngày sau"
               onClick={() => setSelectedDate((d) => addDays(d, 1))}
             >
               <ChevronRight size={16} />
@@ -394,7 +396,6 @@ function FrontDesk() {
             <StatCard
               label="Công suất hôm nay"
               value={`${stats.occupancy.percent}%`}
-              valueClassName={styles.valueRed}
               hint={`${stats.occupancy.occupied} / ${stats.occupancy.total} phòng đang sử dụng`}
             />
             <StatCard

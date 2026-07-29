@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import PresetDateDropdown from "./PresetDateDropdown";
-import DateField from "./DateField";
+import DateField from "../../../components/DateField";
 import styles from "../Warehouse.module.css";
 
 function FilterBar({
@@ -27,14 +27,14 @@ function FilterBar({
         <div className={styles.field}>
           <label className={styles.fieldLabel}>{combinedDateLabel}</label>
           <div style={{ display: "flex", gap: 10 }}>
-            <DateField value={fromDate} onChange={onFromDateChange} />
-            <DateField value={toDate} onChange={onToDateChange} />
+            <DateField value={fromDate} onChange={onFromDateChange} styles={styles} showFooter />
+            <DateField value={toDate} onChange={onToDateChange} styles={styles} showFooter />
           </div>
         </div>
       ) : (
         <>
-          <DateField label="Từ ngày" value={fromDate} onChange={onFromDateChange} />
-          <DateField label="Đến ngày" value={toDate} onChange={onToDateChange} />
+          <DateField label="Từ ngày" value={fromDate} onChange={onFromDateChange} styles={styles} showFooter />
+          <DateField label="Đến ngày" value={toDate} onChange={onToDateChange} styles={styles} showFooter />
         </>
       )}
 

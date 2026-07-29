@@ -24,7 +24,7 @@ const TRIGGER_ICONS = {
   Cake,
 };
 
-function CampaignEditorPanel({ campaign, onBack, onSave }) {
+function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
   const [trigger, setTrigger] = useState(campaign.trigger || "upcoming");
   const [subject, setSubject] = useState(campaign.subject || "");
   const [sendMode, setSendMode] = useState(campaign.sendMode || "draft"); // "auto" | "draft"
@@ -229,7 +229,7 @@ function CampaignEditorPanel({ campaign, onBack, onSave }) {
 
         <div className={styles.editorMain}>
           <div className={styles.composer}>
-            <EmailToolbar />
+            <EmailToolbar onToast={onToast} />
 
             <div
               ref={bodyRef}
@@ -243,6 +243,10 @@ function CampaignEditorPanel({ campaign, onBack, onSave }) {
           </div>
 
           <div className={styles.tagSidebar}>
+            <div className={styles.tagSidebarHint}>
+              Bấm vào một thẻ bên dưới để chèn vào nội dung email — khi gửi thật, thẻ sẽ tự động
+              đổi thành thông tin tương ứng của khách/đặt phòng.
+            </div>
             {visibleTagGroups.map((group) => (
               <div className={styles.tagGroup} key={group.key}>
                 <div className={styles.tagGroupTitle}>{group.title}</div>

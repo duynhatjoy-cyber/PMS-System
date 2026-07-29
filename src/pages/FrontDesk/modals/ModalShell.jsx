@@ -11,6 +11,7 @@ function ModalShell({ title, header, onClose, children, footer, width = 440, ton
             type="button"
             className={`${styles.closeBtn} ${tone === "brand" ? styles.closeBtnBrand : ""}`}
             onClick={onClose}
+            title="Đóng"
             aria-label="Đóng"
           >
             <X size={18} />

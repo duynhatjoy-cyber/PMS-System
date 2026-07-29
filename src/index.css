@@ -23,13 +23,15 @@
   --fd-primary-soft: #f7ead9;
   --fd-primary-tint: #d9a876;
 
+  /* Shared neutral hover/header-band background — consolidates ~30 near-
+     identical hardcoded greys (#f3f4f6/#f4f5f7/#f6f7f8/#fafafb) that had
+     drifted across pages for the same "muted row/menu hover" purpose. */
+  --fd-surface-hover: #f4f5f7;
+
   /* Chart-only categorical set — more saturated than the muted UI tones above,
      needed so multi-series charts stay distinguishable. Fixed order, validated
      with the dataviz skill's CVD/contrast checks; keep the order when adding series. */
   --fd-chart-teal: #128a6e;
-  --fd-chart-blue: #3468b0;
-  --fd-chart-rose: #c04f7a;
-  --fd-chart-violet: #6a3fae;
   --fd-chart-grid: #e9e7e1;
 
   --fd-violet: #3b5f7a;

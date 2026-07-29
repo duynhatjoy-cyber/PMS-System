@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { CalendarDays, List, Clock, CalendarClock, MessageSquare, Plus, Eye, Trash2 } from "lucide-react";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import CashCheckForm from "./CashCheckForm";
+import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import { CASH_CHECK_ROWS } from "../../../data/cashFundData";
 import warehouseStyles from "../../Warehouse/Warehouse.module.css";
 import styles from "../CashFund.module.css";
@@ -13,6 +15,7 @@ function CashCheckPanel({ onToast }) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [showForm, setShowForm] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const pagedRows = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -25,10 +28,10 @@ function CashCheckPanel({ onToast }) {
     onToast("Đã thêm phiếu kiểm kê");
   }
 
-  function handleDelete(id) {
-    if (!window.confirm("Xóa phiếu kiểm kê này?")) return;
-    setRows((prev) => prev.filter((row) => row.id !== id));
+  function handleConfirmDelete() {
+    setRows((prev) => prev.filter((row) => row.id !== deleteTarget.id));
     onToast("Đã xóa phiếu kiểm kê");
+    setDeleteTarget(null);
   }
 
   if (showForm) {
@@ -85,7 +88,9 @@ function CashCheckPanel({ onToast }) {
           <tbody>
             {pagedRows.length === 0 ? (
               <tr className={warehouseStyles.emptyRow}>
-                <td colSpan={6}>Không tìm thấy phiếu</td>
+                <td colSpan={6}>
+                  <EmptyState message="Không tìm thấy phiếu" hint="Nhấn nút + ở góc trên để tạo phiếu kiểm kê mới." />
+                </td>
               </tr>
             ) : (
               pagedRows.map((row) => (
@@ -113,7 +118,7 @@ function CashCheckPanel({ onToast }) {
                         type="button"
                         className={warehouseStyles.viewBtn}
                         title="Xóa"
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => setDeleteTarget(row)}
                       >
                         <Trash2 size={16} />
                       </button>
@@ -137,6 +142,17 @@ function CashCheckPanel({ onToast }) {
           setPage(1);
         }}
       />
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xóa phiếu kiểm kê"
+          message={`Bạn có chắc muốn xóa phiếu kiểm kê ${deleteTarget.ticketNo}? Hành động này không thể hoàn tác.`}
+          confirmLabel="Xóa phiếu"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }

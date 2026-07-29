@@ -1,6 +1,7 @@
 import { Mail, CheckCircle2, TriangleAlert, Clock, Eye } from "lucide-react";
 import { HISTORY_STATUS } from "../../../data/emailHistoryData";
 import { formatDMY, formatTime } from "../../../utils/format";
+import EmptyState from "../../../components/EmptyState";
 import styles from "../EmailHistory.module.css";
 
 function StatusLine({ entry }) {
@@ -53,7 +54,7 @@ function HistoryListPanel({ entries, onPreview }) {
   if (entries.length === 0) {
     return (
       <div className={styles.listCard}>
-        <div className={styles.emptyState}>Không có lịch sử email nào phù hợp</div>
+        <EmptyState message="Không có lịch sử email nào phù hợp" hint="Thử đổi bộ lọc ngày, mã đặt phòng hoặc email rồi tìm lại." />
       </div>
     );
   }

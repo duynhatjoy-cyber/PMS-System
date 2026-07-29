@@ -2,50 +2,33 @@ import { useState } from "react";
 import { Calendar, Clock, Plus, X, Trash2 } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
-import { MATERIALS, WAREHOUSES, STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
+import { MATERIALS, STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
+import { useActiveWarehouseNames } from "../../../context/WarehouseConfigContext";
 import { formatDateTimeDMY, formatCurrency } from "../../../utils/format";
+import useLineItems, { lineAmount } from "../hooks/useLineItems";
+import generateTicketNo from "../ticketNo";
 import styles from "./WarehouseModal.module.css";
 
-function emptyLine(id) {
-  return { id, materialId: "", warehouse: WAREHOUSES[0], qty: "", price: "" };
-}
-
-function generateTicketNo() {
-  return `XK${Math.floor(10000 + Math.random() * 8999)}`;
-}
-
 function AddStockOutModal({ onClose, onSave, onToast }) {
+  const activeWarehouseNames = useActiveWarehouseNames();
+
+  function emptyLine(id) {
+    return { id, materialId: "", warehouse: activeWarehouseNames[0], qty: "", price: "" };
+  }
+
   const [ticketDate] = useState(() => new Date());
   const [docType, setDocType] = useState(STOCK_OUT_DOC_TYPES[0]);
   const [target, setTarget] = useState("");
   const [note, setNote] = useState("");
   const [reference, setReference] = useState("");
-  const [lines, setLines] = useState([emptyLine(1)]);
-  const [nextId, setNextId] = useState(2);
-
-  function updateLine(id, patch) {
-    setLines((prev) => prev.map((line) => (line.id === id ? { ...line, ...patch } : line)));
-  }
-
-  function addLine() {
-    setLines((prev) => [...prev, emptyLine(nextId)]);
-    setNextId((n) => n + 1);
-  }
-
-  function removeLine(id) {
-    setLines((prev) => (prev.length > 1 ? prev.filter((line) => line.id !== id) : prev));
-  }
-
-  function lineAmount(line) {
-    return (Number(line.qty) || 0) * (Number(line.price) || 0);
-  }
+  const { lines, updateLine, addLine, removeLine } = useLineItems(emptyLine);
 
   const total = lines.reduce((sum, line) => sum + lineAmount(line), 0);
   const canSave = lines.some((line) => line.materialId && line.warehouse && Number(line.qty) > 0);
 
   function handleSave() {
     if (!canSave) return;
-    const ticketNo = generateTicketNo();
+    const ticketNo = generateTicketNo("XK");
     onSave({
       id: ticketNo,
       ticketNo,
@@ -187,7 +170,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
                         value={line.warehouse}
                         onChange={(e) => updateLine(line.id, { warehouse: e.target.value })}
                       >
-                        {WAREHOUSES.map((w) => (
+                        {activeWarehouseNames.map((w) => (
                           <option key={w} value={w}>
                             {w}
                           </option>
@@ -243,7 +226,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
         >
           LƯU
         </button>
-        <button type="button" className={`${shared.btn} ${styles.btnWarning}`} onClick={onClose}>
+        <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
           BỎ QUA
         </button>
       </div>

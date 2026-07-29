@@ -67,7 +67,7 @@ function StockDetailModal({ kho, material, fromDate, toDate, onClose, onToast })
         >
           XUẤT EXCEL
         </button>
-        <button type="button" className={`${shared.btn} ${styles.btnWarning}`} onClick={onClose}>
+        <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
           BỎ QUA
         </button>
       </div>

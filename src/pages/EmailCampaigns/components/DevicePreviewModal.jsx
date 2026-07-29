@@ -11,16 +11,6 @@ const DEVICE_CONFIG = {
   mobile: { label: "Điện thoại", width: 360, icon: Smartphone },
 };
 
-function initialsOf(name) {
-  return (name || "N")
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
-}
-
 function DevicePreviewModal({ campaign, device, onClose }) {
   const config = DEVICE_CONFIG[device] || DEVICE_CONFIG.desktop;
   const Icon = config.icon;
@@ -43,7 +33,7 @@ function DevicePreviewModal({ campaign, device, onClose }) {
         <div className={styles.mailSubject}>{campaign.subject || campaign.title}</div>
 
         <div className={styles.mailMeta}>
-          <span className={styles.mailAvatar}>{initialsOf(hotelName)}</span>
+          <span className={styles.mailAvatar}>NC</span>
           <div className={styles.mailMetaText}>
             <div className={styles.mailSender}>
               {hotelName} <span className={styles.mailAddr}>&lt;noreply@nhacuamy.vn&gt;</span>
