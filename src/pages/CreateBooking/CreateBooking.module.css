@@ -1,0 +1,812 @@
+.page {
+  padding: 20px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =========================
+   TOP TABS
+========================= */
+
+.topTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--fd-surface-hover);
+  color: var(--fd-text-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topTab:hover {
+  color: var(--fd-text);
+}
+
+.topTabActive {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+/* =========================
+   BODY LAYOUT
+========================= */
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mainCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Tỷ lệ 6/4 giữa bảng chính và panel giỏ hàng ở màn "Phòng trống" — chỉ ở
+   đây, vì .cartPanel còn dùng lại ở màn "Thông tin" (giữ nguyên 340px cố định). */
+.body > .mainCol {
+  flex: 3 1 0;
+}
+
+.body > .cartPanel,
+.body > .cartPlaceholder {
+  flex: 2 1 0;
+  width: auto;
+}
+
+/* =========================
+   DATE RANGE ROW
+========================= */
+
+.dateRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 10px 14px;
+  box-shadow: var(--fd-shadow-card);
+}
+
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeInput {
+  width: 90px;
+  height: 36px;
+}
+
+.dateArrow {
+  color: var(--fd-text-muted);
+}
+
+.nightsBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dateError {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-danger);
+}
+
+.clearBtn {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 999px;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.clearBtn:hover {
+  background: var(--fd-surface-hover);
+  color: var(--fd-danger);
+}
+
+/* =========================
+   ROOM TYPE TABLE
+========================= */
+
+.tableCard {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.tableHeadRow,
+.tableRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.tableHeadRow {
+  background: var(--fd-bg);
+  border-bottom: 1px solid var(--fd-border);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--fd-text-muted);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--fd-border);
+  font-size: 13.5px;
+  color: var(--fd-text);
+  transition: background-color 0.12s ease;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRowOdd {
+  background: var(--fd-bg);
+}
+
+.tableRow:hover {
+  background: var(--fd-surface-hover);
+}
+
+.colType {
+  flex: none;
+  width: 140px;
+  font-weight: 700;
+}
+
+.colQty {
+  flex: none;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.colRate {
+  flex: none;
+  width: 220px;
+}
+
+.colPrice {
+  flex: none;
+  width: 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.colGuests {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--fd-text-secondary);
+  font-size: 12.5px;
+}
+
+.colGuests svg:not(:first-child) {
+  margin-left: 8px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 4px 8px;
+}
+
+.stepper button {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+}
+
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepper span {
+  min-width: 16px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.availPill {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.availOk {
+  background: var(--fd-success-soft);
+  color: var(--fd-success);
+}
+
+.availLow {
+  background: var(--fd-warning-soft);
+  color: var(--fd-warning);
+}
+
+.availZero {
+  background: var(--fd-danger-soft);
+  color: var(--fd-danger);
+}
+
+.deltaUp,
+.deltaDown {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.deltaUp {
+  color: var(--fd-danger);
+}
+
+.deltaDown {
+  color: var(--fd-success);
+}
+
+/* =========================
+   THÔNG TIN KHÁCH (tab Thông tin)
+========================= */
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 16px;
+}
+
+.infoCardTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.guestSearchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-muted);
+}
+
+.guestSearchBox input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  background: none;
+}
+
+.guestResults {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  overflow: hidden;
+}
+
+.guestResultItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  background: var(--fd-surface);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.guestResultItem:last-child {
+  border-bottom: none;
+}
+
+.guestResultItem:hover {
+  background: var(--fd-surface-hover);
+}
+
+.guestResultPhone {
+  font-weight: 600;
+  color: var(--fd-text-muted);
+}
+
+.recapRoom {
+  flex: 1;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+}
+
+.infoBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.infoBody > .infoCard {
+  flex: 1;
+  min-width: 0;
+}
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addRow select {
+  flex: 1;
+  min-width: 0;
+}
+
+.addBtn {
+  flex: none;
+  width: 40px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  background: var(--fd-primary-soft);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nameRow input {
+  flex: 1;
+  min-width: 0;
+}
+
+.typeToggle {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 2px;
+}
+
+.typeToggle button {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 5px;
+  color: var(--fd-text-muted);
+  cursor: pointer;
+}
+
+.typeToggle button:hover {
+  background: var(--fd-surface-hover);
+}
+
+.typeToggleActive {
+  background: var(--fd-primary-soft) !important;
+  color: var(--fd-primary) !important;
+}
+
+.iconField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-muted);
+  gap: 8px;
+}
+
+.iconField:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.iconFieldInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  font-family: inherit;
+}
+
+.clearChipBtn {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--fd-surface-hover);
+  border-radius: 999px;
+  color: var(--fd-text-muted);
+  cursor: pointer;
+}
+
+.clearChipBtn:hover {
+  color: var(--fd-danger);
+}
+
+.dualActions {
+  display: flex;
+  gap: 8px;
+}
+
+.dualActions button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 42px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+}
+
+.actionBtnBooking {
+  background: var(--fd-status-blue);
+}
+
+.actionBtnBooking:hover {
+  filter: brightness(0.94);
+}
+
+.actionBtnCheckin {
+  background: var(--fd-danger);
+}
+
+.actionBtnCheckin:hover {
+  filter: brightness(0.94);
+}
+
+/* =========================
+   CART PANEL
+========================= */
+
+.cartPanel {
+  flex: none;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 16px;
+  position: sticky;
+  top: 16px;
+  animation: cartIn 0.16s ease;
+}
+
+@keyframes cartIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cartPlaceholder {
+  flex: none;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  background: var(--fd-surface);
+  border: 1px dashed var(--fd-border-strong);
+  border-radius: var(--fd-radius-md);
+  padding: 40px 24px;
+  color: var(--fd-text-muted);
+  position: sticky;
+  top: 16px;
+}
+
+.cartPlaceholder p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.continueBtn {
+  width: 100%;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cartSummaryLine {
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.cartLines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.cartLine {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: var(--fd-bg);
+  border-radius: var(--fd-radius-sm);
+}
+
+.cartLineHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cartLineType {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+  width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cartLineHead select {
+  flex: 1;
+  min-width: 0;
+}
+
+.cartLinePrice {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.guestRow {
+  display: flex;
+  gap: 10px;
+}
+
+.guestInput {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fd-text-secondary);
+}
+
+.guestInput input {
+  width: 100%;
+}
+
+.cartTotalsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  padding-top: 4px;
+  border-top: 1px solid var(--fd-border);
+}
+
+.cartTotalsRow span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cartTotalsRow svg:last-of-type {
+  margin-left: 8px;
+}
+
+.cartMoneyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--fd-text);
+}
+
+.taxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.cartTotalRow {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 2px -16px -2px;
+  padding: 10px 16px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary-hover);
+}
+
+.paymentSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.paymentLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.paymentRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.currencyStatic {
+  flex: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text-secondary);
+}
+
+.paymentRow select {
+  flex: none;
+  width: 140px;
+}
+
+.amountInput {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+
+.remainingDue span:last-child {
+  color: var(--fd-danger);
+  font-weight: 700;
+}
+
+.remainingOk span:last-child {
+  color: var(--fd-success);
+  font-weight: 700;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .body,
+  .infoBody {
+    flex-direction: column;
+  }
+
+  .cartPanel,
+  .body > .mainCol,
+  .body > .cartPanel,
+  .body > .cartPlaceholder {
+    width: 100%;
+    flex: none;
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 16px;
+  }
+
+  .tableHeadRow {
+    display: none;
+  }
+
+  .tableRow {
+    flex-wrap: wrap;
+  }
+}

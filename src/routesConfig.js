@@ -1,4 +1,6 @@
 import FrontDesk from "./pages/FrontDesk/FrontDesk";
+import RoomMap from "./pages/RoomMap/RoomMap";
+import CreateBooking from "./pages/CreateBooking/CreateBooking";
 import CreateInvoice from "./pages/CreateInvoice/CreateInvoice";
 import Warehouse from "./pages/Warehouse/Warehouse";
 import CashFund from "./pages/CashFund/CashFund";
@@ -22,6 +24,16 @@ export const ROUTES = [
     key: "LỄ TÂN::Front Desk",
     path: "/le-tan/front-desk",
     Component: FrontDesk,
+  },
+  {
+    key: "LỄ TÂN::Sơ đồ phòng",
+    path: "/le-tan/so-do-phong",
+    Component: RoomMap,
+  },
+  {
+    key: "LỄ TÂN::Đặt phòng",
+    path: "/le-tan/dat-phong",
+    Component: CreateBooking,
   },
   {
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",

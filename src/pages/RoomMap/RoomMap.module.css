@@ -1,0 +1,861 @@
+.page {
+  padding: 20px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* =========================
+   TOOLBAR (khung bao toàn bộ thanh điều khiển)
+========================= */
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 14px 16px;
+}
+
+.toolbarDivider {
+  height: 1px;
+  background: var(--fd-border);
+  margin: 0 -16px;
+}
+
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* =========================
+   STATUS TABS
+========================= */
+
+.statusTabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.statusTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.statusTab:hover {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+}
+
+.statusTabActive:hover {
+  filter: brightness(0.97);
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.statusCount {
+  font-size: 11px;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.75;
+}
+
+/* =========================
+   DATE NAV
+========================= */
+
+.leftControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dateNav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 2px;
+  background: var(--fd-surface);
+}
+
+.navIconBtn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.navIconBtn:hover {
+  background: var(--fd-surface-hover);
+  color: var(--fd-text);
+}
+
+.dateNavRoot {
+  display: inline-flex;
+}
+
+.dateBtn {
+  height: 30px;
+  padding: 0 12px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  cursor: pointer;
+  border-radius: var(--fd-radius-sm);
+}
+
+.dateBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.todayBtn {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.todayBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  padding: 3px;
+}
+
+.segmentBtn {
+  border: none;
+  background: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.segmentBtn:hover {
+  color: var(--fd-text);
+}
+
+.segmentActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--fd-primary);
+}
+
+.densityIcons {
+  display: flex;
+  gap: 4px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  padding: 3px;
+}
+
+.densityBtn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 5px;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.densityBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.densityActive {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+/* =========================
+   CALENDAR POPOVER
+========================= */
+
+.calendarPopover {
+  position: fixed;
+  z-index: 60;
+  width: 280px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-pop);
+  padding: 14px;
+}
+
+.calendarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 10px;
+}
+
+.calendarNavBtn {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--fd-radius-sm);
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.calendarNavBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.calendarWeekHead {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  margin-bottom: 4px;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendarDay {
+  height: 30px;
+  border: none;
+  background: none;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.calendarDay:hover {
+  background: var(--fd-surface-hover);
+}
+
+.calendarDayMuted {
+  color: var(--fd-text-muted);
+}
+
+.calendarDaySelected {
+  background: var(--fd-navy);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* =========================
+   GANTT BOARD
+========================= */
+
+.boardWrap {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.boardScroll {
+  overflow: auto;
+  max-height: 68vh;
+  position: relative;
+}
+
+.headerSticky {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  background: var(--fd-surface);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.cornerCell {
+  flex: none;
+  width: 96px;
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: var(--fd-surface);
+  border-right: 1px solid var(--fd-border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--fd-text-muted);
+}
+
+.colHeaders {
+  display: flex;
+}
+
+.colHeaderCell {
+  flex: none;
+  text-align: center;
+  padding: 10px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fd-text);
+  border-right: 1px solid var(--fd-border);
+}
+
+.colHeaderWeekend {
+  color: var(--fd-text-muted);
+}
+
+.colHeaderToday {
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+}
+
+.groupHeaderRow {
+  display: flex;
+  align-items: stretch;
+  min-height: 44px;
+  background: var(--fd-surface-hover);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.groupLabelCell {
+  flex: none;
+  width: 96px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--fd-surface-hover);
+  border: none;
+  border-right: 1px solid var(--fd-border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.groupLabelText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupHeaderCount {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-weight: 600;
+  color: var(--fd-text-muted);
+  font-size: 11.5px;
+}
+
+.groupAriTrack {
+  display: flex;
+}
+
+.ariCell {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-right: 1px solid var(--fd-border);
+  padding: 4px 2px;
+}
+
+.ariRate {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fd-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ariAvail {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--fd-success);
+}
+
+.ariAvailZero {
+  color: var(--fd-danger);
+}
+
+.roomRow {
+  display: flex;
+  height: 46px;
+  border-bottom: 1px solid var(--fd-border);
+  background-color: var(--fd-surface);
+}
+
+.roomRowOdd {
+  background-color: var(--fd-bg);
+}
+
+.roomRow:hover {
+  background-color: var(--fd-surface-hover);
+}
+
+.roomLabelCell {
+  flex: none;
+  width: 96px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: inherit;
+  border-right: 1px solid var(--fd-border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.timelineCell {
+  flex: none;
+  position: relative;
+  background-color: inherit;
+  background-image: linear-gradient(to right, var(--fd-border) 1px, transparent 1px);
+  background-repeat: repeat-x;
+}
+
+.nowLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px dashed var(--fd-primary);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.nowPill {
+  position: absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  box-shadow: var(--fd-shadow-card);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.bookingBar {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  border-radius: 7px;
+  border-left: 3px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  transition: filter 0.1s ease, box-shadow 0.1s ease;
+}
+
+.bookingBar:hover {
+  filter: brightness(0.97);
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.12);
+}
+
+.barLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sourceBadge {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.barClippedStart {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+
+.barClippedEnd {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.maintenanceBar {
+  background-color: var(--fd-status-gray);
+  color: #fff;
+  border-left-color: transparent;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.18) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+.barDimmed {
+  opacity: 0.28;
+}
+
+/* =========================
+   HÀNG TỔNG (B: đã đặt / A: còn trống)
+========================= */
+
+.summaryFooterRow {
+  display: flex;
+  border-top: 2px solid var(--fd-border-strong);
+  background: var(--fd-bg);
+}
+
+.summaryLabelCell {
+  flex: none;
+  width: 96px;
+  position: sticky;
+  left: 0;
+  background: var(--fd-bg);
+  border-right: 1px solid var(--fd-border);
+}
+
+.summaryTrack {
+  display: flex;
+}
+
+.summaryCell {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 2px;
+  border-right: 1px solid var(--fd-border);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.summaryBooked {
+  color: var(--fd-danger);
+}
+
+.summaryAvail {
+  color: var(--fd-success);
+}
+
+/* =========================
+   LƯỚI TRẠNG THÁI PHÒNG (chế độ xem dạng lưới)
+========================= */
+
+.gridWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gridScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 68vh;
+  overflow-y: auto;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 18px;
+}
+
+.gridSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gridSectionHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.cardGridCompact {
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+.roomCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: none;
+  border-left: 4px solid transparent;
+  border-radius: var(--fd-radius-sm);
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.roomCard:hover {
+  box-shadow: 0 3px 8px rgba(16, 24, 40, 0.12);
+  transform: translateY(-1px);
+}
+
+.roomCardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.roomCardNumber {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--fd-text);
+}
+
+.roomCardType {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--fd-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roomCardVacant {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.roomCardGuest {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.roomCardGuestName {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roomCardMeta {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.roomTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: var(--fd-radius-sm);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.roomTile:hover {
+  filter: brightness(0.96);
+}
+
+.roomTileNumber {
+  font-size: 12px;
+}
+
+/* =========================
+   BOOKING POPOVER
+========================= */
+
+.bookingPopover {
+  position: fixed;
+  z-index: 60;
+  min-width: 220px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-pop);
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+.popoverTitle {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--fd-text);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.popoverRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+  color: var(--fd-text);
+}
+
+.popoverLabel {
+  color: var(--fd-text-muted);
+}
+
+/* =========================
+   CHUYỂN CHẾ ĐỘ XEM (mượt hơn khi đổi Gantt ↔ Lưới)
+========================= */
+
+.viewFade {
+  animation: viewFadeIn 0.18s ease;
+}
+
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .page {
+    padding: 16px 16px 24px;
+  }
+
+  .toolbar {
+    padding: 12px;
+  }
+
+  .controlsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbarDivider {
+    margin: 0 -12px;
+  }
+}
