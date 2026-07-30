@@ -14,6 +14,9 @@ import WarehouseConfig from "./pages/WarehouseConfig/WarehouseConfig";
 import Statistics from "./pages/Statistics/Statistics";
 import Revenue from "./pages/Revenue/Revenue";
 import Reports from "./pages/Reports/Reports";
+import RoomPriceConfig from "./pages/RoomPriceConfig/RoomPriceConfig";
+import TimeConfig from "./pages/TimeConfig/TimeConfig";
+import PrinterTemplateConfig from "./pages/PrinterTemplateConfig/PrinterTemplateConfig";
 
 // Mỗi mục trong Sidebar (xác định bằng "key" ghép từ section::item::child)
 // được gắn với một URL riêng và component trang tương ứng.
@@ -57,6 +60,21 @@ export const ROUTES = [
     key: "VẬN HÀNH::Email marketing::Cấu hình",
     path: "/email-marketing/cau-hinh",
     Component: EmailConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
+    path: "/cau-hinh/phong-va-gia",
+    Component: RoomPriceConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình giờ",
+    path: "/cau-hinh/cau-hinh-gio",
+    Component: TimeConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Máy in & Mẫu in",
+    path: "/cau-hinh/may-in-mau-in",
+    Component: PrinterTemplateConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thuế/Phí",
