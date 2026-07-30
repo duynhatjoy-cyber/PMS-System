@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Brush, ChevronDown, ChevronRight, Wrench } from "lucide-react";
 import useOutsideClick from "../../../utils/useOutsideClick";
 import { useBookingCardFields } from "../../../utils/bookingCardConfig";
 import { extraLabels, guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
@@ -16,6 +16,7 @@ import {
 } from "../../../utils/format";
 import {
   computeBoardSummary,
+  computeRoomSnapshotsWithOverrides,
   computeTypeAvailability,
   getRateForDate,
   ROOMS,
@@ -74,8 +75,10 @@ function layoutBooking(booking, range) {
 // Hàng nhóm theo Loại phòng còn mang theo "ARI" (giá + số phòng trống) cho
 // từng cột ngày — chỉ tính được khi cột là theo ngày (Tuần/Tháng), chế độ
 // Ngày dùng cột theo giờ nên bỏ qua, hiển thị số phòng thay vào đó.
-function buildRows(groupMode, collapsedTypes, bookings, columns) {
-  const sortedRooms = [...ROOMS].sort((a, b) => a.number.localeCompare(b.number));
+function buildRows(groupMode, collapsedTypes, bookings, columns, eligibleRooms) {
+  const sortedRooms = [...ROOMS]
+    .filter((r) => !eligibleRooms || eligibleRooms.has(r.number))
+    .sort((a, b) => a.number.localeCompare(b.number));
   const hasDateColumns = Boolean(columns[0]?.date);
   const rows = [];
 
@@ -84,6 +87,7 @@ function buildRows(groupMode, collapsedTypes, bookings, columns) {
   } else {
     ROOM_TYPES.forEach((t) => {
       const roomsOfType = sortedRooms.filter((r) => r.typeKey === t.key);
+      if (eligibleRooms && roomsOfType.length === 0) return;
       const ariCells = hasDateColumns
         ? columns.map((col) => ({
             rate: getRateForDate(t.key, col.date),
@@ -121,6 +125,7 @@ function GanttBoard({
   onOpenDetail,
   onBookingAction,
   onOpenMaintenance,
+  roomStatusOverrides = {},
 }) {
   const [collapsedTypes, setCollapsedTypes] = useState(() => new Set());
   const [popover, setPopover] = useState(null);
@@ -132,12 +137,29 @@ function GanttBoard({
   const statusColors = useRoomStatusColors();
   useOutsideClick(Boolean(popover), [popoverRef], () => setPopover(null));
 
+  const roomSnapshots = useMemo(
+    () => computeRoomSnapshotsWithOverrides(ROOMS, bookings, roomStatusOverrides, selectedDate),
+    [bookings, roomStatusOverrides, selectedDate]
+  );
+  const snapshotByRoom = useMemo(
+    () => Object.fromEntries(roomSnapshots.map((s) => [s.room.number, s])),
+    [roomSnapshots]
+  );
+  const isRoomStatusFilter = highlightStatus === "dirty" || highlightStatus === "maintenance";
+  const eligibleRooms = isRoomStatusFilter
+    ? new Set(
+        roomSnapshots
+          .filter((s) => (highlightStatus === "dirty" ? s.housekeeping === "dirty" : s.status === "maintenance"))
+          .map((s) => s.room.number)
+      )
+    : null;
+
   const range = getRange(selectedDate, periodMode);
   const columns = getColumns(range, periodMode);
   const hasDateColumns = Boolean(columns[0]?.date);
   const colWidth = COL_WIDTH[periodMode];
   const trackWidth = columns.length * colWidth;
-  const rows = buildRows(groupMode, collapsedTypes, bookings, columns);
+  const rows = buildRows(groupMode, collapsedTypes, bookings, columns, eligibleRooms);
   const boardSummary = hasDateColumns ? columns.map((col) => computeBoardSummary(ROOMS, bookings, col.date)) : null;
   const now = new Date();
   const nowPct = now >= range.start && now < range.end ? ((now - range.start) / (range.end - range.start)) * 100 : null;
@@ -308,9 +330,43 @@ function GanttBoard({
             );
           }
 
+          const snapshot = snapshotByRoom[row.room.number];
+          const isDirty = snapshot?.housekeeping === "dirty";
+          const isMaintenance = snapshot?.status === "maintenance";
+
           return (
             <div key={row.room.number} className={`${styles.roomRow} ${row.zebraOdd ? styles.roomRowOdd : ""}`}>
-              <div className={styles.roomLabelCell}>{row.room.number}</div>
+              <div className={styles.roomLabelCell}>
+                <span>{row.room.number}</span>
+                {isMaintenance && (
+                  <button
+                    type="button"
+                    className={styles.roomLabelIconBtn}
+                    style={{ color: colorForStatus("maintenance", statusColors) }}
+                    title="Đang sửa phòng — bấm để xem/xoá"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenMaintenance(row.room);
+                    }}
+                  >
+                    <Wrench size={13} />
+                  </button>
+                )}
+                {isDirty && !isMaintenance && (
+                  <button
+                    type="button"
+                    className={styles.roomLabelIconBtn}
+                    style={{ color: colorForStatus("dirty", statusColors) }}
+                    title="Phòng bẩn — bấm để làm sạch"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onBookingAction("clean", null, row.room);
+                    }}
+                  >
+                    <Brush size={13} />
+                  </button>
+                )}
+              </div>
               <div
                 className={styles.timelineCell}
                 style={{ width: trackWidth, backgroundSize: `${100 / columns.length}% 100%` }}

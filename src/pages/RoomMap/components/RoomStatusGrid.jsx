@@ -6,7 +6,7 @@ import { useBookingCardFields } from "../../../utils/bookingCardConfig";
 import { guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
 import { colorForStatus, useRoomStatusColors } from "../../../utils/roomColorConfig";
 import {
-  computeRoomSnapshots,
+  computeRoomSnapshotsWithOverrides,
   FLOORS,
   getRateForDate,
   ROOM_STATUS_GROUP_ORDER,
@@ -52,7 +52,18 @@ function buildSections(groupTab, snapshots) {
   })).filter((s) => s.items.length > 0);
 }
 
-function RoomStatusGrid({ rooms, bookings, selectedDate, density, onToast, onOpenDetail, onBookingAction, onOpenMaintenance, roomStatusOverrides }) {
+function RoomStatusGrid({
+  rooms,
+  bookings,
+  selectedDate,
+  density,
+  onToast,
+  onOpenDetail,
+  onBookingAction,
+  onOpenMaintenance,
+  roomStatusOverrides,
+  highlightStatus,
+}) {
   const [groupTab, setGroupTab] = useState("status");
   const [popover, setPopover] = useState(null); // { snapshot, x, y }
   const popoverRef = useRef(null);
@@ -60,17 +71,14 @@ function RoomStatusGrid({ rooms, bookings, selectedDate, density, onToast, onOpe
   const statusColors = useRoomStatusColors();
   useOutsideClick(Boolean(popover), [popoverRef], () => setPopover(null));
 
-  const snapshots = computeRoomSnapshots(rooms, bookings, selectedDate).map((snapshot) => {
-    const override = roomStatusOverrides[snapshot.room.number];
-    if (override === "dirty") {
-      return { ...snapshot, status: "vacant", housekeeping: "dirty", booking: null };
-    }
-    if (override === "clean") {
-      return { ...snapshot, status: "vacant", housekeeping: "clean", booking: null };
-    }
-    return override ? { ...snapshot, status: override, booking: null } : snapshot;
-  });
-  const sections = buildSections(groupTab, snapshots);
+  const snapshots = computeRoomSnapshotsWithOverrides(rooms, bookings, roomStatusOverrides, selectedDate);
+  const visibleSnapshots =
+    highlightStatus === "dirty"
+      ? snapshots.filter((s) => s.housekeeping === "dirty")
+      : highlightStatus === "maintenance"
+      ? snapshots.filter((s) => s.status === "maintenance")
+      : snapshots;
+  const sections = buildSections(groupTab, visibleSnapshots);
 
   function handleCardClick(e, snapshot) {
     if (snapshot.status === "maintenance") {

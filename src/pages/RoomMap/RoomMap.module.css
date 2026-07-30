@@ -484,10 +484,27 @@
   border-right: 1px solid var(--fd-border);
   display: flex;
   align-items: center;
+  gap: 6px;
   padding: 0 12px;
   font-size: 13px;
   font-weight: 700;
   color: var(--fd-text);
+}
+
+.roomLabelIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border: none;
+  background: none;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.roomLabelIconBtn:hover {
+  background: var(--fd-surface-hover);
 }
 
 .timelineCell {

@@ -14,7 +14,15 @@ import CopyBookingModal from "../FrontDesk/modals/CopyBookingModal";
 import EditGuestModal from "../FrontDesk/modals/EditGuestModal";
 import InvoiceModal from "../FrontDesk/modals/InvoiceModal";
 import WalkInModal from "../FrontDesk/modals/WalkInModal";
-import { buildRoomMapBookings, computeStatusCounts, ROOMS, STATUS_META, STATUS_TAB_ORDER } from "../../data/roomMapData";
+import {
+  buildRoomMapBookings,
+  computeRoomStatusCounts,
+  computeStatusCounts,
+  ROOMS,
+  ROOM_TAB_ORDER,
+  STATUS_META,
+  STATUS_TAB_ORDER,
+} from "../../data/roomMapData";
 import { addDays, addMonths, startOfDay } from "../../utils/format";
 import { colorForStatus, useRoomStatusColors } from "../../utils/roomColorConfig";
 import styles from "./RoomMap.module.css";
@@ -56,6 +64,12 @@ function RoomMap() {
 
   const [bookings, setBookings] = useState(() => buildRoomMapBookings(today));
   const statusCounts = useMemo(() => computeStatusCounts(bookings, today), [bookings, today]);
+  const roomStatusCounts = useMemo(
+    () => computeRoomStatusCounts(ROOMS, bookings, roomStatusOverrides, selectedDate),
+    [bookings, roomStatusOverrides, selectedDate]
+  );
+  const tabOrder = [...STATUS_TAB_ORDER, ...ROOM_TAB_ORDER];
+  const tabCounts = { ...statusCounts, ...roomStatusCounts };
 
   function stepDate(dir) {
     if (periodMode === "day") setSelectedDate((d) => addDays(d, dir));
@@ -215,7 +229,7 @@ function RoomMap() {
       <div className={styles.toolbar}>
         <div className={styles.controlsRow}>
           <div className={styles.statusTabs}>
-            {STATUS_TAB_ORDER.map((key) => {
+            {tabOrder.map((key) => {
               const meta = STATUS_META[key];
               const statusColor = colorForStatus(key, statusColors);
               const active = statusFilter === key;
@@ -229,7 +243,7 @@ function RoomMap() {
                 >
                   <span className={styles.statusDot} style={{ background: statusColor }} />
                   {meta.label}
-                  <span className={styles.statusCount}>{statusCounts[key]}</span>
+                  <span className={styles.statusCount}>{tabCounts[key]}</span>
                 </button>
               );
             })}
@@ -349,6 +363,7 @@ function RoomMap() {
             selectedDate={selectedDate}
             density={viewMode === "grid-compact" ? "compact" : "detailed"}
             saleMode={saleMode}
+            highlightStatus={statusFilter}
             onToast={setToastMsg}
             onOpenDetail={openBookingDetail}
             onBookingAction={handleBookingAction}
