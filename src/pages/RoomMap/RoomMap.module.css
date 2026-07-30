@@ -493,6 +493,9 @@
 .timelineCell {
   flex: none;
   position: relative;
+  user-select: none;
+  touch-action: none;
+  cursor: crosshair;
   background-color: inherit;
   background-image: linear-gradient(to right, var(--fd-border) 1px, transparent 1px);
   background-repeat: repeat-x;
@@ -679,8 +682,8 @@
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
 }
 
 .cardGridCompact {
@@ -758,6 +761,203 @@
   font-variant-numeric: tabular-nums;
 }
 
+.rangeSelection {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  z-index: 4;
+  min-width: 4px;
+  border: 1px solid var(--fd-primary);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--fd-primary) 20%, transparent);
+  pointer-events: none;
+}
+
+.bookingRoomCard {
+  min-height: 86px;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--fd-border);
+  border-left: 0;
+  background: #fff;
+}
+
+.reservationCard {
+  min-height: 162px;
+}
+
+.reservationCard .bookingCardCode {
+  width: 72px;
+  gap: 9px;
+  padding: 12px 5px;
+}
+
+.reservationCard .bookingCardCode span {
+  max-width: 62px;
+}
+
+.reservationCard .bookingCardCode strong {
+  font-size: 18px;
+}
+
+.reservationCard .bookingCardBody {
+  gap: 6px;
+  padding: 10px 12px;
+}
+
+.reservationCard .bookingGuestLine {
+  font-size: 13px;
+}
+
+.reservationCard .bookingMetaLine {
+  font-size: 11.5px;
+}
+
+.reservationCard .bookingPrice {
+  font-size: 13px;
+}
+
+.bookingCardCode {
+  width: 64px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 4px;
+  background: var(--fd-navy);
+  color: #fff;
+  font-weight: 700;
+}
+
+.bookingCardCode span {
+  max-width: 56px;
+  overflow: hidden;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookingCardCode strong {
+  font-size: 14px;
+}
+
+.bookingCardBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 5px 8px;
+}
+
+.bookingCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bookingSourceBadge,
+.bookingStatusBadge {
+  max-width: 60%;
+  padding: 2px 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookingSourceBadge {
+  color: #fff;
+}
+
+.bookingGuestLine {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fd-text);
+  font-size: 11.5px;
+}
+
+.bookingGuestLine strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookingFlag {
+  min-width: 22px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: var(--fd-danger);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.bookingMetaLine {
+  overflow: hidden;
+  color: var(--fd-text-secondary);
+  font-size: 10.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookingPrice {
+  margin-top: auto;
+  color: var(--fd-text);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.vacantCardBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.roomStateIcons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dirtyBroom {
+  color: #111827;
+}
+
+.roomCardExtras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.roomCardExtras span {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--fd-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .roomTile {
   display: flex;
   flex-direction: column;
@@ -816,6 +1016,69 @@
 
 .popoverLabel {
   color: var(--fd-text-muted);
+}
+
+.actionMenu {
+  position: fixed;
+  z-index: 80;
+  width: 216px;
+  overflow: hidden;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: 12px;
+  box-shadow: var(--fd-shadow-pop);
+  color: var(--fd-text);
+}
+
+.actionMenuHead {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 11px 10px 9px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.actionMenuHead strong {
+  font-size: 12px;
+}
+
+.actionMenuHead span {
+  color: var(--fd-text-muted);
+  font-size: 10.5px;
+}
+
+.actionMenuItems {
+  padding: 4px 0;
+}
+
+.actionMenuItem {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--fd-text);
+  text-align: left;
+  font: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.actionMenuItem svg {
+  flex: none;
+  color: var(--fd-text-muted);
+}
+
+.actionMenuItem:hover,
+.actionMenuItemActive {
+  background: var(--fd-surface-hover);
+}
+
+.actionMenuDivider {
+  border-top: 1px solid var(--fd-border);
 }
 
 /* =========================

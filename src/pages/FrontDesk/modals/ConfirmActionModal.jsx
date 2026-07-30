@@ -19,6 +19,11 @@ const COPY = {
     confirmLabel: "Làm sạch phòng",
     confirmVariant: shared.btnPrimary,
   },
+  dirty: {
+    title: "Bạn có muốn chuyển trạng thái phòng thành bẩn?",
+    confirmLabel: "Phòng bẩn",
+    confirmVariant: shared.btnPrimary,
+  },
   checkout: {
     title: "Xác nhận trả phòng",
     confirmLabel: "Trả phòng",
@@ -89,6 +94,12 @@ function ConfirmActionModal({ variant, booking, remaining = 0, onClose, onConfir
         <p className={shared.bodyText}>
           Bạn có muốn chuyển phòng <strong>{booking?.room}</strong> sang trạng thái{" "}
           <strong>Sạch</strong> không?
+        </p>
+      )}
+
+      {variant === "dirty" && (
+        <p className={shared.bodyText}>
+          Phòng <strong>{booking?.room}</strong> sẽ được chuyển sang trạng thái <strong>Phòng bẩn</strong>.
         </p>
       )}
 

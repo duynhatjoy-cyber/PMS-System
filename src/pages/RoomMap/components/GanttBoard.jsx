@@ -2,12 +2,13 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import useOutsideClick from "../../../utils/useOutsideClick";
+import { useBookingCardFields } from "../../../utils/bookingCardConfig";
+import { extraLabels, guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
+import { colorForStatus, useRoomStatusColors } from "../../../utils/roomColorConfig";
 import {
   addDays,
   addMonths,
   formatCompactVND,
-  formatCurrency,
-  formatDMY,
   formatTime,
   isSameDay,
   startOfDay,
@@ -20,10 +21,10 @@ import {
   ROOMS,
   ROOM_TYPES,
   SOURCE_META,
-  STATUS_META,
   WEEKDAY_HEAD,
 } from "../../../data/roomMapData";
 import styles from "../RoomMap.module.css";
+import BookingActionMenu from "./BookingActionMenu";
 
 const COL_WIDTH = { day: 60, week: 170, month: 56 };
 const LABEL_WIDTH = 96;
@@ -109,11 +110,26 @@ function barLabel(booking) {
   return `${booking.source} - ${booking.guest}`;
 }
 
-function GanttBoard({ bookings, selectedDate, periodMode, groupMode, saleMode, highlightStatus, highlightToday, onToast }) {
+function GanttBoard({
+  bookings,
+  selectedDate,
+  periodMode,
+  groupMode,
+  highlightStatus,
+  highlightToday,
+  onToast,
+  onOpenDetail,
+  onBookingAction,
+  onOpenMaintenance,
+}) {
   const [collapsedTypes, setCollapsedTypes] = useState(() => new Set());
-  const [popover, setPopover] = useState(null); // { booking, x, y }
+  const [popover, setPopover] = useState(null);
+  const [dragging, setDragging] = useState(null);
+  const dragRef = useRef(null);
   const popoverRef = useRef(null);
   const scrollRef = useRef(null);
+  const cardFields = useBookingCardFields();
+  const statusColors = useRoomStatusColors();
   useOutsideClick(Boolean(popover), [popoverRef], () => setPopover(null));
 
   const range = getRange(selectedDate, periodMode);
@@ -151,24 +167,86 @@ function GanttBoard({ bookings, selectedDate, periodMode, groupMode, saleMode, h
 
   function handleBarClick(e, booking) {
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPopover({ booking, x: rect.left, y: rect.bottom + 6 });
-  }
-
-  function handleEmptyClick() {
-    setPopover(null);
-    if (saleMode === "sell") {
-      onToast('Tạo đặt phòng nhanh sẽ có ở bản cập nhật tiếp theo — dùng trang "Tạo đặt phòng".');
+    const room = ROOMS.find((item) => item.number === booking.room);
+    if (booking.status === "maintenance") {
+      onOpenMaintenance(room);
+      return;
     }
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPopover({
+      booking,
+      room,
+      status: booking.status,
+      x: Math.max(8, Math.min(rect.left, window.innerWidth - 224)),
+      y: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 500)),
+    });
   }
 
-  const popoverRoom = popover ? ROOMS.find((r) => r.number === popover.booking.room) : null;
-  const popoverIsMaintenance = popover?.booking.status === "maintenance";
-  const popoverNights = popover
-    ? Math.max(1, Math.round((popover.booking.checkOut - popover.booking.checkIn) / 86400000))
-    : 0;
-  const popoverRate = popoverRoom ? getRateForDate(popoverRoom.typeKey, popover.booking.checkIn) : 0;
-  const popoverSource = popover ? SOURCE_META[popover.booking.source] : null;
+  function openVacantMenu(event, room, selectedRange = null) {
+    setPopover({
+      booking: null,
+      room,
+      status: "vacant",
+      range: selectedRange,
+      x: Math.max(8, Math.min(event.clientX, window.innerWidth - 224)),
+      y: Math.max(8, Math.min(event.clientY + 8, window.innerHeight - 370)),
+    });
+  }
+
+  function pointerPct(event) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  }
+
+  function snapDate(pct, roundUp = false) {
+    const raw = range.start.getTime() + pct * (range.end - range.start);
+    const step = periodMode === "day" ? 30 * 60 * 1000 : 24 * 60 * 60 * 1000;
+    const snapped = (roundUp ? Math.ceil(raw / step) : Math.floor(raw / step)) * step;
+    return new Date(Math.max(range.start.getTime(), Math.min(range.end.getTime(), snapped)));
+  }
+
+  function startDrag(event, room) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const pct = pointerPct(event);
+    setPopover(null);
+    const next = { room, startPct: pct, currentPct: pct, startClientX: event.clientX };
+    dragRef.current = next;
+    setDragging(next);
+  }
+
+  function moveDrag(event, room) {
+    const active = dragRef.current;
+    if (!active || active.room.number !== room.number) return;
+    const next = { ...active, currentPct: pointerPct(event) };
+    dragRef.current = next;
+    setDragging(next);
+  }
+
+  function finishDrag(event, room) {
+    const active = dragRef.current;
+    if (!active || active.room.number !== room.number) return;
+    const endPct = pointerPct(event);
+    const distance = Math.abs(event.clientX - active.startClientX);
+    const fromPct = Math.min(active.startPct, endPct);
+    const toPct = Math.max(active.startPct, endPct);
+    dragRef.current = null;
+    setDragging(null);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (distance < 8) {
+      const start = snapDate(endPct);
+      const end = new Date(start.getTime() + (periodMode === "day" ? 3600000 : 86400000));
+      openVacantMenu(event, room, { checkIn: start, checkOut: end });
+      return;
+    }
+    const checkIn = snapDate(fromPct);
+    let checkOut = snapDate(toPct, true);
+    if (checkOut <= checkIn) checkOut = new Date(checkIn.getTime() + (periodMode === "day" ? 3600000 : 86400000));
+    openVacantMenu(event, room, { checkIn, checkOut });
+  }
 
   return (
     <div className={styles.boardWrap}>
@@ -236,15 +314,27 @@ function GanttBoard({ bookings, selectedDate, periodMode, groupMode, saleMode, h
               <div
                 className={styles.timelineCell}
                 style={{ width: trackWidth, backgroundSize: `${100 / columns.length}% 100%` }}
-                onClick={handleEmptyClick}
+                onPointerDown={(event) => startDrag(event, row.room)}
+                onPointerMove={(event) => moveDrag(event, row.room)}
+                onPointerUp={(event) => finishDrag(event, row.room)}
+                onPointerCancel={(event) => finishDrag(event, row.room)}
               >
+                {dragging?.room.number === row.room.number && (
+                  <div
+                    className={styles.rangeSelection}
+                    style={{
+                      left: `${Math.min(dragging.startPct, dragging.currentPct) * 100}%`,
+                      width: `${Math.abs(dragging.currentPct - dragging.startPct) * 100}%`,
+                    }}
+                  />
+                )}
                 {nowPct !== null && <div className={styles.nowLine} style={{ left: `${nowPct}%` }} />}
                 {bookings
                   .filter((b) => b.room === row.room.number)
                   .map((b) => {
                     const layout = layoutBooking(b, range);
                     if (!layout) return null;
-                    const meta = STATUS_META[b.status];
+                    const statusColor = colorForStatus(b.status, statusColors);
                     const isMaintenance = b.status === "maintenance";
                     const source = SOURCE_META[b.source];
                     return (
@@ -261,20 +351,30 @@ function GanttBoard({ bookings, selectedDate, periodMode, groupMode, saleMode, h
                             : {
                                 left: `${layout.leftPct}%`,
                                 width: `${layout.widthPct}%`,
-                                background: meta.soft,
-                                color: meta.color,
-                                borderLeftColor: meta.color,
+                                background: `${statusColor}1a`,
+                                color: statusColor,
+                                borderLeftColor: statusColor,
                               }
                         }
                         title={barLabel(b)}
                         onClick={(e) => handleBarClick(e, b)}
+                        onPointerDown={(e) => e.stopPropagation()}
                       >
                         {source && (
                           <span className={styles.sourceBadge} style={{ background: source.color }}>
                             {source.code}
                           </span>
                         )}
-                        <span className={styles.barLabel}>{isMaintenance ? "Sửa phòng" : b.guest}</span>
+                        <span className={styles.barLabel}>
+                          {isMaintenance
+                            ? "Sửa phòng"
+                            : [
+                                guestLabel(b, cardFields),
+                                timeLabel(b, cardFields),
+                                priceLabel(b, row.room, cardFields, getRateForDate),
+                                ...extraLabels(b, cardFields),
+                              ].join(" · ")}
+                        </span>
                       </div>
                     );
                   })}
@@ -300,46 +400,14 @@ function GanttBoard({ bookings, selectedDate, periodMode, groupMode, saleMode, h
 
       {popover &&
         createPortal(
-          <div ref={popoverRef} className={styles.bookingPopover} style={{ left: popover.x, top: popover.y }}>
-            <div className={styles.popoverTitle}>
-              {popoverSource && (
-                <span className={styles.sourceBadge} style={{ background: popoverSource.color }}>
-                  {popoverSource.code}
-                </span>
-              )}
-              {barLabel(popover.booking)}
-            </div>
-            <div className={styles.popoverRow}>
-              <span className={styles.popoverLabel}>Trạng thái</span>
-              <span>{STATUS_META[popover.booking.status].label}</span>
-            </div>
-            <div className={styles.popoverRow}>
-              <span className={styles.popoverLabel}>Nhận phòng</span>
-              <span>{formatDMY(popover.booking.checkIn)}</span>
-            </div>
-            <div className={styles.popoverRow}>
-              <span className={styles.popoverLabel}>Trả phòng</span>
-              <span>{formatDMY(popover.booking.checkOut)}</span>
-            </div>
-            {popover.booking.code && (
-              <div className={styles.popoverRow}>
-                <span className={styles.popoverLabel}>Mã đặt phòng</span>
-                <span>#{popover.booking.code}</span>
-              </div>
-            )}
-            {!popoverIsMaintenance && popoverRoom && (
-              <>
-                <div className={styles.popoverRow}>
-                  <span className={styles.popoverLabel}>Giá phòng/đêm</span>
-                  <span>{formatCurrency(popoverRate)}</span>
-                </div>
-                <div className={styles.popoverRow}>
-                  <span className={styles.popoverLabel}>Tổng ({popoverNights} đêm)</span>
-                  <span>{formatCurrency(popoverRate * popoverNights)}</span>
-                </div>
-              </>
-            )}
-          </div>,
+          <BookingActionMenu
+            menu={popover}
+            menuRef={popoverRef}
+            onClose={() => setPopover(null)}
+            onDetail={onOpenDetail}
+            onAction={onBookingAction}
+            onToast={onToast}
+          />,
           document.body
         )}
     </div>

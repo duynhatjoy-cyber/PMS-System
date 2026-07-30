@@ -4,7 +4,7 @@ import BookingIdentityHeader from "./BookingIdentityHeader";
 import { roomTypes, ratePlans, AVAILABLE_ROOMS } from "../../../data/frontDeskData";
 import shared from "./shared.module.css";
 
-function AssignRoomModal({ booking, onClose, onSave }) {
+function AssignRoomModal({ booking, onClose, onSave, title = "Gán phòng" }) {
   const [roomTypeId, setRoomTypeId] = useState(roomTypes[0].id);
   const [room, setRoom] = useState(booking.room || "");
   const [overridePrice, setOverridePrice] = useState(false);
@@ -16,7 +16,7 @@ function AssignRoomModal({ booking, onClose, onSave }) {
 
   return (
     <ModalShell
-      header={<BookingIdentityHeader title="Gán phòng" booking={booking} />}
+      header={<BookingIdentityHeader title={title} booking={booking} />}
       onClose={onClose}
       width={480}
       footer={
