@@ -1,5 +1,22 @@
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus, RefreshCw, Search } from "lucide-react";
+import {
+  BedDouble,
+  Brush,
+  CalendarClock,
+  CalendarX,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Copy,
+  IdCard,
+  Info,
+  LogIn,
+  Plus,
+  RefreshCw,
+  Search,
+  ShoppingBag,
+  Unlink,
+} from "lucide-react";
 import {
   buildFrontDeskBookings,
   selectArrivals,
@@ -104,51 +121,81 @@ function FrontDesk() {
     setDetailBooking({ id: booking.id, tab });
   }
 
+  // 3 nhóm thao tác (ngăn cách bằng divider): xem/nhận phòng → chỉnh sửa
+  // thông tin lưu trú → thao tác huỷ/tiện ích. Mỗi nhóm tự ẩn khi rỗng, divider
+  // chỉ chèn giữa 2 nhóm thực sự có item (không phụ thuộc tên item cụ thể).
   function getMenuItems(booking, tab) {
-    const base = [
-      { key: "detail", label: "Chi tiết", onClick: () => openDetail(booking, tab) },
+    const group1 = [
+      { key: "detail", label: "Chi tiết", icon: Info, onClick: () => openDetail(booking, tab) },
+      ...(tab === "arrivals"
+        ? [{ key: "checkin", label: "Nhận phòng", icon: LogIn, onClick: () => handlePrimaryAction(booking, tab) }]
+        : []),
+      ...(booking.assigned
+        ? [
+            {
+              key: "unassign",
+              label: "Bỏ gán phòng",
+              icon: Unlink,
+              onClick: () => setModal({ type: "unassign", booking, tab }),
+            },
+          ]
+        : []),
     ];
 
-    if (!booking.assigned) {
-      return [
-        ...base,
-        { key: "assign", label: "Gán phòng", onClick: () => setModal({ type: "assignRoom", booking, tab }) },
-        { key: "copy", label: "Sao chép", onClick: () => setModal({ type: "copy", booking, tab }) },
-        {
-          key: "cancel",
-          label: "Hủy đặt phòng",
-          danger: true,
-          divider: true,
-          onClick: () => setModal({ type: "cancel", booking, tab }),
-        },
-      ];
-    }
+    const group2 = [
+      ...(booking.assigned
+        ? [
+            {
+              key: "editGuest",
+              label: "Sửa khách",
+              icon: IdCard,
+              onClick: () => setModal({ type: "editGuest", booking, tab }),
+            },
+            {
+              key: "changeDate",
+              label: "Đổi ngày/khách",
+              icon: CalendarClock,
+              onClick: () => setModal({ type: "changeDate", booking, tab }),
+            },
+            {
+              key: "addService",
+              label: "Thêm dịch vụ",
+              icon: ShoppingBag,
+              onClick: () => setModal({ type: "addService", booking, tab }),
+            },
+          ]
+        : []),
+      {
+        key: "assign",
+        label: booking.assigned ? "Chuyển phòng" : "Gán phòng",
+        icon: BedDouble,
+        onClick: () => setModal({ type: "assignRoom", booking, tab }),
+      },
+    ];
 
-    return [
-      ...base,
-      { key: "editGuest", label: "Sửa khách", onClick: () => setModal({ type: "editGuest", booking, tab }) },
-      {
-        key: "changeDate",
-        label: "Đổi ngày/khách",
-        onClick: () => setModal({ type: "changeDate", booking, tab }),
-      },
-      { key: "assign", label: "Gán phòng", onClick: () => setModal({ type: "assignRoom", booking, tab }) },
-      { key: "copy", label: "Sao chép", onClick: () => setModal({ type: "copy", booking, tab }) },
-      {
-        key: "addService",
-        label: "Thêm dịch vụ",
-        onClick: () => setModal({ type: "addService", booking, tab }),
-      },
-      { key: "clean", label: "Làm sạch phòng", onClick: () => setModal({ type: "clean", booking, tab }) },
-      { key: "unassign", label: "Bỏ gán phòng", onClick: () => setModal({ type: "unassign", booking, tab }) },
+    const group3 = [
       {
         key: "cancel",
         label: "Hủy đặt phòng",
+        icon: CalendarX,
         danger: true,
-        divider: true,
         onClick: () => setModal({ type: "cancel", booking, tab }),
       },
+      { key: "copy", label: "Sao chép", icon: Copy, onClick: () => setModal({ type: "copy", booking, tab }) },
+      ...(booking.assigned
+        ? [{ key: "clean", label: "Làm sạch phòng", icon: Brush, onClick: () => setModal({ type: "clean", booking, tab }) }]
+        : []),
+      {
+        key: "bookingList",
+        label: "Danh sách đặt phòng",
+        icon: ClipboardList,
+        onClick: () => toast("Danh sách đặt phòng theo phòng sẽ có ở bản cập nhật tiếp theo"),
+      },
     ];
+
+    return [group1, group2, group3]
+      .filter((group) => group.length > 0)
+      .flatMap((group, i) => (i === 0 ? group : [{ ...group[0], divider: true }, ...group.slice(1)]));
   }
 
   function handlePrintOption(booking, option) {

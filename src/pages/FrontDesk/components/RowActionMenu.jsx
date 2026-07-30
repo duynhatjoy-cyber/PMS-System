@@ -36,6 +36,7 @@ function RowActionMenu({ items }) {
                     item.onClick();
                   }}
                 >
+                  {item.icon && <item.icon size={16} className={styles.menuItemIcon} />}
                   {item.label}
                 </button>
               </div>
