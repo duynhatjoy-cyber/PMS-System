@@ -2,11 +2,11 @@ import { useState } from "react";
 import { BookOpen, Save } from "lucide-react";
 import BookingCardPreview from "./BookingCardPreview";
 import {
-  DEFAULT_CARD_FIELDS,
   GUEST_DISPLAY_OPTIONS,
   PRICE_DISPLAY_OPTIONS,
   TIME_DISPLAY_OPTIONS,
 } from "../../../data/bookingConfigData";
+import { readBookingCardFields, saveBookingCardFields } from "../../../utils/bookingCardConfig";
 
 function RadioGroup({ styles, name, options, value, onChange }) {
   return (
@@ -27,8 +27,8 @@ function RadioGroup({ styles, name, options, value, onChange }) {
 }
 
 function CardFieldsPanel({ styles, onToast }) {
-  const [savedFields, setSavedFields] = useState(DEFAULT_CARD_FIELDS);
-  const [fields, setFields] = useState(DEFAULT_CARD_FIELDS);
+  const [savedFields, setSavedFields] = useState(readBookingCardFields);
+  const [fields, setFields] = useState(readBookingCardFields);
 
   function patch(key, value) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -40,6 +40,7 @@ function CardFieldsPanel({ styles, onToast }) {
 
   function handleSave() {
     setSavedFields(fields);
+    saveBookingCardFields(fields);
     onToast("Đã lưu cấu hình thẻ đặt phòng");
   }
 

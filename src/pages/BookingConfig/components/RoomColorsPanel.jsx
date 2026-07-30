@@ -2,26 +2,30 @@ import { useState } from "react";
 import { RotateCcw, Save } from "lucide-react";
 import BookingCardPreview from "./BookingCardPreview";
 import { DEFAULT_CARD_FIELDS, ROOM_STATUSES } from "../../../data/bookingConfigData";
+import {
+  defaultRoomStatusColors,
+  readRoomStatusColors,
+  saveRoomStatusColors,
+} from "../../../utils/roomColorConfig";
 
 const SAMPLE_ROOMS = ["101", "102", "103", "104", "105", "106", "107"];
 
-function defaultColorMap() {
-  return Object.fromEntries(ROOM_STATUSES.map((s) => [s.id, s.defaultColor]));
-}
-
 function RoomColorsPanel({ styles, onToast }) {
-  const [colors, setColors] = useState(defaultColorMap);
+  const [colors, setColors] = useState(readRoomStatusColors);
 
   function handleChange(id, value) {
     setColors((prev) => ({ ...prev, [id]: value }));
   }
 
   function handleReset() {
-    setColors(defaultColorMap());
+    const defaults = defaultRoomStatusColors();
+    setColors(defaults);
+    saveRoomStatusColors(defaults);
     onToast("Đã khôi phục màu mặc định");
   }
 
   function handleSave() {
+    saveRoomStatusColors(colors);
     onToast("Đã lưu màu trạng thái phòng");
   }
 

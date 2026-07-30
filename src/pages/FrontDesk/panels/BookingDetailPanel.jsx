@@ -9,7 +9,6 @@ import {
   BedDouble,
   ClipboardList,
   History,
-  EyeOff,
   Eye,
   LogOut,
   MoreHorizontal,
@@ -20,6 +19,8 @@ import {
 import IconPopup from "../components/IconPopup";
 import PrintMenu from "../components/PrintMenu";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import RoomTaskModal from "../modals/RoomTaskModal";
+import UserActivityModal from "../modals/UserActivityModal";
 import { computeBill } from "../../../utils/billing";
 import { formatCurrency, formatDateTimeDMY } from "../../../utils/format";
 import styles from "./BookingDetailPanel.module.css";
@@ -41,12 +42,14 @@ function BookingDetailPanel({
   onRemoveGuest,
   onRecordPayment,
   onToast,
+  initialTab = "room",
 }) {
-  const [activeTab, setActiveTab] = useState("room");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [note, setNote] = useState(booking.notes || "");
   const [tags, setTags] = useState(["Traveloka", "OTA", "Central Hotel"]);
-  const [hideNames, setHideNames] = useState(false);
   const [removeGuestTarget, setRemoveGuestTarget] = useState(null);
+  const [showActivity, setShowActivity] = useState(false);
+  const [showTask, setShowTask] = useState(false);
 
   const [payAsOf, setPayAsOf] = useState("now");
   const [discount, setDiscount] = useState(0);
@@ -143,16 +146,16 @@ function BookingDetailPanel({
               <Mail size={16} />
             </button>
             <PrintMenu onSelect={(option) => onPrintOption(booking, option)} />
-            <button type="button" className={styles.iconBtn} title="Lịch sử">
+            <button type="button" className={styles.iconBtn} title="Việc cần làm" onClick={() => setShowTask(true)}>
               <History size={16} />
             </button>
             <button
               type="button"
               className={styles.iconBtn}
-              title={hideNames ? "Hiện thông tin khách" : "Ẩn thông tin khách"}
-              onClick={() => setHideNames((v) => !v)}
+              title="Thao tác người dùng"
+              onClick={() => setShowActivity(true)}
             >
-              {hideNames ? <Eye size={16} /> : <EyeOff size={16} />}
+              <Eye size={16} />
             </button>
 
             <div className={styles.topDivider} />
@@ -230,7 +233,7 @@ function BookingDetailPanel({
                 {(booking.guests || []).map((g) => (
                   <div key={g.id} className={styles.guestRow}>
                     <span className={styles.flag}>{g.flag}</span>
-                    <span className={`${styles.guestName} ${hideNames ? styles.guestNameHidden : ""}`}>
+                    <span className={styles.guestName}>
                       {g.name}
                     </span>
                     <button
@@ -515,6 +518,17 @@ function BookingDetailPanel({
             setRemoveGuestTarget(null);
           }}
           onClose={() => setRemoveGuestTarget(null)}
+        />
+      )}
+      {showActivity && <UserActivityModal booking={booking} onClose={() => setShowActivity(false)} />}
+      {showTask && (
+        <RoomTaskModal
+          booking={booking}
+          onClose={() => setShowTask(false)}
+          onSave={() => {
+            setShowTask(false);
+            onToast("Đã lưu việc cần làm");
+          }}
         />
       )}
     </div>

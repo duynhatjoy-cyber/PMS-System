@@ -80,13 +80,14 @@ export const ROOMS = [
 ];
 
 export const STATUS_META = {
-  vacant: { key: "vacant", label: "Trống", color: "var(--fd-success)", soft: "var(--fd-success-soft)" },
+  vacant: { key: "vacant", label: "Phòng trống", color: "var(--fd-success)", soft: "var(--fd-success-soft)" },
   booked_future: { key: "booked_future", label: "Đã đặt", color: "var(--fd-status-blue)", soft: "var(--fd-status-blue-soft)" },
   arriving_today: { key: "arriving_today", label: "Chưa đến", color: "var(--fd-status-purple)", soft: "var(--fd-status-purple-soft)" },
   in_house: { key: "in_house", label: "Có khách", color: "var(--fd-danger)", soft: "var(--fd-danger-soft)" },
   overdue: { key: "overdue", label: "Chưa đi", color: "var(--fd-warning)", soft: "var(--fd-warning-soft)" },
   checked_out: { key: "checked_out", label: "Đã trả", color: "var(--fd-status-pink)", soft: "var(--fd-status-pink-soft)" },
   maintenance: { key: "maintenance", label: "Sửa phòng", color: "var(--fd-status-gray)", soft: "var(--fd-status-gray-soft)" },
+  dirty: { key: "dirty", label: "Phòng bẩn", color: "#f59e0b", soft: "#fff7df" },
 };
 
 export const STATUS_TAB_ORDER = ["booked_future", "arriving_today", "in_house", "overdue", "checked_out"];
@@ -101,6 +102,7 @@ export const ROOM_STATUS_GROUP_ORDER = [
   "overdue",
   "checked_out",
   "maintenance",
+  "dirty",
 ];
 
 export const FLOORS = [...new Set(ROOMS.map((r) => r.floor))].sort((a, b) => a - b);
@@ -110,8 +112,18 @@ export const FLOORS = [...new Set(ROOMS.map((r) => r.floor))].sort((a, b) => a -
 export function computeRoomSnapshots(rooms, bookings, day) {
   const dayEnd = addDays(day, 1);
   return rooms.map((room) => {
-    const booking = bookings.find((b) => isRoomOccupied(b, room, day, dayEnd));
-    return { room, status: booking?.status ?? "vacant", booking: booking ?? null };
+    const booking = bookings.find(
+      (b) => b.status !== "checked_out" && isRoomOccupied(b, room, day, dayEnd)
+    );
+    const hasCheckedOut = bookings.some(
+      (b) => b.status === "checked_out" && isRoomOccupied(b, room, day, dayEnd)
+    );
+    return {
+      room,
+      status: booking?.status ?? "vacant",
+      booking: booking ?? null,
+      housekeeping: !booking && hasCheckedOut ? "dirty" : null,
+    };
   });
 }
 
@@ -167,7 +179,22 @@ export function buildRoomMapBookings(today) {
   }
   function push(room, status, checkIn, checkOut, guest, source) {
     seq += 1;
-    bookings.push({ id: `RM-${seq}`, code: 45000 + seq, room, status, checkIn, checkOut, guest, source });
+    const sourceGroup = ["Traveloka", "Agoda", "Booking.com"].includes(source) ? "OTA" : "Trực tiếp";
+    const guestNo = guestIdx + seq;
+    bookings.push({
+      id: `RM-${seq}`,
+      code: 45000 + seq,
+      room,
+      status,
+      checkIn,
+      checkOut,
+      guest,
+      source,
+      sourceGroup,
+      segment: guestNo % 2 ? "Công tác" : "Khách lẻ",
+      gender: guestNo % 2 ? "Nam" : "Nữ",
+      nationality: guestNo % 3 ? "VN" : "US",
+    });
   }
 
   ROOMS.forEach((room, i) => {
