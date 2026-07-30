@@ -92,6 +92,10 @@ export const STATUS_META = {
 
 export const STATUS_TAB_ORDER = ["booked_future", "arriving_today", "in_house", "overdue", "checked_out"];
 
+// 2 tab riêng để lọc theo phòng (không phải theo đặt phòng) — xem mục
+// computeRoomSnapshotsWithOverrides bên dưới.
+export const ROOM_TAB_ORDER = ["dirty", "maintenance"];
+
 // Thứ tự hiển thị các nhóm trạng thái trong tab "Đặt phòng" của chế độ lưới —
 // Trống trước tiên (giống danh sách "Phòng trống (22)" ở phần mềm tham chiếu).
 export const ROOM_STATUS_GROUP_ORDER = [
@@ -125,6 +129,26 @@ export function computeRoomSnapshots(rooms, bookings, day) {
       housekeeping: !booking && hasCheckedOut ? "dirty" : null,
     };
   });
+}
+
+// Áp override thủ công (bẩn/sạch/sửa, đặt qua icon/menu phòng) lên snapshot
+// tính từ computeRoomSnapshots — dùng chung cho cả Gantt và Lưới để 2 chế
+// độ xem luôn đồng nhất trạng thái phòng.
+export function computeRoomSnapshotsWithOverrides(rooms, bookings, overrides, day) {
+  return computeRoomSnapshots(rooms, bookings, day).map((snapshot) => {
+    const override = overrides[snapshot.room.number];
+    if (override === "dirty") return { ...snapshot, status: "vacant", housekeeping: "dirty", booking: null };
+    if (override === "clean") return { ...snapshot, status: "vacant", housekeeping: "clean", booking: null };
+    return override ? { ...snapshot, status: override, booking: null } : snapshot;
+  });
+}
+
+export function computeRoomStatusCounts(rooms, bookings, overrides, day) {
+  const snapshots = computeRoomSnapshotsWithOverrides(rooms, bookings, overrides, day);
+  return {
+    dirty: snapshots.filter((s) => s.housekeeping === "dirty").length,
+    maintenance: snapshots.filter((s) => s.status === "maintenance").length,
+  };
 }
 
 export const WEEKDAY_HEAD = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
