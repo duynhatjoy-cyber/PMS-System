@@ -6,11 +6,11 @@ import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
 import AddFundVoucherModal from "./AddFundVoucherModal";
 import EmptyState from "../../../components/EmptyState";
 import { formatDMY, formatCurrency, startOfDay } from "../../../utils/format";
+import { LEDGER_PAGINATION_LABELS, paginate } from "../../../utils/pagination";
 import warehouseStyles from "../../Warehouse/Warehouse.module.css";
 import styles from "../../CashFund/CashFund.module.css";
 
 const today = startOfDay(new Date());
-const PAGINATION_LABELS = { page: "Trang", rowsPerPage: "Số lượng mỗi trang", of: "trên" };
 
 // Shared "Lập phiếu thu chi" voucher list for BankFund and CashFund. The only
 // real difference between the two pages is the extra "Tài khoản" column/field
@@ -43,10 +43,7 @@ function FundVoucherPanel({
     return rows.filter((row) => row.type === wantType);
   }, [rows, docType]);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredRows.slice(start, start + pageSize);
-  }, [filteredRows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(filteredRows, page, pageSize), [filteredRows, page, pageSize]);
 
   function handleSaveVoucher(voucher) {
     setRows((prev) => [voucher, ...prev]);
@@ -190,7 +187,7 @@ function FundVoucherPanel({
         page={page}
         pageSize={pageSize}
         total={filteredRows.length}
-        labels={PAGINATION_LABELS}
+        labels={LEDGER_PAGINATION_LABELS}
         onPageChange={setPage}
         onPageSizeChange={(size) => {
           setPageSize(size);

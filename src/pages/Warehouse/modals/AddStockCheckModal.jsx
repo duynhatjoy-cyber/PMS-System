@@ -31,8 +31,6 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
   const [innerTab, setInnerTab] = useState("materials");
   const [purpose, setPurpose] = useState("");
   const [warehouse, setWarehouse] = useState(activeWarehouseNames[0]);
-  const dueDate = checkDate;
-  const checkDay = checkDate;
   const [conclusion, setConclusion] = useState("");
   const { lines, updateLine, addLine, removeLine } = useLineItems(emptyLine);
 
@@ -44,7 +42,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
     onSave({
       id: ticketNo,
       ticketNo,
-      date: checkDay,
+      date: checkDate,
       warehouse,
       note: conclusion,
       status,
@@ -93,7 +91,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
         <div className={styles.field}>
           <label className={styles.label}>Kiểm kê đến ngày</label>
           <div className={styles.datetimeRow}>
-            <span>{formatDMY(dueDate)}</span>
+            <span>{formatDMY(checkDate)}</span>
             <Calendar size={14} />
           </div>
         </div>
@@ -101,7 +99,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
         <div className={styles.field}>
           <label className={styles.label}>Ngày kiểm kê(*)</label>
           <div className={styles.datetimeRow}>
-            <span>{formatDMY(checkDay)}</span>
+            <span>{formatDMY(checkDate)}</span>
             <Calendar size={14} />
           </div>
         </div>

@@ -8,6 +8,7 @@ import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import { STOCK_OUT_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency, startOfDay } from "../../../utils/format";
+import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
 
 const today = startOfDay(new Date());
@@ -45,10 +46,7 @@ function StockOutPanel({ onToast }) {
     );
   }, [rows, query]);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredRows.slice(start, start + pageSize);
-  }, [filteredRows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(filteredRows, page, pageSize), [filteredRows, page, pageSize]);
 
   const total = filteredRows.reduce((sum, row) => sum + row.total, 0);
 

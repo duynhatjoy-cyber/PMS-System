@@ -3,13 +3,13 @@ import { Plus, Save } from "lucide-react";
 import EmptyState from "../../../components/EmptyState";
 import { sourceAvatar } from "../sourceAvatar";
 import { SOURCE_GROUPS, SOURCES_BY_GROUP } from "../../../data/bookingConfigData";
+import { createIdSequence } from "../../../utils/id";
 
-let draftSeq = 0;
+const nextId = createIdSequence();
 
 function blankSource(groupId) {
-  draftSeq += 1;
   return {
-    id: `src-draft-${draftSeq}`,
+    id: nextId("src-draft"),
     group: groupId,
     name: "",
     locked: false,

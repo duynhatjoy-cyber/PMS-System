@@ -1,0 +1,453 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+/* =========================
+   TOP TABS
+========================= */
+
+.topTabs {
+  display: flex;
+  gap: 4px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 5px;
+  width: fit-content;
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 10px 18px;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.topTab:hover {
+  color: var(--fd-text);
+}
+
+.topTabActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+/* =========================
+   TOOLBAR — chung cho cả 2 tab
+========================= */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.filterChip:hover {
+  background: var(--fd-surface-hover);
+}
+
+.filterChipActive {
+  border-color: transparent;
+}
+
+.filterChipCount {
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.bulkActions {
+  display: flex;
+  gap: 8px;
+}
+
+.bulkBtn {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bulkBtn:hover:not(:disabled) {
+  background: var(--fd-surface-hover);
+}
+
+.bulkBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================
+   CHỌN TẤT CẢ
+========================= */
+
+.selectAllRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.selectAllRow input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--fd-primary);
+}
+
+.selectedCount {
+  color: var(--fd-primary);
+  font-weight: 700;
+}
+
+/* =========================
+   NHÓM THEO TẦNG / ƯU TIÊN
+========================= */
+
+.floorSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.floorSectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.floorCount {
+  font-weight: 600;
+  color: var(--fd-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.sectionHint {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fd-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* =========================
+   TÌNH TRẠNG BUỒNG — LƯỚI THẺ PHÒNG
+========================= */
+
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.roomCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--fd-surface);
+  border: none;
+  border-left: 4px solid transparent;
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 10px 12px 12px 14px;
+  cursor: pointer;
+}
+
+.roomCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roomCardNumber {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--fd-text);
+}
+
+.roomCardType {
+  font-weight: 500;
+  color: var(--fd-text-muted);
+  font-size: 12px;
+}
+
+.roomCardGuest {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--fd-text-secondary);
+}
+
+.roomCardStatus {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* =========================
+   CHI TIẾT DỌN PHÒNG — ĐIỀU HƯỚNG NGÀY
+========================= */
+
+.dateNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navIconBtn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.navIconBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.todayBtn {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.todayBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.printBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.printBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+/* =========================
+   CHI TIẾT DỌN PHÒNG — BẢNG
+========================= */
+
+.detailTable {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.detailHeaderRow,
+.detailRow {
+  display: grid;
+  grid-template-columns: 110px 1.4fr 140px 190px 1.4fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+}
+
+.detailHeaderRow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--fd-text-muted);
+  background: var(--fd-bg);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.detailRow {
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailRoomCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailRoomNumber {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.detailRoomType {
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+.detailGuestCell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.detailGuestName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.detailGuestMeta {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+}
+
+.inlineSelect {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  font-size: 12.5px;
+  color: var(--fd-text);
+  font-family: inherit;
+}
+
+.inlineSelect:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.inlineInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  font-size: 12.5px;
+  color: var(--fd-text);
+  font-family: inherit;
+}
+
+.inlineInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .detailHeaderRow,
+  .detailRow {
+    grid-template-columns: 90px 1fr 120px;
+  }
+
+  .detailStaffCell,
+  .detailNoteCell {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .roomGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

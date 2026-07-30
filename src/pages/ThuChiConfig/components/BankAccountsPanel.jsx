@@ -3,12 +3,9 @@ import { Plus, Trash2 } from "lucide-react";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import { BANK_ACCOUNTS } from "../../../data/thuChiConfigData";
+import { createIdSequence } from "../../../utils/id";
 
-let draftSeq = 0;
-function nextId() {
-  draftSeq += 1;
-  return `bank-draft-${draftSeq}`;
-}
+const nextId = createIdSequence();
 
 function emptyDraft() {
   return { accountNumber: "", bankName: "", branch: "" };
@@ -35,7 +32,7 @@ function BankAccountsPanel({ styles, onToast }) {
       setErrors(missing);
       return;
     }
-    setAccounts((prev) => [...prev, { id: nextId(), ...draft }]);
+    setAccounts((prev) => [...prev, { id: nextId("bank-draft"), ...draft }]);
     setDraft(emptyDraft());
     setErrors({});
     onToast("Đã thêm tài khoản ngân hàng");

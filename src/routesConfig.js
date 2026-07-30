@@ -3,6 +3,10 @@ import RoomMap from "./pages/RoomMap/RoomMap";
 import CreateBooking from "./pages/CreateBooking/CreateBooking";
 import CreateInvoice from "./pages/CreateInvoice/CreateInvoice";
 import Warehouse from "./pages/Warehouse/Warehouse";
+import FnB from "./pages/FnB/FnB";
+import Housekeeping from "./pages/Housekeeping/Housekeeping";
+import Settings from "./pages/Settings/Settings";
+import UserProfile from "./pages/UserProfile/UserProfile";
 import CashFund from "./pages/CashFund/CashFund";
 import BankFund from "./pages/BankFund/BankFund";
 import EmailCampaigns from "./pages/EmailCampaigns/EmailCampaigns";
@@ -44,9 +48,19 @@ export const ROUTES = [
     Component: CreateInvoice,
   },
   {
+    key: "VẬN HÀNH::Buồng phòng",
+    path: "/van-hanh/buong-phong",
+    Component: Housekeeping,
+  },
+  {
     key: "VẬN HÀNH::Kho",
     path: "/van-hanh/kho",
     Component: Warehouse,
+  },
+  {
+    key: "VẬN HÀNH::F&B",
+    path: "/van-hanh/fnb",
+    Component: FnB,
   },
   {
     key: "TÀI CHÍNH::Thu Chi::Quỹ tiền mặt",
@@ -74,6 +88,14 @@ export const ROUTES = [
     Component: EmailConfig,
   },
   {
+    key: "CÀI ĐẶT::Cài đặt",
+    path: "/cai-dat",
+    Component: Settings,
+  },
+  {
+    key: "CÀI ĐẶT::Hồ sơ",
+    path: "/ho-so",
+    Component: UserProfile,
     key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
     path: "/cau-hinh/phong-va-gia",
     Component: RoomPriceConfig,

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Search, Mail, LayoutGrid, CheckCircle2, TriangleAlert, Clock } from "lucide-react";
+import { Mail, LayoutGrid, CheckCircle2, TriangleAlert, Clock } from "lucide-react";
 import DateField from "../../components/DateField";
 import HistoryListPanel from "./components/HistoryListPanel";
 import EmailPreviewModal from "./components/EmailPreviewModal";
@@ -84,10 +84,6 @@ function EmailHistory() {
           </div>
 
           <DateField label="Ngày" value={date} onChange={setDate} styles={styles} />
-
-          <button type="button" className={styles.submitBtn}>
-            <Search size={16} /> TÌM KIẾM
-          </button>
         </div>
       </div>
 

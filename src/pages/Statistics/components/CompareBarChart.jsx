@@ -1,6 +1,6 @@
 import styles from "./CompareBarChart.module.css";
 
-function CompareBarChart({ categories, series, valueFormatter = (v) => v }) {
+function CompareBarChart({ categories, series }) {
   const maxValue = Math.max(1, ...series.flatMap((s) => s.values));
   const showLegend = series.length > 1;
 
@@ -32,7 +32,7 @@ function CompareBarChart({ categories, series, valueFormatter = (v) => v }) {
                       className={styles.bar}
                       style={{ width: `${widthPct}%`, background: s.color }}
                     />
-                    <span className={styles.valueLabel}>{valueFormatter(value)}</span>
+                    <span className={styles.valueLabel}>{value}</span>
                   </div>
                 );
               })}

@@ -7,6 +7,7 @@ import EmptyState from "../../../components/EmptyState";
 import { STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
 import { useActiveWarehouseNames } from "../../../context/WarehouseConfigContext";
 import { startOfDay } from "../../../utils/format";
+import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
 
 const today = startOfDay(new Date());
@@ -25,10 +26,7 @@ function StockSummaryPanel({ onToast }) {
   const [pageSize, setPageSize] = useState(10);
   const [detailRow, setDetailRow] = useState(null);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return rows.slice(start, start + pageSize);
-  }, [rows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
 
   return (
     <div>

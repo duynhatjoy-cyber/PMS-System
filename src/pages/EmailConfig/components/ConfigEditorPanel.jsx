@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ShieldCheck, Save } from "lucide-react";
 import EmailToolbar from "../../../components/EmailToolbar";
+import "../../../components/emailTemplateTags.css";
 import { SMTP_TYPES } from "../../../data/emailConfigData";
 import styles from "../EmailConfig.module.css";
 
@@ -49,7 +50,11 @@ function ConfigEditorPanel({ config, onBack, onSave, onToast }) {
         </button>
 
         <div className={styles.editorTopActions}>
-          <button type="button" className={styles.ghostBtn}>
+          <button
+            type="button"
+            className={styles.ghostBtn}
+            onClick={() => onToast("Chức năng đang được phát triển")}
+          >
             <ShieldCheck size={16} /> Kiểm Tra
           </button>
           <button type="button" className={styles.primaryBtn} onClick={handleSave}>
@@ -162,7 +167,7 @@ function ConfigEditorPanel({ config, onBack, onSave, onToast }) {
             <span className={styles.signatureLabel}>ĐẦU EMAIL</span>
             <div className={styles.composer}>
               <EmailToolbar onToast={onToast} />
-              <div ref={headerRef} className={styles.contentArea} contentEditable suppressContentEditableWarning />
+              <div ref={headerRef} className={`${styles.contentArea} email-template-body`} contentEditable suppressContentEditableWarning />
             </div>
           </div>
 
@@ -170,7 +175,7 @@ function ConfigEditorPanel({ config, onBack, onSave, onToast }) {
             <span className={styles.signatureLabel}>CUỐI EMAIL</span>
             <div className={styles.composer}>
               <EmailToolbar onToast={onToast} />
-              <div ref={footerRef} className={styles.contentArea} contentEditable suppressContentEditableWarning />
+              <div ref={footerRef} className={`${styles.contentArea} email-template-body`} contentEditable suppressContentEditableWarning />
             </div>
           </div>
         </div>

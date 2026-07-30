@@ -6,17 +6,14 @@ import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import { EXPENSE_GROUPS, INCOME_GROUPS } from "../../../data/thuChiConfigData";
+import { createIdSequence } from "../../../utils/id";
 
 const SCOPES = [
   { key: "income", label: "Mục thu" },
   { key: "expense", label: "Mục chi" },
 ];
 
-let draftSeq = 0;
-function nextDraftId(prefix) {
-  draftSeq += 1;
-  return `${prefix}-draft-${draftSeq}`;
-}
+const nextId = createIdSequence();
 
 function CategoryTreePanel({ styles, onToast }) {
   const [groupsByScope, setGroupsByScope] = useState({ income: INCOME_GROUPS, expense: EXPENSE_GROUPS });
@@ -74,7 +71,7 @@ function CategoryTreePanel({ styles, onToast }) {
   }
 
   function handleAddGroup(name) {
-    const newGroup = { id: nextDraftId("grp"), name, active: true, categories: [] };
+    const newGroup = { id: nextId("grp-draft"), name, active: true, categories: [] };
     updateGroups((list) => [...list, newGroup]);
     setGroupId(newGroup.id);
     setCategoryId(null);
@@ -82,7 +79,7 @@ function CategoryTreePanel({ styles, onToast }) {
   }
 
   function handleAddCategory(name) {
-    const newCategory = { id: nextDraftId("cat"), groupId, name, code: "", note: "", active: true };
+    const newCategory = { id: nextId("cat-draft"), groupId, name, code: "", note: "", active: true };
     updateGroups((list) =>
       list.map((g) => (g.id === groupId ? { ...g, categories: [...g.categories, newCategory] } : g))
     );

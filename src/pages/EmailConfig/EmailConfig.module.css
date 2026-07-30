@@ -305,23 +305,10 @@
   outline: none;
 }
 
-.contentArea p {
-  margin: 0 0 10px;
-}
-
-.contentArea :global(.cf-tag) {
-  display: inline-block;
-  background: #fef6d0;
-  color: var(--fd-text);
-  padding: 1px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.contentArea :global(.cf-muted) {
-  color: var(--fd-text-secondary);
-}
+/* Kiểu cho .cf-tag/.cf-muted dùng chung với bản xem trước — xem
+   src/components/emailTemplateTags.css, áp dụng qua class
+   "email-template-body" đặt cùng .contentArea bên dưới. .cfg-banner là
+   riêng của chữ ký email nên vẫn khai báo tại đây. */
 
 .contentArea :global(.cfg-banner) {
   background: var(--fd-primary);

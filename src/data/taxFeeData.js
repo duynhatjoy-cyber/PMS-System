@@ -10,7 +10,6 @@ export const INITIAL_TAX_FEES = [
     name: "VAT",
     description: "Thuế giá trị gia tăng",
     percent: 10,
-    reductionPercent: 0,
   },
 ];
 

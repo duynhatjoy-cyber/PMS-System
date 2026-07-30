@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Plus, Save } from "lucide-react";
 import EmptyState from "../../../components/EmptyState";
 import { CUSTOMER_SEGMENTS } from "../../../data/bookingConfigData";
+import { createIdSequence } from "../../../utils/id";
 
-let draftSeq = 0;
+const nextId = createIdSequence();
 
 function blankSegment() {
-  draftSeq += 1;
-  return { id: `seg-draft-${draftSeq}`, code: "", name: "", description: "" };
+  return { id: nextId("seg-draft"), code: "", name: "", description: "" };
 }
 
 function CustomerSegmentsPanel({ styles, onToast }) {

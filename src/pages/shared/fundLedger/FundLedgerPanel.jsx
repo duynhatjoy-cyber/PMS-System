@@ -3,12 +3,12 @@ import { ArrowUpDown } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import { formatDMY, formatCurrency, startOfDay } from "../../../utils/format";
+import { LEDGER_PAGINATION_LABELS, paginate } from "../../../utils/pagination";
 import EmptyState from "../../../components/EmptyState";
 import warehouseStyles from "../../Warehouse/Warehouse.module.css";
 import styles from "../../CashFund/CashFund.module.css";
 
 const today = startOfDay(new Date());
-const PAGINATION_LABELS = { page: "Trang", rowsPerPage: "Số lượng mỗi trang", of: "trên" };
 
 // Shared "sổ chi tiết" ledger view used by both BankFund and CashFund — the
 // two pages are identical here apart from the data source, the opening
@@ -20,10 +20,7 @@ function FundLedgerPanel({ onToast, rows, openingBalance, searchToastMessage }) 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return rows.slice(start, start + pageSize);
-  }, [rows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
 
   const totalThu = rows.filter((r) => r.type === "thu").reduce((sum, r) => sum + r.amount, 0);
   const totalChi = rows.filter((r) => r.type === "chi").reduce((sum, r) => sum + r.amount, 0);
@@ -123,7 +120,7 @@ function FundLedgerPanel({ onToast, rows, openingBalance, searchToastMessage }) 
         page={page}
         pageSize={pageSize}
         total={rows.length}
-        labels={PAGINATION_LABELS}
+        labels={LEDGER_PAGINATION_LABELS}
         onPageChange={setPage}
         onPageSizeChange={(size) => {
           setPageSize(size);

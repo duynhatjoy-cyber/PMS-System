@@ -9,7 +9,6 @@ function AddTaxFeeModal({ onClose, onSave }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [percent, setPercent] = useState("0");
-  const [reductionPercent, setReductionPercent] = useState("0");
 
   const typeLabel = TAX_FEE_TYPES.find((t) => t.value === type)?.label ?? "Tiền thuế";
   const canSave = name.trim().length > 0;
@@ -22,7 +21,6 @@ function AddTaxFeeModal({ onClose, onSave }) {
       name: name.trim(),
       description: description.trim(),
       percent: Number(percent) || 0,
-      reductionPercent: Number(reductionPercent) || 0,
     });
   }
 
@@ -60,35 +58,18 @@ function AddTaxFeeModal({ onClose, onSave }) {
         />
       </div>
 
-      <div className={shared.row} style={{ marginTop: 14 }}>
-        <div className={shared.field}>
-          <label className={shared.label}>Áp dụng theo %</label>
-          <div className={styles.percentGroup}>
-            <span className={styles.percentSign}>%</span>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              className={styles.percentInput}
-              value={percent}
-              onChange={(e) => setPercent(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className={shared.field}>
-          <label className={shared.label}>Mức giảm thuế</label>
-          <div className={styles.percentGroup}>
-            <span className={styles.percentSign}>%</span>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              className={styles.percentInput}
-              value={reductionPercent}
-              onChange={(e) => setReductionPercent(e.target.value)}
-            />
-          </div>
+      <div className={shared.field} style={{ marginTop: 14 }}>
+        <label className={shared.label}>Áp dụng theo %</label>
+        <div className={styles.percentGroup}>
+          <span className={styles.percentSign}>%</span>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            className={styles.percentInput}
+            value={percent}
+            onChange={(e) => setPercent(e.target.value)}
+          />
         </div>
       </div>
 

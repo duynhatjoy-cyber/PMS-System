@@ -1,0 +1,554 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+/* =========================
+   TOP TABS
+========================= */
+
+.topTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 5px;
+  width: fit-content;
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  background: none;
+  padding: 9px 15px;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.topTab:hover {
+  color: var(--fd-text);
+}
+
+.topTabActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+/* =========================
+   CARD — khung dùng chung cho mọi panel
+========================= */
+
+.panelStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+}
+
+.card {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardHeadRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.cardSubtitle {
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* =========================
+   TRẠNG THÁI KẾT NỐI (badge)
+========================= */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statusBadgeOn {
+  background: var(--fd-success-soft);
+  color: var(--fd-success);
+}
+
+.statusBadgeOff {
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+}
+
+/* =========================
+   HỒ SƠ — hạng sao
+========================= */
+
+.starRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.starBtn {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--fd-border-strong);
+  display: inline-flex;
+}
+
+.starBtnFilled {
+  color: #f2a83b;
+}
+
+.starHint {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  margin-top: -4px;
+}
+
+/* =========================
+   HÀNG "INPUT + NÚT" DÙNG CHUNG (copy URL, thêm từ khóa, lưu ID...)
+========================= */
+
+.copyRow {
+  display: flex;
+  gap: 8px;
+}
+
+.copyRow input {
+  flex: 1;
+  min-width: 0;
+}
+
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.colorSwatch {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  cursor: pointer;
+  background: none;
+}
+
+/* =========================
+   CẤU HÌNH AI
+========================= */
+
+.rangeInput {
+  width: 100%;
+  accent-color: var(--fd-primary);
+  height: 6px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keywordChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px 5px 12px;
+  border-radius: 999px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.keywordChip button {
+  border: none;
+  background: none;
+  color: inherit;
+  display: inline-flex;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.taxChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* =========================
+   GÓI DỊCH VỤ
+========================= */
+
+.planNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.planName {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--fd-text);
+}
+
+.planBadge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fd-surface-hover);
+  color: var(--fd-text-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.usageStack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.usageRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.usageHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--fd-text);
+}
+
+.usageCount {
+  color: var(--fd-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.usageTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--fd-bg);
+  overflow: hidden;
+}
+
+.usageFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--fd-primary);
+}
+
+.upgradeBtn {
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+/* =========================
+   CÀI ĐẶT PMS — FX / GIỜ CHECK-IN-OUT / MÁY IN
+========================= */
+
+.fxList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fxRow {
+  display: grid;
+  grid-template-columns: 60px 1fr 44px auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.fxCode {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.fxSuffix {
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.windowRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.windowRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.windowLabel {
+  flex: none;
+  width: 100px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  padding-bottom: 11px;
+}
+
+.windowTimes {
+  display: flex;
+  gap: 14px;
+  flex: 1;
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 16px;
+}
+
+.templateCardTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+/* =========================
+   NHÂN VIÊN
+========================= */
+
+.staffTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.staffHeaderRow,
+.staffRow {
+  display: grid;
+  grid-template-columns: 1.1fr 1.6fr 130px 110px 36px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+}
+
+.staffHeaderRow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--fd-text-muted);
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.staffRow {
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.staffRow:last-child {
+  border-bottom: none;
+}
+
+.staffRowInactive {
+  opacity: 0.55;
+}
+
+.staffName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.staffEmail {
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+}
+
+.roleBadge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fd-violet-soft);
+  color: var(--fd-violet);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* =========================
+   THÔNG BÁO
+========================= */
+
+.instructionList {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+}
+
+/* =========================
+   KẾT NỐI KÊNH (CMS)
+========================= */
+
+.cmsRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cmsStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--fd-success);
+  flex: none;
+}
+
+.cmsProvider {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fd-surface-hover);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.cmsId {
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cmsSync {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  margin-left: auto;
+}
+
+.cmsActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .staffHeaderRow,
+  .staffRow {
+    grid-template-columns: 1fr 1fr 110px 36px;
+  }
+
+  .staffHeaderRow span:nth-child(2),
+  .staffRow .staffEmail {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .fxRow {
+    grid-template-columns: 50px 1fr auto;
+  }
+
+  .fxSuffix {
+    display: none;
+  }
+
+  .windowRow {
+    flex-wrap: wrap;
+  }
+
+  .windowLabel {
+    width: 100%;
+    padding-bottom: 0;
+  }
+}

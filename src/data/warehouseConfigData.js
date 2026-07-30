@@ -1,8 +1,6 @@
-let idSeq = 0;
-function nextId(prefix) {
-  idSeq += 1;
-  return `${prefix}-${idSeq}`;
-}
+import { createIdSequence } from "../utils/id";
+
+const nextId = createIdSequence();
 
 // Đúng danh sách + trạng thái trong mock: "Kho tổng" đã ngừng dùng, "Kho
 // khách sạn" đang chọn sẵn và có dữ liệu liên quan nên không xoá được (minh
