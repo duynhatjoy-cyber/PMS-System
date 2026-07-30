@@ -26,7 +26,7 @@
 
 .menu {
   position: fixed;
-  min-width: 190px;
+  min-width: 220px;
   background: #fff;
   border: 1px solid var(--fd-border-strong);
   border-radius: var(--fd-radius-md);
@@ -40,10 +40,13 @@
 
 .menuItem {
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-align: left;
   border: none;
   background: none;
-  padding: 8px 10px;
+  padding: 9px 10px;
   font-size: 13.5px;
   color: var(--fd-text);
   border-radius: 8px;
@@ -54,12 +57,21 @@
   background: var(--fd-surface-hover);
 }
 
+.menuItemIcon {
+  flex: none;
+  color: var(--fd-text-muted);
+}
+
 .danger {
   color: var(--fd-danger);
 }
 
 .danger:hover {
   background: var(--fd-danger-soft);
+}
+
+.danger .menuItemIcon {
+  color: var(--fd-danger);
 }
 
 .divider {

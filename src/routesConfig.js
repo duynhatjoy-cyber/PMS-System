@@ -96,6 +96,8 @@ export const ROUTES = [
     key: "CÀI ĐẶT::Hồ sơ",
     path: "/ho-so",
     Component: UserProfile,
+  },
+  {
     key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
     path: "/cau-hinh/phong-va-gia",
     Component: RoomPriceConfig,

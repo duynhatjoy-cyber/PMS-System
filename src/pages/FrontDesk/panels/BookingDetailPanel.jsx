@@ -159,8 +159,6 @@ function BookingDetailPanel({
                 onClick: () => onPrintOption(booking, item.key),
               }))}
             />
-            <button type="button" className={styles.iconBtn} title="Lịch sử">
-            <PrintMenu onSelect={(option) => onPrintOption(booking, option)} />
             <button type="button" className={styles.iconBtn} title="Việc cần làm" onClick={() => setShowTask(true)}>
               <History size={16} />
             </button>
