@@ -1,8 +1,6 @@
-let idSeq = 0;
-function nextId(prefix) {
-  idSeq += 1;
-  return `${prefix}-${idSeq}`;
-}
+import { createIdSequence } from "../utils/id";
+
+const nextId = createIdSequence();
 
 function makeCategory(groupId, name) {
   return { id: nextId("cat"), groupId, name, code: "", note: "", active: true };

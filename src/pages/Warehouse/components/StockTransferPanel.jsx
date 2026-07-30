@@ -8,6 +8,7 @@ import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import { STOCK_TRANSFER_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
+import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
 
 function StockTransferPanel({ onToast }) {
@@ -30,10 +31,7 @@ function StockTransferPanel({ onToast }) {
     handleSaveTicket,
   } = useStockPanel(STOCK_TRANSFER_ROWS, "Đã thêm phiếu chuyển kho", onToast);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return rows.slice(start, start + pageSize);
-  }, [rows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
 
   return (
     <div>

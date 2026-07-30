@@ -4,14 +4,11 @@ import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import { useWarehouseConfig } from "../../../context/WarehouseConfigContext";
+import { createIdSequence } from "../../../utils/id";
 
 const NEW_ID = "__new_supplier__";
 
-let draftSeq = 0;
-function nextDraftId() {
-  draftSeq += 1;
-  return `ncc-draft-${draftSeq}`;
-}
+const nextId = createIdSequence();
 
 function emptyDraft() {
   return {
@@ -69,7 +66,7 @@ function SuppliersPanel({ styles, onToast }) {
       return;
     }
     if (isNew) {
-      const newSupplier = { ...draft, id: nextDraftId() };
+      const newSupplier = { ...draft, id: nextId("ncc-draft") };
       setSuppliers((prev) => [...prev, newSupplier]);
       setDraft(null);
       setSelectedId(newSupplier.id);

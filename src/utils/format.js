@@ -54,10 +54,10 @@ export function toLocalInputValue(date) {
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}T${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
 }
 
+const compactVNDFormatter = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 0 });
+
 export function formatCompactVND(amount) {
-  if (amount >= 1_000_000) return `${Math.round(amount / 1_000_000)}M`;
-  if (amount >= 1_000) return `${Math.round(amount / 1_000)}K`;
-  return String(Math.round(amount));
+  return compactVNDFormatter.format(amount);
 }
 
 export function addMonths(date, months) {

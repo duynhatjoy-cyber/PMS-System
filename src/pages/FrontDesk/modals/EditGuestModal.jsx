@@ -32,7 +32,11 @@ function emptyGuest(name = "") {
 function EditGuestModal({ booking, initialSelectedId, onClose, onSave }) {
   const [guests, setGuests] = useState(() => {
     const existing = booking.guests && booking.guests.length > 0 ? booking.guests : [booking.guest];
-    return existing.map((g, index) => ({ ...emptyGuest(g.name), id: g.id || emptyGuest().id, isPrimary: index === 0 }));
+    return existing.map((g, index) => ({
+      ...emptyGuest(g.name),
+      id: g.id || `g-${Math.round(Math.random() * 1e9)}`,
+      isPrimary: index === 0,
+    }));
   });
   const [selectedId, setSelectedId] = useState(initialSelectedId || guests[0]?.id);
   const [showUpload, setShowUpload] = useState(false);

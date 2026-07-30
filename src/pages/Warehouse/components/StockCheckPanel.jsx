@@ -8,6 +8,7 @@ import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import { STOCK_CHECK_ROWS, STATUS_OPTIONS } from "../../../data/warehouseData";
 import { formatDMY } from "../../../utils/format";
+import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
 
 function StockCheckPanel({ onToast }) {
@@ -36,10 +37,7 @@ function StockCheckPanel({ onToast }) {
     return rows.filter((row) => row.status === status);
   }, [rows, status]);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredRows.slice(start, start + pageSize);
-  }, [filteredRows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(filteredRows, page, pageSize), [filteredRows, page, pageSize]);
 
   return (
     <div>

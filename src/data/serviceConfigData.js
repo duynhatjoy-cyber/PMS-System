@@ -1,8 +1,6 @@
-let idSeq = 0;
-function nextId(prefix) {
-  idSeq += 1;
-  return `${prefix}-${idSeq}`;
-}
+import { createIdSequence } from "../utils/id";
+
+const nextId = createIdSequence();
 
 // 5 loại dịch vụ cố định (cột trái) — spec không có luồng thêm/xóa loại dịch vụ.
 export const SERVICE_TYPES = [
@@ -61,6 +59,4 @@ export const INITIAL_GROUPS_BY_TYPE = {
   ],
 };
 
-export function nextDraftId(prefix) {
-  return nextId(prefix);
-}
+export const nextDraftId = nextId;

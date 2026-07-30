@@ -1,6 +1,15 @@
 // Mock data for the "Thu chi > Quỹ tiền mặt" (cash fund) screen. No backend
 // exists yet, so these lists stand in for a real cash-receipt/payment ledger.
 
+// hh/mm/ss trong CASH_VOUCHER_ROWS được ghép với 1 ngày cụ thể (thường là hôm
+// nay) tại thời điểm hiển thị — dùng chung cho cả CashLedgerPanel và
+// CashVoucherPanel thay vì mỗi nơi tự định nghĩa lại.
+export function atTime(date, row) {
+  const d = new Date(date);
+  d.setHours(row.hh, row.mm, row.ss, 0);
+  return d;
+}
+
 export const CASH_VOUCHER_TYPES = ["Tất cả", "Phiếu thu tiền", "Phiếu chi tiền"];
 
 export const OPENING_CASH_BALANCE = 4932012;

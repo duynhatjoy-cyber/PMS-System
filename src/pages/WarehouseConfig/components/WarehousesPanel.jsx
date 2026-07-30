@@ -6,14 +6,11 @@ import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import { useWarehouseConfig } from "../../../context/WarehouseConfigContext";
+import { createIdSequence } from "../../../utils/id";
 
 const NEW_ID = "__new_warehouse__";
 
-let draftSeq = 0;
-function nextDraftId() {
-  draftSeq += 1;
-  return `kho-draft-${draftSeq}`;
-}
+const nextId = createIdSequence();
 
 function emptyDraft() {
   return {
@@ -67,7 +64,7 @@ function WarehousesPanel({ styles, onToast }) {
       return;
     }
     if (isNew) {
-      const newWarehouse = { ...draft, id: nextDraftId() };
+      const newWarehouse = { ...draft, id: nextId("kho-draft") };
       setWarehouses((prev) => [...prev, newWarehouse]);
       setDraft(null);
       setSelectedId(newWarehouse.id);

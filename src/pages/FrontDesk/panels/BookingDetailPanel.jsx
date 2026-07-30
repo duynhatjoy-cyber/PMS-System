@@ -16,13 +16,19 @@ import {
   IdCard,
   ChevronDown,
   ChevronRight,
+  Printer,
 } from "lucide-react";
 import IconPopup from "../components/IconPopup";
-import PrintMenu from "../components/PrintMenu";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import { computeBill } from "../../../utils/billing";
 import { formatCurrency, formatDateTimeDMY } from "../../../utils/format";
 import styles from "./BookingDetailPanel.module.css";
+
+const PRINT_MENU_ITEMS = [
+  { key: "invoice", label: "Xem/in hóa đơn" },
+  { key: "now", label: "Thời điểm hiện tại" },
+  { key: "checkout", label: "Thời điểm trả phòng" },
+];
 
 const PAYMENT_METHODS = ["Tiền mặt", "Thẻ tín dụng", "Chuyển khoản NH", "Công nợ"];
 
@@ -142,7 +148,14 @@ function BookingDetailPanel({
             <button type="button" className={styles.iconBtn} title="Gửi email">
               <Mail size={16} />
             </button>
-            <PrintMenu onSelect={(option) => onPrintOption(booking, option)} />
+            <IconPopup
+              icon={Printer}
+              title="In"
+              items={PRINT_MENU_ITEMS.map((item) => ({
+                ...item,
+                onClick: () => onPrintOption(booking, item.key),
+              }))}
+            />
             <button type="button" className={styles.iconBtn} title="Lịch sử">
               <History size={16} />
             </button>

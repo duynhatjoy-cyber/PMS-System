@@ -5,10 +5,9 @@ import CashCheckForm from "./CashCheckForm";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import { CASH_CHECK_ROWS } from "../../../data/cashFundData";
+import { LEDGER_PAGINATION_LABELS, paginate } from "../../../utils/pagination";
 import warehouseStyles from "../../Warehouse/Warehouse.module.css";
 import styles from "../CashFund.module.css";
-
-const PAGINATION_LABELS = { page: "Trang", rowsPerPage: "Số lượng mỗi trang", of: "trên" };
 
 function CashCheckPanel({ onToast }) {
   const [rows, setRows] = useState(CASH_CHECK_ROWS);
@@ -17,10 +16,7 @@ function CashCheckPanel({ onToast }) {
   const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const pagedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return rows.slice(start, start + pageSize);
-  }, [rows, page, pageSize]);
+  const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
 
   function handleSaveCheck(check) {
     setRows((prev) => [check, ...prev]);
@@ -135,7 +131,7 @@ function CashCheckPanel({ onToast }) {
         page={page}
         pageSize={pageSize}
         total={rows.length}
-        labels={PAGINATION_LABELS}
+        labels={LEDGER_PAGINATION_LABELS}
         onPageChange={setPage}
         onPageSizeChange={(size) => {
           setPageSize(size);

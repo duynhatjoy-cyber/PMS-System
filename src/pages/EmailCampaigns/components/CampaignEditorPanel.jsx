@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { CAMPAIGN_TRIGGERS, MERGE_TAG_GROUPS, TEMPLATES_BY_TRIGGER } from "../../../data/emailCampaignData";
 import EmailToolbar from "../../../components/EmailToolbar";
+import "../../../components/emailTemplateTags.css";
 import styles from "../EmailCampaigns.module.css";
 
 const TRIGGER_ICONS = {
@@ -179,7 +180,11 @@ function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
         </button>
 
         <div className={styles.editorTopActions}>
-          <button type="button" className={styles.ghostBtn}>
+          <button
+            type="button"
+            className={styles.ghostBtn}
+            onClick={() => onToast("Chức năng đang được phát triển")}
+          >
             <Eye size={16} /> Xem Trước
           </button>
           <button type="button" className={styles.primaryBtn} onClick={handleSave}>
@@ -212,7 +217,11 @@ function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
         <div className={styles.titleFieldRow}>
           <div className={styles.titleFieldTop}>
             <span className={styles.fieldLabel}>Tiêu đề</span>
-            <button type="button" className={styles.copyLink}>
+            <button
+              type="button"
+              className={styles.copyLink}
+              onClick={() => onToast("Chức năng đang được phát triển")}
+            >
               <Copy size={14} /> Copy Mẫu Thư
             </button>
           </div>
@@ -233,7 +242,7 @@ function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
 
             <div
               ref={bodyRef}
-              className={styles.contentArea}
+              className={`${styles.contentArea} email-template-body`}
               contentEditable
               suppressContentEditableWarning
               onMouseUp={saveSelection}

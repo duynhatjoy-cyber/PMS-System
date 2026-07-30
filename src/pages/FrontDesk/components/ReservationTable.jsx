@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
+import { Printer } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import RoomCell from "./RoomCell";
 import GuestCell from "./GuestCell";
 import RowActionMenu from "./RowActionMenu";
-import PrintMenu from "./PrintMenu";
+import IconPopup from "./IconPopup";
 import { formatDateTimeDMY, formatElapsed } from "../../../utils/format";
 import EmptyState from "../../../components/EmptyState";
 import styles from "./ReservationTable.module.css";
+
+const PRINT_MENU_ITEMS = [
+  { key: "invoice", label: "Xem/in hóa đơn" },
+  { key: "now", label: "Thời điểm hiện tại" },
+  { key: "checkout", label: "Thời điểm trả phòng" },
+];
 
 const TAB_META = {
   arrivals: { badgeTone: "arrival", label: "Sẽ đến" },
@@ -70,7 +77,14 @@ function ReservationTable({ tab, rows, onOpenGuest, getMenuItems, onPrintOption 
               </td>
               <td>
                 <div className={styles.actionsCell}>
-                  <PrintMenu onSelect={(option) => onPrintOption(booking, option)} />
+                  <IconPopup
+                    icon={Printer}
+                    title="In"
+                    items={PRINT_MENU_ITEMS.map((item) => ({
+                      ...item,
+                      onClick: () => onPrintOption(booking, item.key),
+                    }))}
+                  />
                   <RowActionMenu items={getMenuItems(booking)} />
                 </div>
               </td>

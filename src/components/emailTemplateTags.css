@@ -1,0 +1,73 @@
+/* Kiểu dùng chung cho nội dung mẫu email (tiêu đề xác nhận, tag merge, bảng
+   chi tiết, thông tin khách sạn...). Các class .cf-* nằm bên trong HTML mẫu
+   email được chèn qua dangerouslySetInnerHTML / contentEditable, không phải
+   class do CSS Module cấp phát — nên khai báo là CSS thường (không module),
+   dùng chung giữa bản xem trước (EmailRenderedContent) và 2 vùng soạn thảo
+   contentEditable (EmailCampaigns, EmailConfig) thay vì lặp lại ở cả 3 nơi.
+   Import file này (side-effect) ở bất kỳ nơi nào render nội dung mẫu email,
+   và đặt class "email-template-body" trên phần tử bao ngoài. */
+
+.email-template-body p {
+  margin: 0 0 10px;
+}
+
+.email-template-body .cf-confirm-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.email-template-body .cf-section-title {
+  margin: 18px 0 8px;
+  padding: 8px 12px;
+  background: var(--fd-surface-hover);
+  border-left: 3px solid var(--fd-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.email-template-body .cf-muted {
+  color: var(--fd-text-secondary);
+}
+
+.email-template-body .cf-tag {
+  display: inline-block;
+  background: #fef6d0;
+  color: var(--fd-text);
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.email-template-body .cf-hotel-info {
+  float: right;
+  margin: 4px 0 12px;
+  font-size: 13px;
+}
+
+.email-template-body .cf-hotel-info td {
+  padding: 2px 0;
+  text-align: right;
+}
+
+/* Xem trước ở màn hẹp: khối thông tin khách sạn thường trôi nổi (float) bên
+   cạnh nội dung, nhưng ở bề rộng điện thoại thì không đủ chỗ — xếp chồng lại. */
+.email-template-body.stacked .cf-hotel-info {
+  float: none;
+  width: 100%;
+  margin: 4px 0 16px;
+}
+
+.email-template-body.stacked .cf-hotel-info td {
+  text-align: left;
+}
+
+.email-template-body .cf-detail-table {
+  border-collapse: collapse;
+}
+
+.email-template-body .cf-detail-table td {
+  padding: 3px 10px 3px 0;
+  font-size: 13.5px;
+}

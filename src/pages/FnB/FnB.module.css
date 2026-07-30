@@ -1,0 +1,785 @@
+.page {
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--fd-text-secondary);
+  max-width: 640px;
+}
+
+/* =========================
+   TOP TABS
+========================= */
+
+.topTabs {
+  display: flex;
+  gap: 4px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 5px;
+  width: fit-content;
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 10px 18px;
+  border-radius: var(--fd-radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.topTab:hover {
+  color: var(--fd-text);
+}
+
+.topTabActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.tabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--fd-status-blue-soft);
+  color: var(--fd-status-blue);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   TOOLBAR (legend + actions) — dùng chung Sơ đồ bàn / Đơn hàng / Thực đơn
+========================= */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-navy);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addBtn:hover {
+  background: var(--fd-navy-hover);
+}
+
+/* =========================
+   SƠ ĐỒ BÀN
+========================= */
+
+.zoneSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zoneSectionHead {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.zoneCount {
+  font-weight: 600;
+  color: var(--fd-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.tableGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.tableCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--fd-surface);
+  border: none;
+  border-left: 4px solid transparent;
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 12px 12px 12px 14px;
+}
+
+.tableCardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tableCardNumber {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--fd-text);
+}
+
+.tableCardZone {
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+.tableCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--fd-text-secondary);
+}
+
+.tableCardStatus {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.tableCardOrderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-primary);
+  cursor: pointer;
+}
+
+.tableCardOrderBtn:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   ĐƠN HÀNG
+========================= */
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.orderCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 14px 18px;
+  cursor: pointer;
+}
+
+.orderCard:hover {
+  border-color: var(--fd-primary-tint);
+}
+
+.orderCardLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.orderCardTable {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.orderCardMeta {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+}
+
+.orderCardRight {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.orderCardCount {
+  font-size: 12.5px;
+  color: var(--fd-text-secondary);
+}
+
+.orderCardTotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fd-primary);
+}
+
+/* =========================
+   ORDER DETAIL MODAL
+========================= */
+
+.kitchenSteps {
+  display: flex;
+  align-items: center;
+}
+
+.kitchenStepGroup {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.kitchenStepGroup:last-child {
+  flex: none;
+}
+
+.kitchenStep {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+
+.kitchenStepDot {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: 999px;
+  border: 2px solid var(--fd-border-strong);
+  background: #fff;
+}
+
+.kitchenStepDotActive {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary);
+}
+
+.kitchenStepDotDone {
+  border-color: var(--fd-success);
+  background: var(--fd-success);
+}
+
+.kitchenStepLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-muted);
+  white-space: nowrap;
+}
+
+.kitchenStepLabelActive {
+  color: var(--fd-text);
+}
+
+.kitchenStepConnector {
+  flex: 1;
+  height: 2px;
+  margin: 0 10px;
+  background: var(--fd-border);
+}
+
+.kitchenStepConnectorDone {
+  background: var(--fd-success);
+}
+
+.kitchenBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lineList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+}
+
+.lineRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.lineRow:last-child {
+  border-bottom: none;
+}
+
+.lineName {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.linePrice {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  white-space: nowrap;
+}
+
+.qtyStepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qtyBtn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--fd-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.qtyBtn:hover {
+  background: var(--fd-surface-hover);
+}
+
+.qtyValue {
+  min-width: 16px;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.lineTotal {
+  min-width: 84px;
+  text-align: right;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.lineRemoveBtn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--fd-danger);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lineRemoveBtn:hover {
+  background: var(--fd-danger-soft);
+}
+
+.emptyLines {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--fd-text-muted);
+}
+
+.pickerSectionTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 4px 0 -2px;
+}
+
+.chipRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--fd-border-strong);
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--fd-surface-hover);
+}
+
+.chipActive {
+  background: var(--fd-navy);
+  border-color: var(--fd-navy);
+  color: #fff;
+}
+
+.pickerList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.pickerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+}
+
+.pickerRowUnavailable {
+  opacity: 0.55;
+}
+
+.pickerName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text);
+}
+
+.pickerPrice {
+  font-size: 12px;
+  color: var(--fd-text-muted);
+  margin-left: 6px;
+}
+
+.pickerAddBtn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 999px;
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: none;
+}
+
+.pickerAddBtn:hover:not(:disabled) {
+  background: var(--fd-primary);
+  color: #fff;
+}
+
+.pickerAddBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.orderFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.orderTotalLabel {
+  font-size: 13px;
+  color: var(--fd-text-secondary);
+}
+
+.orderTotalValue {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--fd-text);
+  margin-left: 8px;
+}
+
+.orderFooterActions {
+  display: flex;
+  gap: 10px;
+}
+
+/* =========================
+   THỰC ĐƠN — 2 CỘT
+========================= */
+
+.menuLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.categoryCol {
+  flex: none;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  overflow: hidden;
+}
+
+.categoryColHead {
+  padding: 14px 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--fd-border);
+}
+
+.categoryRow:hover {
+  background: var(--fd-surface-hover);
+}
+
+.categoryRowActive {
+  background: var(--fd-primary-soft);
+}
+
+.categoryRowLabel {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 12px 6px 12px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.categoryRowActive .categoryRowLabel {
+  color: var(--fd-primary);
+}
+
+.categoryRowCount {
+  font-weight: 500;
+  color: var(--fd-text-muted);
+}
+
+.addCategoryRow {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+}
+
+.addCategoryInput {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  font-size: 13px;
+  color: var(--fd-text);
+  font-family: inherit;
+}
+
+.addCategoryInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.addCategoryBtn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-primary);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.addCategoryBtn:hover:not(:disabled) {
+  background: var(--fd-primary-hover);
+}
+
+.addCategoryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itemsCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.itemsColHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.itemsColTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.menuItemCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+  padding: 12px 14px;
+}
+
+.menuItemCardInactive {
+  opacity: 0.6;
+}
+
+.menuItemName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.menuItemPrice {
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+  margin-top: 3px;
+}
+
+.inactiveTag {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--fd-bg);
+  color: var(--fd-text-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .menuLayout {
+    flex-wrap: wrap;
+  }
+
+  .categoryCol {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 18px 16px 28px;
+  }
+
+  .tableGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
