@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Check, ClipboardList, Wrench } from "lucide-react";
+import { BedDouble, Brush, Check, ClipboardList, Wrench } from "lucide-react";
 import useOutsideClick from "../../../utils/useOutsideClick";
-import { formatCurrency, formatDMYShort } from "../../../utils/format";
+import { useBookingCardFields } from "../../../utils/bookingCardConfig";
+import { guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
+import { colorForStatus, useRoomStatusColors } from "../../../utils/roomColorConfig";
 import {
   computeRoomSnapshots,
   FLOORS,
@@ -13,6 +15,7 @@ import {
   STATUS_META,
 } from "../../../data/roomMapData";
 import styles from "../RoomMap.module.css";
+import BookingActionMenu from "./BookingActionMenu";
 
 const GROUP_TABS = [
   { key: "status", label: "Đặt phòng" },
@@ -49,30 +52,41 @@ function buildSections(groupTab, snapshots) {
   })).filter((s) => s.items.length > 0);
 }
 
-function RoomStatusGrid({ rooms, bookings, selectedDate, density, saleMode, onToast }) {
+function RoomStatusGrid({ rooms, bookings, selectedDate, density, onToast, onOpenDetail, onBookingAction, onOpenMaintenance, roomStatusOverrides }) {
   const [groupTab, setGroupTab] = useState("status");
   const [popover, setPopover] = useState(null); // { snapshot, x, y }
   const popoverRef = useRef(null);
+  const cardFields = useBookingCardFields();
+  const statusColors = useRoomStatusColors();
   useOutsideClick(Boolean(popover), [popoverRef], () => setPopover(null));
 
-  const snapshots = computeRoomSnapshots(rooms, bookings, selectedDate);
+  const snapshots = computeRoomSnapshots(rooms, bookings, selectedDate).map((snapshot) => {
+    const override = roomStatusOverrides[snapshot.room.number];
+    if (override === "dirty") {
+      return { ...snapshot, status: "vacant", housekeeping: "dirty", booking: null };
+    }
+    if (override === "clean") {
+      return { ...snapshot, status: "vacant", housekeeping: "clean", booking: null };
+    }
+    return override ? { ...snapshot, status: override, booking: null } : snapshot;
+  });
   const sections = buildSections(groupTab, snapshots);
 
   function handleCardClick(e, snapshot) {
-    if (snapshot.status === "vacant") {
-      if (saleMode === "sell") {
-        onToast('Tạo đặt phòng nhanh sẽ có ở bản cập nhật tiếp theo — dùng trang "Tạo đặt phòng".');
-      }
+    if (snapshot.status === "maintenance") {
+      onOpenMaintenance(snapshot.room);
       return;
     }
     const rect = e.currentTarget.getBoundingClientRect();
-    setPopover({ snapshot, x: rect.left, y: rect.bottom + 6 });
+    setPopover({
+      snapshot,
+      booking: snapshot.booking,
+      room: snapshot.room,
+      status: snapshot.housekeeping === "dirty" ? "dirty" : snapshot.status,
+      x: Math.max(8, Math.min(rect.left, window.innerWidth - 224)),
+      y: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 500)),
+    });
   }
-
-  const popoverBooking = popover?.snapshot.booking;
-  const popoverSource = popoverBooking ? SOURCE_META[popoverBooking.source] : null;
-  const popoverIsMaintenance = popover?.snapshot.status === "maintenance";
-  const popoverRate = popover && !popoverIsMaintenance ? getRateForDate(popover.snapshot.room.typeKey, selectedDate) : 0;
 
   return (
     <div className={styles.gridWrap}>
@@ -94,15 +108,20 @@ function RoomStatusGrid({ rooms, bookings, selectedDate, density, saleMode, onTo
           <div key={section.key} className={styles.gridSection}>
             {section.label && (
               <div className={styles.gridSectionHead}>
-                {section.color && <span className={styles.statusDot} style={{ background: section.color }} />}
+                {section.color && (
+                  <span className={styles.statusDot} style={{ background: colorForStatus(section.key, statusColors) }} />
+                )}
                 {section.label} <span className={styles.groupHeaderCount}>({section.items.length})</span>
               </div>
             )}
             <div className={`${styles.cardGrid} ${density === "compact" ? styles.cardGridCompact : ""}`}>
               {section.items.map((snapshot) => {
                 const meta = STATUS_META[snapshot.status];
+                const statusColor = colorForStatus(snapshot.status, statusColors);
+                const statusSoft = `${statusColor}1a`;
                 const source = snapshot.booking ? SOURCE_META[snapshot.booking.source] : null;
                 const isVacant = snapshot.status === "vacant";
+                const isDirty = snapshot.housekeeping === "dirty";
                 const isMaintenance = snapshot.status === "maintenance";
 
                 if (density === "compact") {
@@ -111,7 +130,7 @@ function RoomStatusGrid({ rooms, bookings, selectedDate, density, saleMode, onTo
                       key={snapshot.room.number}
                       type="button"
                       className={styles.roomTile}
-                      style={{ background: meta.soft, borderColor: meta.color, color: meta.color }}
+                      style={{ background: statusSoft, borderColor: statusColor, color: statusColor }}
                       title={`${snapshot.room.number} — ${meta.label}${
                         snapshot.booking ? `: ${snapshot.booking.guest}` : ""
                       }`}
@@ -129,34 +148,79 @@ function RoomStatusGrid({ rooms, bookings, selectedDate, density, saleMode, onTo
                   <button
                     key={snapshot.room.number}
                     type="button"
-                    className={styles.roomCard}
-                    style={{ background: meta.soft, borderLeftColor: meta.color }}
+                    className={`${styles.roomCard} ${styles.bookingRoomCard} ${
+                      !isVacant && !isMaintenance ? styles.reservationCard : ""
+                    }`}
                     onClick={(e) => handleCardClick(e, snapshot)}
                   >
-                    <div className={styles.roomCardHead}>
-                      <span className={styles.roomCardNumber}>{snapshot.room.number}</span>
-                      <span className={styles.roomCardType}>{snapshot.room.typeKey}</span>
-                    </div>
                     {isVacant ? (
-                      <div className={styles.roomCardVacant} style={{ color: meta.color }}>
-                        <Check size={14} /> Phòng trống
-                      </div>
+                      <>
+                        <div className={styles.bookingCardCode} style={{ background: statusColor }}>
+                          <span>{snapshot.room.typeKey}</span>
+                          <strong>{snapshot.room.number}</strong>
+                          <div className={styles.roomStateIcons}>
+                            <Check size={17} />
+                            {isDirty && <Brush size={16} className={styles.dirtyBroom} />}
+                          </div>
+                        </div>
+                        <div className={styles.vacantCardBody} style={{ color: statusColor }}>
+                          Phòng trống
+                        </div>
+                      </>
                     ) : isMaintenance ? (
-                      <div className={styles.roomCardVacant} style={{ color: meta.color }}>
-                        <Wrench size={14} /> Sửa phòng
-                      </div>
+                      <>
+                        <div className={styles.bookingCardCode} style={{ background: statusColor }}>
+                          <span>{snapshot.room.typeKey}</span>
+                          <strong>{snapshot.room.number}</strong>
+                          <Wrench size={16} />
+                        </div>
+                        <div className={styles.vacantCardBody} style={{ color: statusColor }}>
+                          {meta.label}
+                        </div>
+                      </>
                     ) : (
                       <>
-                        <div className={styles.roomCardGuest}>
-                          {source && (
-                            <span className={styles.sourceBadge} style={{ background: source.color }}>
-                              {source.code}
-                            </span>
-                          )}
-                          <span className={styles.roomCardGuestName}>{snapshot.booking.guest}</span>
+                        <div className={styles.bookingCardCode} style={{ background: statusColor }}>
+                          <span>{snapshot.room.typeKey}</span>
+                          <strong>{snapshot.room.number}</strong>
+                          <BedDouble size={16} />
                         </div>
-                        <div className={styles.roomCardMeta} style={{ color: meta.color }}>
-                          {formatDMYShort(snapshot.booking.checkIn)} → {formatDMYShort(snapshot.booking.checkOut)}
+                        <div className={styles.bookingCardBody}>
+                          <div className={styles.bookingCardTop}>
+                            {source && (
+                              <span className={styles.bookingSourceBadge} style={{ background: source.color }}>
+                                {source.code} {snapshot.booking.source}
+                              </span>
+                            )}
+                            <span
+                              className={styles.bookingStatusBadge}
+                              style={{ color: statusColor, background: statusSoft }}
+                            >
+                              {meta.label}
+                            </span>
+                          </div>
+                          <div className={styles.bookingGuestLine}>
+                            {cardFields.guestDisplay === "nationality" && (
+                              <span className={styles.bookingFlag}>{snapshot.booking.nationality || "—"}</span>
+                            )}
+                            <strong>{guestLabel(snapshot.booking, cardFields)}</strong>
+                          </div>
+                          <div className={styles.bookingMetaLine}>{timeLabel(snapshot.booking, cardFields)}</div>
+                          <div className={styles.bookingMetaLine}>
+                            {[
+                              snapshot.room.typeKey,
+                              `${Math.max(
+                                1,
+                                Math.ceil((snapshot.booking.checkOut - snapshot.booking.checkIn) / 86400000)
+                              )} đêm`,
+                              cardFields.showSourceGroup ? `Nguồn ${snapshot.booking.sourceGroup}` : null,
+                            ]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </div>
+                          <div className={styles.bookingPrice}>
+                            {priceLabel(snapshot.booking, snapshot.room, cardFields, getRateForDate)}
+                          </div>
                         </div>
                       </>
                     )}
@@ -170,48 +234,14 @@ function RoomStatusGrid({ rooms, bookings, selectedDate, density, saleMode, onTo
 
       {popover &&
         createPortal(
-          <div ref={popoverRef} className={styles.bookingPopover} style={{ left: popover.x, top: popover.y }}>
-            <div className={styles.popoverTitle}>
-              {popoverSource && (
-                <span className={styles.sourceBadge} style={{ background: popoverSource.color }}>
-                  {popoverSource.code}
-                </span>
-              )}
-              {popoverBooking?.guest ?? STATUS_META[popover.snapshot.status].label}
-            </div>
-            <div className={styles.popoverRow}>
-              <span className={styles.popoverLabel}>Phòng</span>
-              <span>
-                {popover.snapshot.room.number} · {popover.snapshot.room.typeKey}
-              </span>
-            </div>
-            <div className={styles.popoverRow}>
-              <span className={styles.popoverLabel}>Trạng thái</span>
-              <span>{STATUS_META[popover.snapshot.status].label}</span>
-            </div>
-            {popoverBooking && (
-              <>
-                <div className={styles.popoverRow}>
-                  <span className={styles.popoverLabel}>Nhận phòng</span>
-                  <span>{formatDMYShort(popoverBooking.checkIn)}</span>
-                </div>
-                <div className={styles.popoverRow}>
-                  <span className={styles.popoverLabel}>Trả phòng</span>
-                  <span>{formatDMYShort(popoverBooking.checkOut)}</span>
-                </div>
-                <div className={styles.popoverRow}>
-                  <span className={styles.popoverLabel}>Mã đặt phòng</span>
-                  <span>#{popoverBooking.code}</span>
-                </div>
-                {!popoverIsMaintenance && (
-                  <div className={styles.popoverRow}>
-                    <span className={styles.popoverLabel}>Giá phòng/đêm</span>
-                    <span>{formatCurrency(popoverRate)}</span>
-                  </div>
-                )}
-              </>
-            )}
-          </div>,
+          <BookingActionMenu
+            menu={popover}
+            menuRef={popoverRef}
+            onClose={() => setPopover(null)}
+            onDetail={onOpenDetail}
+            onAction={onBookingAction}
+            onToast={onToast}
+          />,
           document.body
         )}
     </div>

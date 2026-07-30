@@ -41,11 +41,13 @@ function StepIndicator({ step }) {
   );
 }
 
-function WalkInModal({ defaultCheckIn, onClose, onConfirm }) {
+function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
   const [step, setStep] = useState(0);
   const [stayType, setStayType] = useState("night");
   const [checkIn, setCheckIn] = useState(toDateTimeInputValue(defaultCheckIn, 14, 0));
-  const [checkOut, setCheckOut] = useState("");
+  const [checkOut, setCheckOut] = useState(
+    defaultCheckOut ? toLocalInputValue(defaultCheckOut) : ""
+  );
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
 
