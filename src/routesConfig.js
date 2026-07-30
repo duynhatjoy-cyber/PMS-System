@@ -23,6 +23,7 @@ import Reports from "./pages/Reports/Reports";
 import RoomPriceConfig from "./pages/RoomPriceConfig/RoomPriceConfig";
 import TimeConfig from "./pages/TimeConfig/TimeConfig";
 import PrinterTemplateConfig from "./pages/PrinterTemplateConfig/PrinterTemplateConfig";
+import AccountPermissions from "./pages/AccountPermissions/AccountPermissions";
 
 // Mỗi mục trong Sidebar (xác định bằng "key" ghép từ section::item::child)
 // được gắn với một URL riêng và component trang tương ứng.
@@ -136,6 +137,11 @@ export const ROUTES = [
     key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
     path: "/cau-hinh/quan-ly-kho",
     Component: WarehouseConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Tài khoản & phân quyền",
+    path: "/cau-hinh/tai-khoan-phan-quyen",
+    Component: AccountPermissions,
   },
   {
     key: "PHÂN TÍCH::Thống kê",

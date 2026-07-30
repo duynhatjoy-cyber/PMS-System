@@ -1,0 +1,45 @@
+.page { padding: 0 24px 30px; }
+.tabs { height: 48px; display: flex; gap: 28px; align-items: flex-end; border-bottom: 1px solid var(--fd-border); }
+.tabs button { height: 48px; padding: 0 4px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--fd-text-secondary); cursor: pointer; }
+.tabs .tabActive { color: var(--fd-primary); border-bottom-color: var(--fd-primary); }
+.workspace { min-height: 560px; display: grid; grid-template-columns: 280px 1fr; background: #fff; border: 1px solid var(--fd-border); border-top: 0; }
+.userList { border-right: 1px solid var(--fd-border-strong); }
+.listHead { padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--fd-border); }
+.listHead button { border: 0; background: transparent; color: var(--fd-primary); display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 700; }
+.userItem { width: 100%; display: flex; gap: 11px; align-items: center; padding: 13px; border: 0; border-bottom: 1px solid var(--fd-border); background: #fff; text-align: left; cursor: pointer; }
+.userActive { background: var(--fd-surface-hover); }
+.avatar { width: 36px; height: 36px; display: grid; place-items: center; flex: none; border-radius: 50%; background: #a3a7ae; color: #fff; }
+.userItem > span:last-child { display: grid; gap: 3px; min-width: 0; }
+.userItem strong { font-size: 13px; }.userItem small { overflow: hidden; color: var(--fd-text-secondary); text-overflow: ellipsis; }.userItem em { font-size: 11px; font-style: normal; color: var(--fd-text-muted); }
+.detail { padding: 20px; }.detail header { display: flex; justify-content: space-between; }.detail h2 { font-size: 18px; }.detail header p { margin-top: 4px; color: var(--fd-text-muted); font-size: 12px; }
+.updateBtn, .modalActions button:last-child { border: 0; border-radius: 7px; background: var(--fd-primary); color: #fff; padding: 9px 22px; cursor: pointer; }
+.ownerNotice { margin-top: 20px; padding: 12px; border-radius: 7px; background: var(--fd-primary-soft); color: var(--fd-primary); font-size: 13px; }
+.form { max-width: 420px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }.form label { display: grid; gap: 6px; }.form span { color: var(--fd-text-muted); font-size: 12px; }.form input,.form select,.inviteRow input,.inviteRow select,.modal textarea { width: 100%; border: 1px solid var(--fd-border-strong); border-radius: 7px; padding: 10px; background: #fff; }.form input:disabled,.form select:disabled { background: var(--fd-surface-hover); color: var(--fd-text-muted); }
+.pauseBtn { margin-top: 24px; display: flex; gap: 6px; align-items: center; border: 0; background: transparent; color: var(--fd-warning); cursor: pointer; }
+.permissionPlaceholder { margin-top: 20px; padding: 30px; background: #fff; border: 1px solid var(--fd-border); border-radius: 8px; }.permissionPlaceholder p { margin-top: 6px; color: var(--fd-text-muted); }
+.permissionPanel { margin-top: 18px; overflow: hidden; border: 1px solid var(--fd-border); border-radius: 8px; background: #fff; }
+.permissionHead { min-height: 82px; display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--fd-border); }
+.permissionHead strong { font-size: 14px; }.permissionHead p { margin-top: 5px; color: var(--fd-text-muted); font-size: 12px; }
+.permissionHead button { min-width: 80px; padding: 9px 18px; border: 0; border-radius: 7px; background: var(--fd-primary); color: #fff; cursor: pointer; }
+.permissionBody { min-height: 520px; display: grid; grid-template-columns: 190px minmax(270px, 34%) 1fr; }
+.roleList,.moduleList { padding: 12px 16px; border-right: 1px solid var(--fd-border); }
+.permissionColumnTitle { margin: -12px -16px 10px; padding: 14px 16px; border-bottom: 1px solid var(--fd-border); color: var(--fd-text-muted); font-size: 11px; font-weight: 750; letter-spacing: .3px; text-transform: uppercase; }
+.roleList button { width: 100%; min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border: 0; border-bottom: 1px solid var(--fd-border); background: #fff; color: var(--fd-text); cursor: pointer; }
+.roleList button:hover { background: var(--fd-surface-hover); }
+.roleList .roleActive { background: var(--fd-primary-soft); color: var(--fd-primary); font-weight: 700; }
+.moduleRow { display: flex; align-items: stretch; min-height: 38px; }
+.moduleActive { background: var(--fd-surface-hover); }
+.permissionCheck { width: 42px; display: grid; place-items: center; border: 0; background: transparent; color: #fff; cursor: pointer; }
+.permissionCheck input { width: 17px; height: 17px; accent-color: var(--fd-primary); pointer-events: none; }
+.permissionCheck svg { width: 17px; height: 17px; padding: 2px; border-radius: 3px; background: var(--fd-primary); }
+.moduleName { flex: 1; display: flex; align-items: center; justify-content: space-between; border: 0; background: transparent; color: var(--fd-text); text-align: left; cursor: pointer; }
+.moduleName svg { color: var(--fd-text-muted); }
+.permissionDetail { padding: 0 16px 24px; }
+.permissionGroup { margin-top: 16px; }
+.permissionGroup h3 { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; padding: 10px; background: var(--fd-surface-hover); font-size: 13px; }
+.permissionGroup h3 span { color: var(--fd-text-secondary); font-size: 12px; font-weight: 500; }
+.permissionGroup label { min-height: 34px; display: flex; align-items: center; gap: 10px; padding: 4px 10px; color: var(--fd-text); font-size: 13px; cursor: pointer; }
+.permissionGroup label:hover { background: var(--fd-surface-hover); }
+.permissionGroup input { width: 17px; height: 17px; accent-color: var(--fd-primary); }
+.overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(15,23,42,.45); }.modal { position: relative; width: min(600px, calc(100vw - 32px)); padding: 22px; border-radius: 12px; background: #fff; }.modal h2 { margin-bottom: 16px; font-size: 15px; }.closeBtn { position: absolute; top: 10px; right: 10px; border: 0; background: transparent; cursor: pointer; }.inviteRow { display: grid; grid-template-columns: 1fr 150px; gap: 8px; }.modal textarea { min-height: 100px; margin-top: 8px; resize: vertical; }.modalActions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }.modalActions button { border: 0; background: transparent; color: var(--fd-primary); cursor: pointer; }.modalActions button:disabled { opacity: .45; }
+@media (max-width: 900px) { .workspace,.permissionBody { grid-template-columns: 1fr; }.userList,.roleList,.moduleList { border-right: 0; border-bottom: 1px solid var(--fd-border); }.form { grid-template-columns: 1fr; } }
