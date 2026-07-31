@@ -87,7 +87,11 @@ function BookingDetailPanel({
       : null;
 
   const primaryHandler =
-    tab === "arrivals" ? onPrimaryAction : () => onCheckout(booking);
+    tab === "arrivals"
+      ? onPrimaryAction
+      : primaryLabel === "Trả phòng" && activeTab !== "payment"
+      ? () => setActiveTab("payment")
+      : () => onCheckout(booking);
 
   const primaryClass =
     primaryLabel === "Trả phòng"

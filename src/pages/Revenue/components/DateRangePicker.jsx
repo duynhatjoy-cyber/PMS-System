@@ -93,7 +93,7 @@ function MonthGrid({ monthDate, start, end, onPick }) {
   );
 }
 
-function DateRangePicker({ start, end, onChange }) {
+function DateRangePicker({ start, end, onChange, months = 2 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(start || new Date()));
   const [draftStart, setDraftStart] = useState(start);
@@ -154,14 +154,14 @@ function DateRangePicker({ start, end, onChange }) {
             </button>
 
             <MonthGrid monthDate={viewMonth} start={draftStart} end={draftEnd} onPick={pickDate} />
-            <MonthGrid monthDate={secondMonth} start={draftStart} end={draftEnd} onPick={pickDate} />
+            {months > 1 && <MonthGrid monthDate={secondMonth} start={draftStart} end={draftEnd} onPick={pickDate} />}
 
             <button type="button" className={styles.navBtn} onClick={() => setViewMonth((m) => addMonths(m, 1))}>
               <ChevronRight size={16} />
             </button>
           </div>
 
-          <div className={styles.presets}>
+          <div className={styles.presets} style={{ gridTemplateColumns: `repeat(${months > 1 ? 3 : 2}, minmax(0, 1fr))` }}>
             {buildPresets(startOfDay(new Date())).map((preset) => (
               <button
                 type="button"
