@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 24px;
-  padding: 12px 20px;
+  gap: 22px;
+  padding: 14px 20px;
   flex-wrap: wrap;
 }
 
@@ -13,53 +13,67 @@
   gap: 8px;
   font-size: 13px;
   color: var(--fd-text-secondary);
+  white-space: nowrap;
 }
 
 .select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: none;
-  border-bottom: 1px solid var(--fd-border-strong);
-  background: transparent;
+  height: 30px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
   font-size: 13px;
+  font-weight: 600;
   color: var(--fd-text);
-  padding: 2px 20px 2px 4px;
+  padding: 0 26px 0 10px;
+  cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0 center;
-  background-size: 14px;
+  background-position: right 8px center;
+  background-size: 13px;
+}
+
+.select:hover {
+  border-color: var(--fd-primary);
 }
 
 .select:focus {
   outline: none;
-  border-bottom-color: var(--fd-primary);
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
 }
 
 .range {
   font-size: 13px;
   color: var(--fd-text-secondary);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .navBtn {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 999px;
   border: 1px solid var(--fd-border-strong);
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--fd-text);
+  color: var(--fd-text-secondary);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .navBtn:hover:not(:disabled) {
-  background: var(--fd-surface-hover);
+  background: var(--fd-primary);
+  border-color: var(--fd-primary);
+  color: #fff;
 }
 
 .navBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }

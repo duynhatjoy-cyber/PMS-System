@@ -1,0 +1,102 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.searchWrap {
+  position: relative;
+}
+
+.searchResults {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  box-shadow: var(--fd-shadow-pop);
+  z-index: 20;
+}
+
+.searchResultRow {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--fd-text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchResultRow:hover {
+  background: var(--fd-bg);
+}
+
+.searchResultPhone {
+  font-size: 11.5px;
+  color: var(--fd-text-muted);
+}
+
+.searchEmpty {
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  background: var(--fd-surface-hover);
+  border: 1px solid var(--fd-border);
+  font-size: 12.5px;
+  color: var(--fd-text);
+}
+
+.chipLeader {
+  background: var(--fd-primary-soft);
+  border-color: var(--fd-primary-tint);
+  color: var(--fd-primary-hover);
+  font-weight: 600;
+  padding-right: 12px;
+}
+
+.chipRemove {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--fd-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chipRemove:hover {
+  background: var(--fd-danger);
+  color: #fff;
+}
+
+.emptyChipHint {
+  font-size: 12.5px;
+  color: var(--fd-text-muted);
+  margin-top: 8px;
+}
