@@ -18,13 +18,12 @@ import {
   Unlink,
 } from "lucide-react";
 import {
-  buildFrontDeskBookings,
   selectArrivals,
   selectInhouse,
   selectDepartures,
   computeStats,
 } from "../../data/frontDeskData";
-import { addDays, formatCurrency, formatDMY, startOfDay } from "../../utils/format";
+import { addDays, formatCurrency, formatDMY } from "../../utils/format";
 import { computeBill } from "../../utils/billing";
 import StatCard from "./components/StatCard";
 import ReservationTable from "./components/ReservationTable";
@@ -40,6 +39,7 @@ import EditGuestModal from "./modals/EditGuestModal";
 import InvoiceModal from "./modals/InvoiceModal";
 import BookingDetailPanel from "./panels/BookingDetailPanel";
 import styles from "./FrontDesk.module.css";
+import { useBookings } from "../../context/BookingsContext";
 
 const TABS = [
   { key: "arrivals", label: "Sẽ đến" },
@@ -48,7 +48,7 @@ const TABS = [
 ];
 
 function FrontDesk() {
-  const today = useMemo(() => startOfDay(new Date()), []);
+  const { today, bookings, setBookings } = useBookings();
   const [selectedDate, setSelectedDate] = useState(today);
   const [view, setView] = useState("today");
   const [activeTab, setActiveTab] = useState("inhouse");
@@ -57,7 +57,6 @@ function FrontDesk() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const [bookings, setBookings] = useState(() => buildFrontDeskBookings(today));
   const [modal, setModal] = useState(null); // { type, booking }
   const [detailBooking, setDetailBooking] = useState(null); // { id, tab }
   const [invoiceView, setInvoiceView] = useState(null); // { booking, asOf }
