@@ -52,7 +52,12 @@ const menuSections = [
       { label: "Buồng phòng", icon: BedDouble },
       { label: "F&B", icon: Utensils },
       { label: "Dịch vụ", icon: ConciergeBell },
-      { label: "Kho", icon: Box },
+      {
+        label: "Kho",
+        icon: Box,
+        expandable: true,
+        children: ["Kho", "Mua hàng"],
+      },
       {
         label: "Quản lý bán hàng",
         icon: ShoppingCart,

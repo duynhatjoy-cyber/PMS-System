@@ -140,15 +140,15 @@
   display: flex;
   align-items: center;
   height: 40px;
-  border: 1px solid transparent;
+  border: 1px solid var(--fd-border-strong);
   border-radius: var(--fd-radius-sm);
   overflow: hidden;
-  background: var(--fd-bg);
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dateInputBox:hover {
-  background: #f0efe9;
+  border-color: #b9bcc4;
 }
 
 .dateInputBox input {
@@ -303,7 +303,7 @@
 
 .dateInputBox:focus-within {
   outline: none;
-  background: #fff;
+  border-color: var(--fd-primary);
   box-shadow: 0 0 0 3px var(--fd-primary-soft);
 }
 
@@ -316,6 +316,36 @@
   color: var(--fd-text);
   background: #fff;
   width: 200px;
+}
+
+/* Standalone search bar (icon + borderless input inside a bordered box) —
+   same shape as AddServiceModal's .searchBar, kept here so any Mua hàng/Kho
+   panel can reuse it without importing from an unrelated modal file. */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text-muted);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.searchBar:focus-within {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.searchBar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  background: transparent;
 }
 
 .submitBtn {
@@ -471,6 +501,19 @@
 .statusPending {
   color: var(--fd-warning);
   background: var(--fd-warning-soft);
+}
+
+/* 3-state status (Mua hàng: Chưa/Đang/Đã thực hiện) — reuses the same
+   blue/gray semantic pairing as housekeeping "Đang dọn" and room-map
+   "Đã đặt"/"Sửa phòng" instead of inventing new colors. */
+.statusActive {
+  color: var(--fd-status-blue);
+  background: var(--fd-status-blue-soft);
+}
+
+.statusIdle {
+  color: var(--fd-status-gray);
+  background: var(--fd-status-gray-soft);
 }
 
 .negativeValue {

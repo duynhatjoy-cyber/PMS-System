@@ -1,8 +1,10 @@
 import FrontDesk from "./pages/FrontDesk/FrontDesk";
 import RoomMap from "./pages/RoomMap/RoomMap";
 import CreateBooking from "./pages/CreateBooking/CreateBooking";
+import GuestsHub from "./pages/Guests/GuestsHub";
 import CreateInvoice from "./pages/CreateInvoice/CreateInvoice";
 import Warehouse from "./pages/Warehouse/Warehouse";
+import Purchasing from "./pages/Purchasing/Purchasing";
 import FnB from "./pages/FnB/FnB";
 import Housekeeping from "./pages/Housekeeping/Housekeeping";
 import Settings from "./pages/Settings/Settings";
@@ -48,6 +50,14 @@ export const ROUTES = [
     key: "LỄ TÂN::Danh sách đặt phòng",
     path: "/le-tan/danh-sach-dat-phong",
     Component: BookingList,
+    key: "LỄ TÂN::Khách",
+    path: "/le-tan/khach",
+    Component: GuestsHub,
+  },
+  {
+    key: "LỄ TÂN::Nhóm",
+    path: "/le-tan/nhom",
+    Component: GuestsHub,
   },
   {
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",
@@ -60,9 +70,14 @@ export const ROUTES = [
     Component: Housekeeping,
   },
   {
-    key: "VẬN HÀNH::Kho",
+    key: "VẬN HÀNH::Kho::Kho",
     path: "/van-hanh/kho",
     Component: Warehouse,
+  },
+  {
+    key: "VẬN HÀNH::Kho::Mua hàng",
+    path: "/van-hanh/mua-hang",
+    Component: Purchasing,
   },
   {
     key: "VẬN HÀNH::F&B",
