@@ -50,6 +50,8 @@ export const ROUTES = [
     key: "LỄ TÂN::Danh sách đặt phòng",
     path: "/le-tan/danh-sach-dat-phong",
     Component: BookingList,
+  },
+  {
     key: "LỄ TÂN::Khách",
     path: "/le-tan/khach",
     Component: GuestsHub,
