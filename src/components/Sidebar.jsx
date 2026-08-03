@@ -40,6 +40,7 @@ const menuSections = [
     items: [
       { label: "Front Desk", icon: CalendarDays },
       { label: "Đặt phòng", icon: ClipboardList },
+      { label: "Danh sách đặt phòng", icon: ClipboardList },
       { label: "Sơ đồ phòng", icon: LayoutGrid },
       { label: "Khách", icon: Users },
       { label: "Nhóm", icon: UserRound },

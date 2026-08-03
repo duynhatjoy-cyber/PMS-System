@@ -2,14 +2,16 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { PinnedReportsProvider } from "./context/PinnedReportsContext";
 import { WarehouseConfigProvider } from "./context/WarehouseConfigContext";
+import { BookingsProvider } from "./context/BookingsContext";
 import { DEFAULT_ROUTE, ROUTES } from "./routesConfig";
 
 function App() {
   return (
     <PinnedReportsProvider>
       <WarehouseConfigProvider>
-        <Layout>
-          <Routes>
+        <BookingsProvider>
+          <Layout>
+            <Routes>
             <Route
               path="/"
               element={<Navigate to={DEFAULT_ROUTE.path} replace />}
@@ -21,8 +23,9 @@ function App() {
               path="*"
               element={<Navigate to={DEFAULT_ROUTE.path} replace />}
             />
-          </Routes>
-        </Layout>
+            </Routes>
+          </Layout>
+        </BookingsProvider>
       </WarehouseConfigProvider>
     </PinnedReportsProvider>
   );

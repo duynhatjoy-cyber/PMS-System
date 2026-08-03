@@ -24,6 +24,7 @@ import RoomPriceConfig from "./pages/RoomPriceConfig/RoomPriceConfig";
 import TimeConfig from "./pages/TimeConfig/TimeConfig";
 import PrinterTemplateConfig from "./pages/PrinterTemplateConfig/PrinterTemplateConfig";
 import AccountPermissions from "./pages/AccountPermissions/AccountPermissions";
+import BookingList from "./pages/BookingList/BookingList";
 
 // Mỗi mục trong Sidebar (xác định bằng "key" ghép từ section::item::child)
 // được gắn với một URL riêng và component trang tương ứng.
@@ -42,6 +43,11 @@ export const ROUTES = [
     key: "LỄ TÂN::Đặt phòng",
     path: "/le-tan/dat-phong",
     Component: CreateBooking,
+  },
+  {
+    key: "LỄ TÂN::Danh sách đặt phòng",
+    path: "/le-tan/danh-sach-dat-phong",
+    Component: BookingList,
   },
   {
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",
