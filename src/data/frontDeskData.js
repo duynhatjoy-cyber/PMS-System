@@ -114,6 +114,7 @@ export function buildFrontDeskBookings(today) {
       assigned: true,
       paid: isPaid,
       source: index % 3 === 0 ? "Lễ Tân" : index % 3 === 1 ? "Traveloka" : "OTA",
+      createdBy: index % 2 === 0 ? "Nha Cua My Admin" : "Nhân viên lễ tân",
       notes: "đã ttcn",
       services:
         index === 0 ? [{ name: "Ăn sáng", range: "18/7 - 19/7", price: 90000, qty: 1 }] : [],
@@ -151,13 +152,44 @@ export function buildFrontDeskBookings(today) {
       confirmed: seed.confirmed,
       paid: false,
       source: index % 2 === 0 ? "Traveloka" : "Lễ Tân",
+      createdBy: index % 2 === 0 ? "Nha Cua My Admin" : "Nhân viên lễ tân",
       notes: "",
       services: [],
       paymentRecords: [],
     };
   });
 
-  return [...arrivals, ...inhouse];
+  const checkedOut = [
+    { room: "203", roomType: "STD DBL", code: 45871, guest: "Nguyễn Minh Anh", adults: 2, children: 0, daysAgo: 1, source: "OTA" },
+    { room: "306", roomType: "DELUXE FAM", code: 45865, guest: "Trần Gia Hân", adults: 3, children: 1, daysAgo: 2, source: "Lễ Tân" },
+  ].map((seed, index) => {
+    const id = `CO-${seed.code}`;
+    const checkOut = at(addDays(today, -seed.daysAgo), 12, 0);
+    return {
+      id,
+      stage: "checkedout",
+      room: seed.room,
+      roomType: seed.roomType,
+      bookingCode: seed.code,
+      guest: makeGuest(seed.guest),
+      guests: makeGuestList(id, seed.guest),
+      checkIn: at(addDays(checkOut, -2), 14, 0),
+      checkOut,
+      stayCount: 0,
+      adults: seed.adults,
+      children: seed.children,
+      assigned: false,
+      confirmed: true,
+      paid: true,
+      source: seed.source,
+      createdBy: index === 0 ? "Nha Cua My Admin" : "Nhân viên lễ tân",
+      notes: "Đã trả phòng",
+      services: [],
+      paymentRecords: [],
+    };
+  });
+
+  return [...arrivals, ...inhouse, ...checkedOut];
 }
 
 export function selectArrivals(bookings) {
