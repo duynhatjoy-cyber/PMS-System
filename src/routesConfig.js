@@ -27,6 +27,8 @@ import TimeConfig from "./pages/TimeConfig/TimeConfig";
 import PrinterTemplateConfig from "./pages/PrinterTemplateConfig/PrinterTemplateConfig";
 import AccountPermissions from "./pages/AccountPermissions/AccountPermissions";
 import BookingList from "./pages/BookingList/BookingList";
+import HotelInfo from "./pages/HotelInfo/HotelInfo";
+import QrPaymentConfig from "./pages/QrPaymentConfig/QrPaymentConfig";
 
 // Mỗi mục trong Sidebar (xác định bằng "key" ghép từ section::item::child)
 // được gắn với một URL riêng và component trang tương ứng.
@@ -122,6 +124,11 @@ export const ROUTES = [
     Component: UserProfile,
   },
   {
+    key: "CÀI ĐẶT::Cấu hình PMS::Thông tin khách sạn",
+    path: "/cau-hinh/thong-tin-khach-san",
+    Component: HotelInfo,
+  },
+  {
     key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
     path: "/cau-hinh/phong-va-gia",
     Component: RoomPriceConfig,
@@ -150,6 +157,11 @@ export const ROUTES = [
     key: "CÀI ĐẶT::Cấu hình PMS::Dịch vụ",
     path: "/cau-hinh/dich-vu",
     Component: DichVuConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Thanh toán QR code",
+    path: "/cau-hinh/thanh-toan-qr-code",
+    Component: QrPaymentConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thu chi",

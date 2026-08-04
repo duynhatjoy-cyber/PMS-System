@@ -1,0 +1,212 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(330px, 1fr) minmax(330px, 1fr) minmax(360px, 1fr);
+  align-content: start;
+  gap: 16px;
+  min-height: 100%;
+  padding: 28px;
+  background: var(--fd-bg);
+  color: var(--fd-text);
+  font-size: 14px;
+}
+
+.pageHeading {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
+}
+
+.pageHeading h1 {
+  font-size: 25px;
+  font-weight: 650;
+}
+
+.pageHeading p {
+  margin-top: 5px;
+  color: var(--fd-text-secondary);
+  font-size: 14px;
+}
+
+.registration,
+.connections,
+.providerForm,
+.emptyForm {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  background: var(--fd-surface);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.registration,
+.connections {
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  background: var(--fd-surface);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.page h2 {
+  min-height: 48px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--fd-border-strong);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.registrationBody {
+  padding: 20px;
+}
+
+.registrationBody h3,
+.providerForm h3 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.registrationBody h3:not(:first-child) {
+  margin-top: 13px;
+}
+
+.registrationBody label,
+.providerFields label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.registrationBody label > span,
+.providerFields label > span {
+  color: var(--fd-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.registrationBody input,
+.providerFields input,
+.providerFields select,
+.clearableValue {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font: inherit;
+}
+
+.registrationBody input,
+.providerFields input,
+.providerFields select {
+  padding: 0 9px;
+  outline: none;
+}
+
+.registrationBody input:disabled {
+  color: var(--fd-text-muted);
+  background: var(--fd-surface-hover);
+}
+
+.clearableValue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 9px;
+}
+
+.clearableValue button {
+  display: inline-flex;
+  width: 34px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--fd-text-muted);
+  cursor: pointer;
+}
+
+.providerList label {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+
+.providerList label:hover,
+.activeProvider {
+  background: var(--fd-primary-soft);
+}
+
+.providerList input {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  accent-color: var(--fd-primary);
+}
+
+.providerForm {
+  padding: 20px;
+}
+
+.providerFields input,
+.providerFields select {
+  height: 42px;
+}
+
+.providerFields input:focus,
+.providerFields select:focus {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.providerFields .requiredInput {
+  border-color: var(--fd-danger);
+}
+
+.emptyForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: var(--fd-text-muted);
+}
+
+@media (max-width: 1050px) {
+  .page {
+    grid-template-columns: minmax(300px, 0.9fr) minmax(300px, 1.1fr);
+  }
+
+  .registration {
+    grid-row: span 2;
+  }
+
+  .connections {
+    border: 1px solid var(--fd-border);
+  }
+
+  .providerForm,
+  .emptyForm {
+    border: 1px solid var(--fd-border);
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    display: block;
+    padding: 18px 16px;
+  }
+
+  .pageHeading,
+  .registration,
+  .connections,
+  .providerForm,
+  .emptyForm {
+    margin-bottom: 16px;
+  }
+}

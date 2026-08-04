@@ -13,13 +13,18 @@ export const TIMEZONES = ["Asia/Ho_Chi_Minh (UTC+7)", "Asia/Bangkok (UTC+7)", "A
 export const LANGUAGES = ["Tiếng Việt", "English"];
 
 export const INITIAL_HOTEL_PROFILE = {
-  name: "Lifrooms Boutique Hotel",
-  facilityType: FACILITY_TYPES[0],
-  operationModel: "",
-  taxCode: "0102345678",
-  starRating: 4,
-  timezone: TIMEZONES[0],
-  language: LANGUAGES[0],
+  name: "Joi Hotel Central",
+  phone: "02543524868",
+  email: "joihotelvungtau@gmail.com",
+  website: "",
+  address: "E07 - E08 Tạ Uyên, Phường 3, Vũng Tàu",
+  country: "Vietnam",
+  province: "Bà Rịa - Vũng Tàu",
+  businessType: "Khách sạn lưu trú",
+  logo: "",
+  ownerName: "Joi Hospitality",
+  ownerEmail: "duyanh8295@gmail.com",
+  ownerPhone: "0962059295",
 };
 
 // =========================
