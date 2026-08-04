@@ -14,12 +14,17 @@ export const LANGUAGES = ["Tiếng Việt", "English"];
 
 export const INITIAL_HOTEL_PROFILE = {
   name: "Lifrooms Boutique Hotel",
-  facilityType: FACILITY_TYPES[0],
-  operationModel: "",
-  taxCode: "0102345678",
-  starRating: 4,
-  timezone: TIMEZONES[0],
-  language: LANGUAGES[0],
+  phone: "02543524868",
+  email: "hotel@lifrooms.com",
+  website: "https://lifrooms.com",
+  address: "12 Đường Bãi Sau, Phường Thắng Tam, TP. Vũng Tàu",
+  country: "Vietnam",
+  province: "Bà Rịa - Vũng Tàu",
+  businessType: "Khách sạn lưu trú",
+  logo: "",
+  ownerName: "Nguyễn Văn An",
+  ownerEmail: "quanly@lifrooms.com",
+  ownerPhone: "0901234567",
 };
 
 // =========================

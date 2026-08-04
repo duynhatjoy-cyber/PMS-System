@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Bell, Building2, MessageCircle, Package, Plug, QrCode, SlidersHorizontal, Sparkles, Users } from "lucide-react";
+import { Bell, MessageCircle, Package, Plug, QrCode, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
-import HotelProfilePanel from "./components/HotelProfilePanel";
 import ContactChannelsPanel from "./components/ContactChannelsPanel";
 import WidgetPanel from "./components/WidgetPanel";
 import AiConfigPanel from "./components/AiConfigPanel";
@@ -13,7 +12,6 @@ import ChannelConnectionsPanel from "./components/ChannelConnectionsPanel";
 import styles from "./Settings.module.css";
 
 const TABS = [
-  { key: "profile", label: "Hồ sơ", icon: Building2, Panel: HotelProfilePanel },
   { key: "channels", label: "Kênh liên lạc", icon: MessageCircle, Panel: ContactChannelsPanel },
   { key: "widget", label: "Widget", icon: QrCode, Panel: WidgetPanel },
   { key: "ai", label: "Cấu hình AI", icon: Sparkles, Panel: AiConfigPanel },
