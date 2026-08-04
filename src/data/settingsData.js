@@ -13,18 +13,18 @@ export const TIMEZONES = ["Asia/Ho_Chi_Minh (UTC+7)", "Asia/Bangkok (UTC+7)", "A
 export const LANGUAGES = ["Tiếng Việt", "English"];
 
 export const INITIAL_HOTEL_PROFILE = {
-  name: "Joi Hotel Central",
+  name: "Lifrooms Boutique Hotel",
   phone: "02543524868",
-  email: "joihotelvungtau@gmail.com",
-  website: "",
-  address: "E07 - E08 Tạ Uyên, Phường 3, Vũng Tàu",
+  email: "hotel@lifrooms.com",
+  website: "https://lifrooms.com",
+  address: "12 Đường Bãi Sau, Phường Thắng Tam, TP. Vũng Tàu",
   country: "Vietnam",
   province: "Bà Rịa - Vũng Tàu",
   businessType: "Khách sạn lưu trú",
   logo: "",
-  ownerName: "Joi Hospitality",
-  ownerEmail: "duyanh8295@gmail.com",
-  ownerPhone: "0962059295",
+  ownerName: "Nguyễn Văn An",
+  ownerEmail: "quanly@lifrooms.com",
+  ownerPhone: "0901234567",
 };
 
 // =========================

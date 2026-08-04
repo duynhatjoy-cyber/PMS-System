@@ -49,8 +49,8 @@ function HotelLogo({ src, onChange }) {
           <img src={src} alt="Logo khách sạn" />
         ) : (
           <span className={styles.logoPlaceholder}>
-            <span className={styles.logoScript}>Joi</span>
-            <span>HOSPITALITY</span>
+            <span className={styles.logoScript}>lifrooms</span>
+            <span>BOUTIQUE HOTEL</span>
             <span className={styles.logoEdit}><ImagePlus size={16} /> Thay logo</span>
           </span>
         )}

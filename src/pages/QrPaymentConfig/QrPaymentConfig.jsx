@@ -14,7 +14,7 @@ const PROVIDERS = [
     label: "Mã VietQR (BIDV)",
     title: "Kết nối Mã VietQR (BIDV)",
     fields: ["serviceCode", "serviceId", "accountName", "merchantId"],
-    defaults: { serviceCode: "9648599", serviceId: "04D024", accountName: "Joi Hospitality", merchantId: "8600088604" },
+    defaults: { serviceCode: "9648599", serviceId: "04D024", accountName: "Lifrooms Boutique Hotel", merchantId: "8600088604" },
   },
   {
     key: "abbank",
@@ -64,13 +64,13 @@ function RegistrationPanel() {
       <h2>Đăng ký</h2>
       <div className={styles.registrationBody}>
         <h3>Thông tin khách sạn</h3>
-        <label><span>Tên khách sạn</span><input disabled value="Joi Hotel Central" /></label>
-        <label><span>Mã số thuế</span><input value="3502468448" readOnly /></label>
+        <label><span>Tên khách sạn</span><input disabled value="Lifrooms Boutique Hotel" /></label>
+        <label><span>Mã số thuế</span><input value="0102345678" readOnly /></label>
         <h3>Địa chỉ</h3>
         <label><span>Quốc gia</span><ClearableValue value={country} onClear={() => setCountry("")} /></label>
         <label><span>Tỉnh</span><ClearableValue value={province} onClear={() => setProvince("")} /></label>
         <label><span>Quận - Huyện</span><input value="Vũng Tàu" readOnly /></label>
-        <label><span>Địa chỉ khách sạn</span><input value="E07 - E08 Tạ Uyên, Phường 3, Vũng Tàu" readOnly /></label>
+        <label><span>Địa chỉ khách sạn</span><input value="12 Đường Bãi Sau, Phường Thắng Tam, TP. Vũng Tàu" readOnly /></label>
       </div>
     </section>
   );

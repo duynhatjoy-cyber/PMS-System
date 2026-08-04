@@ -276,13 +276,12 @@
 }
 
 .logoScript {
-  color: #dfa934;
-  font-family: "Segoe Script", cursive;
-  font-size: 54px;
-  font-weight: 300;
-  letter-spacing: -8px;
+  color: var(--fd-primary);
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -2px;
   line-height: 1;
-  transform: rotate(-8deg);
 }
 
 .logoEdit {
