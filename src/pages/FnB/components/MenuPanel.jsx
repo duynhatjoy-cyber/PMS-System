@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { ChefHat, Plus } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import EmptyState from "../../../components/EmptyState";
+import RecipeModal from "./RecipeModal";
 import { formatCurrency } from "../../../utils/format";
 import { nextDraftId } from "../../../data/fnbData";
 import styles from "../FnB.module.css";
@@ -16,13 +17,14 @@ function emptyItemForm(item) {
   };
 }
 
-function MenuPanel({ categories, setCategories, onToast }) {
+function MenuPanel({ categories, setCategories, ingredients, onToast }) {
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? null);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [itemModal, setItemModal] = useState(null); // { editing: item|null, form }
   const [deleteItemTarget, setDeleteItemTarget] = useState(null);
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState(null);
   const [renameCategoryTarget, setRenameCategoryTarget] = useState(null); // { id, value }
+  const [recipeItem, setRecipeItem] = useState(null);
 
   const category = categories.find((c) => c.id === categoryId) || categories[0] || null;
 
@@ -118,9 +120,21 @@ function MenuPanel({ categories, setCategories, onToast }) {
     setDeleteItemTarget(null);
   }
 
+  function handleSaveRecipe(recipe) {
+    setCategories((prev) =>
+      prev.map((c) => ({
+        ...c,
+        items: c.items.map((i) => (i.id === recipeItem.id ? { ...i, recipe } : i)),
+      }))
+    );
+    onToast(`Đã lưu công thức chế biến cho "${recipeItem.name}"`);
+    setRecipeItem(null);
+  }
+
   function itemMenuItems(item) {
     return [
       { key: "edit", label: "Sửa món", onClick: () => openEditItemModal(item) },
+      { key: "recipe", label: "Công thức chế biến", icon: ChefHat, onClick: () => setRecipeItem(item) },
       {
         key: "toggle",
         label: item.available ? "Đánh dấu hết hàng" : "Còn hàng trở lại",
@@ -189,6 +203,12 @@ function MenuPanel({ categories, setCategories, onToast }) {
                       <div className={styles.menuItemName}>{item.name}</div>
                       <div className={styles.menuItemPrice}>{formatCurrency(item.price)}</div>
                       {!item.available && <span className={styles.inactiveTag}>Hết hàng</span>}
+                      <span
+                        className={`${styles.recipeBadge} ${item.recipe.length === 0 ? styles.recipeBadgeEmpty : ""}`}
+                      >
+                        <ChefHat size={11} />
+                        {item.recipe.length > 0 ? `${item.recipe.length} nguyên liệu` : "Chưa có công thức"}
+                      </span>
                     </div>
                     <RowActionMenu items={itemMenuItems(item)} />
                   </div>
@@ -306,6 +326,15 @@ function MenuPanel({ categories, setCategories, onToast }) {
           danger
           onConfirm={handleConfirmDeleteItem}
           onClose={() => setDeleteItemTarget(null)}
+        />
+      )}
+
+      {recipeItem && (
+        <RecipeModal
+          item={recipeItem}
+          ingredients={ingredients}
+          onSave={handleSaveRecipe}
+          onClose={() => setRecipeItem(null)}
         />
       )}
     </div>

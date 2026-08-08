@@ -6,7 +6,7 @@ import { formatCurrency } from "../../../utils/format";
 import { KITCHEN_STATUS_ORDER, KITCHEN_STEP_LABELS, orderTotal } from "../../../data/fnbData";
 import styles from "../FnB.module.css";
 
-function OrderDetailModal({ order, table, categories, setOrders, setTables, onClose, onToast }) {
+function OrderDetailModal({ order, table, categories, setOrders, setTables, onCheckout, onClose, onToast }) {
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0]?.id ?? null);
 
   function updateOrder(updater) {
@@ -45,6 +45,7 @@ function OrderDetailModal({ order, table, categories, setOrders, setTables, onCl
   }
 
   function handleCheckout() {
+    onCheckout(order);
     setOrders((prev) => prev.filter((o) => o.id !== order.id));
     setTables((prev) => prev.map((t) => (t.id === table.id ? { ...t, status: "cleaning" } : t)));
     onToast(`Đã thanh toán bàn ${table.number} — ${formatCurrency(orderTotal(order))}`);

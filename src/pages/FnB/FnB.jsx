@@ -1,17 +1,26 @@
 import { useState } from "react";
-import { LayoutGrid, Receipt, BookOpen } from "lucide-react";
+import { Box, LayoutGrid, Receipt, BookOpen } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import TableMapPanel from "./components/TableMapPanel";
 import OrdersPanel from "./components/OrdersPanel";
 import OrderDetailModal from "./components/OrderDetailModal";
 import MenuPanel from "./components/MenuPanel";
-import { INITIAL_CATEGORIES, INITIAL_ORDERS, INITIAL_TABLES } from "../../data/fnbData";
+import IngredientsPanel from "./components/IngredientsPanel";
+import {
+  INITIAL_CATEGORIES,
+  INITIAL_INGREDIENTS,
+  INITIAL_ORDERS,
+  INITIAL_TABLES,
+  applyUsage,
+  computeOrderUsage,
+} from "../../data/fnbData";
 import styles from "./FnB.module.css";
 
 const TABS = [
   { key: "tables", label: "Sơ đồ bàn", icon: LayoutGrid },
   { key: "orders", label: "Đơn hàng", icon: Receipt },
   { key: "menu", label: "Thực đơn", icon: BookOpen },
+  { key: "ingredients", label: "Nguyên vật liệu", icon: Box },
 ];
 
 function FnB() {
@@ -21,7 +30,12 @@ function FnB() {
   const [tables, setTables] = useState(INITIAL_TABLES);
   const [orders, setOrders] = useState(INITIAL_ORDERS);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
+  const [ingredients, setIngredients] = useState(INITIAL_INGREDIENTS);
   const [activeOrderId, setActiveOrderId] = useState(null);
+
+  function handleOrderCheckout(order) {
+    setIngredients((prev) => applyUsage(prev, computeOrderUsage(order, categories)));
+  }
 
   const activeOrder = orders.find((o) => o.id === activeOrderId) || null;
   const activeOrderTable = activeOrder ? tables.find((t) => t.id === activeOrder.tableId) : null;
@@ -70,7 +84,20 @@ function FnB() {
         <OrdersPanel tables={tables} orders={orders} onOpenOrder={setActiveOrderId} />
       )}
 
-      {tabKey === "menu" && <MenuPanel categories={categories} setCategories={setCategories} onToast={setToastMsg} />}
+      {tabKey === "menu" && (
+        <MenuPanel categories={categories} setCategories={setCategories} ingredients={ingredients} onToast={setToastMsg} />
+      )}
+
+      {tabKey === "ingredients" && (
+        <IngredientsPanel
+          ingredients={ingredients}
+          setIngredients={setIngredients}
+          categories={categories}
+          setCategories={setCategories}
+          onToast={setToastMsg}
+        />
+      )}
+
 
       {activeOrder && (
         <OrderDetailModal
@@ -79,6 +106,7 @@ function FnB() {
           categories={categories}
           setOrders={setOrders}
           setTables={setTables}
+          onCheckout={handleOrderCheckout}
           onClose={() => setActiveOrderId(null)}
           onToast={setToastMsg}
         />
