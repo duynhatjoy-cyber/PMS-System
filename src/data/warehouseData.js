@@ -22,26 +22,8 @@ export const STATUS_OPTIONS = ["Tất cả", "Đã xử lý", "Chưa xử lý"];
 
 export const STOCK_OUT_DOC_TYPES = ["Xuất kho bán hàng", "Xuất hủy", "Xuất khác"];
 
-// { id, name, unit } — unit "" matches items with no unit set in the reference.
-export const MATERIALS = [
-  { id: "coca-pepsi", name: "Coca/Pepsi", unit: "Lon" },
-  { id: "nuoc-suoi-550", name: "Nước suối 550ml", unit: "Chai" },
-  { id: "mi-ly", name: "Mì ly", unit: "Ly" },
-  { id: "banh-khoai-tay-poca", name: "Bánh khoai tây Poca", unit: "Bịch" },
-  { id: "bao-cao-su", name: "Bao cao su", unit: "Hộp 3 cái" },
-  { id: "bai-ma-soi", name: "Bài Ma sói", unit: "1" },
-  { id: "bai-uno", name: "Bài Uno", unit: "1" },
-  { id: "ma-soi-bai-uno", name: "Ma sói, bài uno", unit: "" },
-  { id: "dau-phong", name: "Đậu phộng", unit: "Gói" },
-  { id: "nuoc-suoi-nho", name: "Nước suối nhỏ", unit: "" },
-  { id: "sprite-7up", name: "Sprite/7Up", unit: "Lon" },
-  { id: "tra-o-long", name: "Trà Ô Long", unit: "Chai" },
-  { id: "bao-cao-su-durex", name: "Bao cao su Durex", unit: "Hộp 3 cái" },
-  { id: "banh-cua", name: "Bánh Cua", unit: "Gói" },
-  { id: "banh-mix", name: "Bánh Mix", unit: "Gói" },
-  { id: "tra-fuze", name: "Trà Fuze", unit: "Chai" },
-  { id: "sting-rockstar", name: "Sting/Rockstar", unit: "Lon" },
-];
+// Danh mục nguyên vật liệu nay được quản lý ở Cấu hình > Quản lý kho
+// (xem MATERIAL_RECORDS trong data/warehouseConfigData.js + useActiveMaterials()).
 
 export const STOCK_IN_ROWS = [
   {

@@ -65,3 +65,26 @@ export const SUPPLIER_RECORDS = [
     active: true,
   },
 ];
+
+// Danh mục nguyên vật liệu — mỗi item có ĐVT mặc định để phiếu nhập/xuất/
+// chuyển/kiểm kê kho tự điền, tránh sai lệch tồn kho do nhập nhiều đơn vị
+// khác nhau cho cùng một nguyên vật liệu.
+export const MATERIAL_RECORDS = [
+  { id: nextId("nvl"), name: "Coca/Pepsi", unit: "Lon", active: true },
+  { id: nextId("nvl"), name: "Nước suối 550ml", unit: "Chai", active: true },
+  { id: nextId("nvl"), name: "Mì ly", unit: "Ly", active: true },
+  { id: nextId("nvl"), name: "Bánh khoai tây Poca", unit: "Bịch", active: true },
+  { id: nextId("nvl"), name: "Bao cao su", unit: "Hộp 3 cái", active: true },
+  { id: nextId("nvl"), name: "Bài Ma sói", unit: "1", active: true },
+  { id: nextId("nvl"), name: "Bài Uno", unit: "1", active: true },
+  { id: nextId("nvl"), name: "Ma sói, bài uno", unit: "", active: true },
+  { id: nextId("nvl"), name: "Đậu phộng", unit: "Gói", active: true },
+  { id: nextId("nvl"), name: "Nước suối nhỏ", unit: "", active: true },
+  { id: nextId("nvl"), name: "Sprite/7Up", unit: "Lon", active: true },
+  { id: nextId("nvl"), name: "Trà Ô Long", unit: "Chai", active: true },
+  { id: nextId("nvl"), name: "Bao cao su Durex", unit: "Hộp 3 cái", active: true },
+  { id: nextId("nvl"), name: "Bánh Cua", unit: "Gói", active: true },
+  { id: nextId("nvl"), name: "Bánh Mix", unit: "Gói", active: true },
+  { id: nextId("nvl"), name: "Trà Fuze", unit: "Chai", active: true },
+  { id: nextId("nvl"), name: "Sting/Rockstar", unit: "Lon", active: true },
+];
