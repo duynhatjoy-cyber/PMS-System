@@ -42,32 +42,43 @@ export const INITIAL_TABLES = [
   makeTable("S2", 2, "Sân vườn", "vacant"),
 ];
 
+// Đơn vị đóng kín (select), không cho tự nhập — tránh cùng 1 nguyên liệu bị
+// ghi nhận lệch đơn vị giữa các lần thêm/sửa.
+export const INGREDIENT_UNITS = ["kg", "Lít", "Quả", "Cái", "Gói", "Thùng"];
+
 // Nguyên vật liệu chế biến — riêng cho bếp F&B, khác với MATERIALS (vật tư/
 // minibar) trong warehouseData.js vì đó là danh sách chung cả khách sạn, không
 // phải nguyên liệu nấu ăn. usedQty là hao hụt lũy kế, cộng dồn mỗi khi một đơn
 // có món dùng nguyên liệu này được thanh toán (xem computeOrderUsage/applyUsage).
-function makeIngredient(name, unit) {
-  return { id: nextId("ing"), name, unit, usedQty: 0 };
+// threshold: mức hao hụt lũy kế mà khi đạt tới, hệ thống tự tạo phiếu báo hàng
+// (xem isOverThreshold, FnB.jsx#handleOrderCheckout).
+function makeIngredient(name, unit, threshold) {
+  return { id: nextId("ing"), name, unit, usedQty: 0, threshold };
 }
 
 export const INITIAL_INGREDIENTS = [
-  makeIngredient("Gạo", "kg"),
-  makeIngredient("Tôm", "kg"),
-  makeIngredient("Mực", "kg"),
-  makeIngredient("Thịt heo", "kg"),
-  makeIngredient("Thịt bò", "kg"),
-  makeIngredient("Thịt gà", "kg"),
-  makeIngredient("Trứng", "Quả"),
-  makeIngredient("Bánh tráng", "Cái"),
-  makeIngredient("Bánh phở", "kg"),
-  makeIngredient("Bún", "kg"),
-  makeIngredient("Rau sống", "kg"),
-  makeIngredient("Hành lá", "kg"),
-  makeIngredient("Hành tây", "kg"),
-  makeIngredient("Tỏi", "kg"),
-  makeIngredient("Mật ong", "Lít"),
-  makeIngredient("Dầu ăn", "Lít"),
+  makeIngredient("Gạo", "kg", 15),
+  makeIngredient("Tôm", "kg", 5),
+  makeIngredient("Mực", "kg", 5),
+  makeIngredient("Thịt heo", "kg", 6),
+  makeIngredient("Thịt bò", "kg", 6),
+  makeIngredient("Thịt gà", "kg", 6),
+  makeIngredient("Trứng", "Quả", 60),
+  makeIngredient("Bánh tráng", "Cái", 100),
+  makeIngredient("Bánh phở", "kg", 8),
+  makeIngredient("Bún", "kg", 8),
+  makeIngredient("Rau sống", "kg", 6),
+  makeIngredient("Hành lá", "kg", 3),
+  makeIngredient("Hành tây", "kg", 4),
+  makeIngredient("Tỏi", "kg", 2),
+  makeIngredient("Mật ong", "Lít", 3),
+  makeIngredient("Dầu ăn", "Lít", 5),
 ];
+
+// threshold rỗng/0 nghĩa là chưa cấu hình cảnh báo cho nguyên liệu đó.
+export function isOverThreshold(ingredient) {
+  return Number(ingredient.threshold) > 0 && ingredient.usedQty >= Number(ingredient.threshold);
+}
 
 function findIngredient(name) {
   const ing = INITIAL_INGREDIENTS.find((i) => i.name === name);
