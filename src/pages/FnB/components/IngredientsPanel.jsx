@@ -1,30 +1,49 @@
-import { useState } from "react";
-import { Box, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Box, Plus, AlertTriangle, Search } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import EmptyState from "../../../components/EmptyState";
 import StatCard from "../../FrontDesk/components/StatCard";
+import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import { avatarColorAt } from "./ingredientAvatar";
-import { nextDraftId } from "../../../data/fnbData";
+import { nextDraftId, INGREDIENT_UNITS, isOverThreshold } from "../../../data/fnbData";
+import { paginate } from "../../../utils/pagination";
 import fnbStyles from "../FnB.module.css";
 import styles from "../../Warehouse/Warehouse.module.css";
 
 function emptyForm(ingredient) {
-  return { name: ingredient?.name ?? "", unit: ingredient?.unit ?? "" };
+  return {
+    name: ingredient?.name ?? "",
+    unit: ingredient?.unit ?? "",
+    threshold: ingredient?.threshold ?? "",
+  };
 }
 
 function IngredientsPanel({ ingredients, setIngredients, categories, setCategories, onToast }) {
   const [modal, setModal] = useState(null); // { editing: ingredient|null, form }
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const usedIngredientIds = new Set(
     categories.flatMap((c) => c.items.flatMap((item) => item.recipe.map((r) => r.ingredientId)))
   );
   const inUseCount = ingredients.filter((i) => usedIngredientIds.has(i.id)).length;
   const depletedCount = ingredients.filter((i) => i.usedQty > 0).length;
+  const overThresholdCount = ingredients.filter(isOverThreshold).length;
   const topUsed = ingredients.reduce((max, i) => (i.usedQty > (max?.usedQty ?? 0) ? i : max), null);
+
+  const filteredIngredients = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return q ? ingredients.filter((i) => i.name.toLowerCase().includes(q)) : ingredients;
+  }, [ingredients, query]);
+  const pagedIngredients = useMemo(
+    () => paginate(filteredIngredients, page, pageSize),
+    [filteredIngredients, page, pageSize]
+  );
 
   function openAddModal() {
     setModal({ editing: null, form: emptyForm(null) });
@@ -41,14 +60,17 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
   function handleSave() {
     const { editing, form } = modal;
     const name = form.name.trim();
-    const unit = form.unit.trim();
-    if (!name) return;
+    const unit = form.unit;
+    const threshold = form.threshold === "" ? "" : Number(form.threshold);
+    if (!name || !unit) return;
 
     if (editing) {
-      setIngredients((prev) => prev.map((i) => (i.id === editing.id ? { ...i, name, unit } : i)));
+      setIngredients((prev) =>
+        prev.map((i) => (i.id === editing.id ? { ...i, name, unit, threshold } : i))
+      );
       onToast(`Đã cập nhật nguyên vật liệu "${name}"`);
     } else {
-      setIngredients((prev) => [...prev, { id: nextDraftId("ing"), name, unit, usedQty: 0 }]);
+      setIngredients((prev) => [...prev, { id: nextDraftId("ing"), name, unit, usedQty: 0, threshold }]);
       onToast(`Đã thêm nguyên vật liệu "${name}"`);
     }
     setModal(null);
@@ -69,7 +91,7 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
     setDeleteTarget(null);
   }
 
-  const canSave = modal && modal.form.name.trim();
+  const canSave = modal && modal.form.name.trim() && modal.form.unit;
 
   return (
     <div>
@@ -108,6 +130,27 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
             hint={topUsed ? `${Number(topUsed.usedQty.toFixed(2))} ${topUsed.unit}` : "Chưa có dữ liệu"}
           />
         </div>
+        <div className={fnbStyles.statAccent} style={{ borderTopColor: "var(--fd-danger)" }}>
+          <StatCard
+            label="Cần báo hàng"
+            value={overThresholdCount}
+            hint="đã vượt ngưỡng cảnh báo"
+          />
+        </div>
+      </div>
+
+      <div className={styles.searchBar} style={{ marginBottom: 14 }}>
+        <Search size={15} />
+        <input
+          type="text"
+          placeholder="Tìm theo tên nguyên vật liệu..."
+          aria-label="Tìm nguyên vật liệu"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setPage(1);
+          }}
+        />
       </div>
 
       <div className={styles.tableCard}>
@@ -118,23 +161,25 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
                 <th>Nguyên vật liệu</th>
                 <th className={styles.numCell}>Đơn vị</th>
                 <th className={styles.numCell}>Hao hụt (đã bán)</th>
+                <th className={styles.numCell}>Ngưỡng cảnh báo</th>
                 <th className={styles.thActionCell} />
               </tr>
             </thead>
             <tbody>
-              {ingredients.length === 0 ? (
+              {filteredIngredients.length === 0 ? (
                 <tr className={styles.emptyRow}>
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <EmptyState
-                      message="Chưa có nguyên vật liệu nào."
-                      hint='Nhấn "Thêm nguyên vật liệu" để tạo mục đầu tiên.'
+                      message={ingredients.length === 0 ? "Chưa có nguyên vật liệu nào." : "Không tìm thấy nguyên vật liệu phù hợp."}
+                      hint={ingredients.length === 0 ? 'Nhấn "Thêm nguyên vật liệu" để tạo mục đầu tiên.' : "Thử từ khóa khác."}
                     />
                   </td>
                 </tr>
               ) : (
-                ingredients.map((ing, index) => {
-                  const avatar = avatarColorAt(index);
+                pagedIngredients.map((ing) => {
+                  const avatar = avatarColorAt(ingredients.indexOf(ing));
                   const usedQty = Number(ing.usedQty.toFixed(2));
+                  const overThreshold = isOverThreshold(ing);
                   return (
                     <tr key={ing.id}>
                       <td>
@@ -152,9 +197,22 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
                         {ing.unit ? <span className={fnbStyles.unitPill}>{ing.unit}</span> : ""}
                       </td>
                       <td className={styles.numCell}>
-                        <span className={usedQty > 0 ? fnbStyles.usageValueActive : fnbStyles.usageValueZero}>
+                        <span
+                          className={
+                            overThreshold
+                              ? fnbStyles.usageValueOver
+                              : usedQty > 0
+                              ? fnbStyles.usageValueActive
+                              : fnbStyles.usageValueZero
+                          }
+                          title={overThreshold ? "Đã vượt ngưỡng cảnh báo — đã tạo phiếu báo hàng" : undefined}
+                        >
+                          {overThreshold && <AlertTriangle size={13} />}
                           {usedQty > 0 ? `${usedQty} ${ing.unit}` : "—"}
                         </span>
+                      </td>
+                      <td className={styles.numCell}>
+                        {ing.threshold ? `${ing.threshold} ${ing.unit}` : "—"}
                       </td>
                       <td>
                         <RowActionMenu
@@ -177,6 +235,17 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
             </tbody>
           </table>
         </div>
+
+        <WarehousePagination
+          page={page}
+          pageSize={pageSize}
+          total={filteredIngredients.length}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+        />
       </div>
 
       {modal && (
@@ -206,13 +275,33 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
               />
             </label>
             <label className={shared.field}>
-              <span className={shared.label}>Đơn vị</span>
-              <input
-                className={shared.input}
+              <span className={shared.label}>Đơn vị *</span>
+              <select
+                className={shared.select}
                 value={modal.form.unit}
                 onChange={(e) => patchForm("unit", e.target.value)}
-                placeholder="VD: kg, Lít, Quả..."
+              >
+                <option value="">Chọn đơn vị</option>
+                {INGREDIENT_UNITS.map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={shared.field}>
+              <span className={shared.label}>Ngưỡng cảnh báo hao hụt</span>
+              <input
+                type="number"
+                min="0"
+                className={shared.input}
+                value={modal.form.threshold}
+                onChange={(e) => patchForm("threshold", e.target.value)}
+                placeholder="VD: 15"
               />
+              <span className={shared.hint}>
+                Khi hao hụt lũy kế đạt mức này, hệ thống tự tạo phiếu báo hàng ở Mua hàng &gt; Báo hàng.
+              </span>
             </label>
           </div>
         </ModalShell>

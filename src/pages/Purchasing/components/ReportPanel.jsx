@@ -1,17 +1,19 @@
 import { useMemo, useState } from "react";
-import { Clock, List, Info, MessageSquare, Plus } from "lucide-react";
+import { Clock, List, Info, MessageSquare, Plus, ShoppingCart } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseTicketModal from "../modals/AddPurchaseTicketModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import statusBadgeClass from "../statusBadge";
+import { usePurchaseReport } from "../../../context/PurchaseReportContext";
 import { REPORT_ROWS, PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import { formatDMY } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
 
-function ReportPanel({ onToast }) {
+function ReportPanel({ onToast, onCreateOrder }) {
+  const { reportRows, setReportRows } = usePurchaseReport();
   const {
     preset,
     setPreset,
@@ -27,8 +29,16 @@ function ReportPanel({ onToast }) {
     showAddModal,
     setShowAddModal,
     handleSaveTicket,
-  } = useStockPanel(REPORT_ROWS, "Đã thêm phiếu báo hàng", onToast);
+  } = useStockPanel(REPORT_ROWS, "Đã thêm phiếu báo hàng", onToast, [reportRows, setReportRows]);
   const [status, setStatus] = useState(PURCHASE_STATUS_OPTIONS[0]);
+
+  function handleCreateOrder(row) {
+    onCreateOrder({
+      name: row.ingredientName || row.note || "",
+      unit: row.unit || "",
+      qty: row.qty ?? "",
+    });
+  }
 
   const filteredRows = useMemo(() => {
     if (status === "Tất cả") return rows;
@@ -127,7 +137,18 @@ function ReportPanel({ onToast }) {
                       </span>
                     </td>
                     <td>{row.note}</td>
-                    <td />
+                    <td>
+                      {row.status !== "Đã thực hiện" && (
+                        <button
+                          type="button"
+                          className={styles.inlineActionBtn}
+                          title="Tạo đơn đặt hàng từ phiếu này"
+                          onClick={() => handleCreateOrder(row)}
+                        >
+                          <ShoppingCart size={14} /> Tạo đơn đặt hàng
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}

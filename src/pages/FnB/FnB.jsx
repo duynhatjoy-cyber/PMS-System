@@ -6,6 +6,8 @@ import OrdersPanel from "./components/OrdersPanel";
 import OrderDetailModal from "./components/OrderDetailModal";
 import MenuPanel from "./components/MenuPanel";
 import IngredientsPanel from "./components/IngredientsPanel";
+import { usePurchaseReport } from "../../context/PurchaseReportContext";
+import generateTicketNo from "../Warehouse/ticketNo";
 import {
   INITIAL_CATEGORIES,
   INITIAL_INGREDIENTS,
@@ -13,8 +15,36 @@ import {
   INITIAL_TABLES,
   applyUsage,
   computeOrderUsage,
+  isOverThreshold,
 } from "../../data/fnbData";
 import styles from "./FnB.module.css";
+
+// Vượt ngưỡng cảnh báo lúc thanh toán → tự tạo phiếu Báo hàng (Mua hàng >
+// Báo hàng). Không tạo thêm nếu nguyên liệu đó đã có phiếu chưa xử lý, để
+// tránh bắn liên tục 1 cảnh báo mỗi lần có đơn mới dùng nguyên liệu đó.
+function buildLowStockTickets(ingredients, reportRows) {
+  return ingredients
+    .filter(
+      (ing) =>
+        isOverThreshold(ing) &&
+        !reportRows.some((r) => r.ingredientId === ing.id && r.status !== "Đã thực hiện")
+    )
+    .map((ing) => {
+      const ticketNo = generateTicketNo("BH");
+      const usedQty = Number(ing.usedQty.toFixed(2));
+      return {
+        id: ticketNo,
+        ticketNo,
+        date: new Date(),
+        status: "Chưa thực hiện",
+        note: `Nguyên liệu "${ing.name}" đã hao hụt ${usedQty} ${ing.unit}, vượt ngưỡng cảnh báo ${ing.threshold} ${ing.unit}.`,
+        ingredientId: ing.id,
+        ingredientName: ing.name,
+        qty: ing.threshold,
+        unit: ing.unit,
+      };
+    });
+}
 
 const TABS = [
   { key: "tables", label: "Sơ đồ bàn", icon: LayoutGrid },
@@ -32,9 +62,16 @@ function FnB() {
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [ingredients, setIngredients] = useState(INITIAL_INGREDIENTS);
   const [activeOrderId, setActiveOrderId] = useState(null);
+  const { reportRows, setReportRows } = usePurchaseReport();
 
   function handleOrderCheckout(order) {
-    setIngredients((prev) => applyUsage(prev, computeOrderUsage(order, categories)));
+    const updated = applyUsage(ingredients, computeOrderUsage(order, categories));
+    setIngredients(updated);
+
+    const newTickets = buildLowStockTickets(updated, reportRows);
+    if (newTickets.length > 0) {
+      setReportRows((prev) => [...newTickets, ...prev]);
+    }
   }
 
   const activeOrder = orders.find((o) => o.id === activeOrderId) || null;
