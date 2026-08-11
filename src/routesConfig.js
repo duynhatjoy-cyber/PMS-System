@@ -195,6 +195,11 @@ export const ROUTES = [
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
+    path: "/config/quan-ly-kho/nguyen-vat-lieu",
+    Component: WarehouseConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
     path: "/config/quan-ly-kho",
     Component: WarehouseConfig,
   },
