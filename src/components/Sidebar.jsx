@@ -113,9 +113,9 @@ const menuSections = [
         expandable: true,
         children: [
           "Thông tin khách sạn",
-          "Cấu hình vận hành",
+          // "Cấu hình vận hành",
           "Cấu hình Phòng & Giá",
-          "Phòng & Giá",
+          // "Phòng & Giá",
           "Quản lý đặt phòng",
           "Cấu hình giờ",
           "Dịch vụ",
