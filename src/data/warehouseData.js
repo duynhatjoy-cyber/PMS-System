@@ -2,6 +2,10 @@
 // Tổng hợp tồn kho. No backend exists yet, so every list below stands in for a
 // real inventory/purchasing service.
 
+import { startOfDay, addDays } from "../utils/format";
+
+const today = startOfDay(new Date());
+
 export const DATE_PRESETS = [
   "Hôm nay",
   "Tuần này",
@@ -18,28 +22,29 @@ export const STATUS_OPTIONS = ["Tất cả", "Đã xử lý", "Chưa xử lý"];
 
 export const STOCK_OUT_DOC_TYPES = ["Xuất kho bán hàng", "Xuất hủy", "Xuất khác"];
 
-// { id, name, unit } — unit "" matches items with no unit set in the reference.
-export const MATERIALS = [
-  { id: "coca-pepsi", name: "Coca/Pepsi", unit: "Lon" },
-  { id: "nuoc-suoi-550", name: "Nước suối 550ml", unit: "Chai" },
-  { id: "mi-ly", name: "Mì ly", unit: "Ly" },
-  { id: "banh-khoai-tay-poca", name: "Bánh khoai tây Poca", unit: "Bịch" },
-  { id: "bao-cao-su", name: "Bao cao su", unit: "Hộp 3 cái" },
-  { id: "bai-ma-soi", name: "Bài Ma sói", unit: "1" },
-  { id: "bai-uno", name: "Bài Uno", unit: "1" },
-  { id: "ma-soi-bai-uno", name: "Ma sói, bài uno", unit: "" },
-  { id: "dau-phong", name: "Đậu phộng", unit: "Gói" },
-  { id: "nuoc-suoi-nho", name: "Nước suối nhỏ", unit: "" },
-  { id: "sprite-7up", name: "Sprite/7Up", unit: "Lon" },
-  { id: "tra-o-long", name: "Trà Ô Long", unit: "Chai" },
-  { id: "bao-cao-su-durex", name: "Bao cao su Durex", unit: "Hộp 3 cái" },
-  { id: "banh-cua", name: "Bánh Cua", unit: "Gói" },
-  { id: "banh-mix", name: "Bánh Mix", unit: "Gói" },
-  { id: "tra-fuze", name: "Trà Fuze", unit: "Chai" },
-  { id: "sting-rockstar", name: "Sting/Rockstar", unit: "Lon" },
-];
+// Danh mục nguyên vật liệu nay được quản lý ở Cấu hình > Quản lý kho
+// (xem MATERIAL_RECORDS trong data/warehouseConfigData.js + useActiveMaterials()).
 
-export const STOCK_IN_ROWS = [];
+export const STOCK_IN_ROWS = [
+  {
+    id: "NK18420",
+    ticketNo: "NK18420",
+    date: addDays(today, -1),
+    total: 4850000,
+    note: "Nhập hàng nước giải khát đầu tuần",
+    supplier: "Cocacola",
+    docType: "Nhập kho mua hàng",
+  },
+  {
+    id: "NK18391",
+    ticketNo: "NK18391",
+    date: addDays(today, -3),
+    total: 1260000,
+    note: "Nhập bổ sung mì ly, bánh snack",
+    supplier: "",
+    docType: "Nhập kho mua hàng",
+  },
+];
 
 export const STOCK_OUT_ROWS = [
   {
@@ -74,9 +79,43 @@ export const STOCK_OUT_ROWS = [
   },
 ];
 
-export const STOCK_TRANSFER_ROWS = [];
+export const STOCK_TRANSFER_ROWS = [
+  {
+    id: "CK20114",
+    ticketNo: "CK20114",
+    date: addDays(today, -1),
+    carrier: "Nguyễn Văn Long",
+    total: 620000,
+    note: "Chuyển từ Kho khách sạn sang Tủ minibar",
+  },
+  {
+    id: "CK20098",
+    ticketNo: "CK20098",
+    date: addDays(today, -2),
+    carrier: "Trần Thị Hoa",
+    total: 340000,
+    note: "Chuyển từ Kho khách sạn sang Kho buồng",
+  },
+];
 
-export const STOCK_CHECK_ROWS = [];
+export const STOCK_CHECK_ROWS = [
+  {
+    id: "KK10552",
+    ticketNo: "KK10552",
+    date: addDays(today, -1),
+    warehouse: "Kho khách sạn",
+    note: "Kiểm kê định kỳ cuối tuần",
+    status: "Đã xử lý",
+  },
+  {
+    id: "KK10531",
+    ticketNo: "KK10531",
+    date: addDays(today, -4),
+    warehouse: "Tủ minibar",
+    note: "Kiểm kê phát hiện thiếu nước suối nhỏ",
+    status: "Chưa xử lý",
+  },
+];
 
 // Tồn đầu kỳ / nhập / xuất / tồn cuối kỳ per material — 17 rows total, first 10
 // match the reference screenshot exactly.

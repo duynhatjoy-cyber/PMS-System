@@ -465,6 +465,35 @@
   padding: 0;
 }
 
+.inlineActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--fd-primary);
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.inlineActionBtn:hover {
+  filter: brightness(0.97);
+}
+
+.matchBadge {
+  color: var(--fd-success);
+  background: var(--fd-success-soft);
+}
+
+.mismatchBadge {
+  color: var(--fd-danger);
+  background: var(--fd-danger-soft);
+}
+
 .numCell {
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -486,6 +515,7 @@
 .statusBadge {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   padding: 3px 10px;
   border-radius: 999px;
   font-size: 12px;

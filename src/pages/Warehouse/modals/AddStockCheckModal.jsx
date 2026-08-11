@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Calendar, Plus, X, Trash2 } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
-import { MATERIALS, STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
-import { useActiveWarehouseNames } from "../../../context/WarehouseConfigContext";
+import { STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
+import { useActiveWarehouseNames, useActiveMaterials } from "../../../context/WarehouseConfigContext";
 import { formatDMY } from "../../../utils/format";
 import useLineItems from "../hooks/useLineItems";
 import generateTicketNo from "../ticketNo";
@@ -13,8 +13,8 @@ function emptyLine(id) {
   return { id, materialId: "", counted: "", reason: "" };
 }
 
-function systemQty(materialId) {
-  const material = MATERIALS.find((m) => m.id === materialId);
+function systemQty(materialId, materials) {
+  const material = materials.find((m) => m.id === materialId);
   const summary = material && STOCK_SUMMARY_ROWS.find((r) => r.material === material.name);
   return summary ? summary.closing : 0;
 }
@@ -27,6 +27,7 @@ function resolutionLabel(diff) {
 
 function AddStockCheckModal({ onClose, onSave, onToast }) {
   const activeWarehouseNames = useActiveWarehouseNames();
+  const materials = useActiveMaterials();
   const [checkDate] = useState(() => new Date());
   const [innerTab, setInnerTab] = useState("materials");
   const [purpose, setPurpose] = useState("");
@@ -146,8 +147,8 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
             </thead>
             <tbody>
               {lines.map((line) => {
-                const material = MATERIALS.find((m) => m.id === line.materialId);
-                const system = line.materialId ? systemQty(line.materialId) : null;
+                const material = materials.find((m) => m.id === line.materialId);
+                const system = line.materialId ? systemQty(line.materialId, materials) : null;
                 const diff = line.materialId && line.counted !== "" ? Number(line.counted) - system : null;
                 return (
                   <tr key={line.id}>
@@ -159,7 +160,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
                           onChange={(e) => updateLine(line.id, { materialId: e.target.value })}
                         >
                           <option value="">Chọn nguyên vật liệu?</option>
-                          {MATERIALS.map((m) => (
+                          {materials.map((m) => (
                             <option key={m.id} value={m.id}>
                               {m.name}
                             </option>

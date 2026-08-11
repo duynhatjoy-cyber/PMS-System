@@ -1,17 +1,56 @@
 import { useState } from "react";
-import { LayoutGrid, Receipt, BookOpen } from "lucide-react";
+import { Box, LayoutGrid, Receipt, BookOpen } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import TableMapPanel from "./components/TableMapPanel";
 import OrdersPanel from "./components/OrdersPanel";
 import OrderDetailModal from "./components/OrderDetailModal";
 import MenuPanel from "./components/MenuPanel";
-import { INITIAL_CATEGORIES, INITIAL_ORDERS, INITIAL_TABLES } from "../../data/fnbData";
+import IngredientsPanel from "./components/IngredientsPanel";
+import { usePurchaseReport } from "../../context/PurchaseReportContext";
+import generateTicketNo from "../Warehouse/ticketNo";
+import {
+  INITIAL_CATEGORIES,
+  INITIAL_INGREDIENTS,
+  INITIAL_ORDERS,
+  INITIAL_TABLES,
+  applyUsage,
+  computeOrderUsage,
+  isOverThreshold,
+} from "../../data/fnbData";
 import styles from "./FnB.module.css";
+
+// Vượt ngưỡng cảnh báo lúc thanh toán → tự tạo phiếu Báo hàng (Mua hàng >
+// Báo hàng). Không tạo thêm nếu nguyên liệu đó đã có phiếu chưa xử lý, để
+// tránh bắn liên tục 1 cảnh báo mỗi lần có đơn mới dùng nguyên liệu đó.
+function buildLowStockTickets(ingredients, reportRows) {
+  return ingredients
+    .filter(
+      (ing) =>
+        isOverThreshold(ing) &&
+        !reportRows.some((r) => r.ingredientId === ing.id && r.status !== "Đã thực hiện")
+    )
+    .map((ing) => {
+      const ticketNo = generateTicketNo("BH");
+      const usedQty = Number(ing.usedQty.toFixed(2));
+      return {
+        id: ticketNo,
+        ticketNo,
+        date: new Date(),
+        status: "Chưa thực hiện",
+        note: `Nguyên liệu "${ing.name}" đã hao hụt ${usedQty} ${ing.unit}, vượt ngưỡng cảnh báo ${ing.threshold} ${ing.unit}.`,
+        ingredientId: ing.id,
+        ingredientName: ing.name,
+        qty: ing.threshold,
+        unit: ing.unit,
+      };
+    });
+}
 
 const TABS = [
   { key: "tables", label: "Sơ đồ bàn", icon: LayoutGrid },
   { key: "orders", label: "Đơn hàng", icon: Receipt },
   { key: "menu", label: "Thực đơn", icon: BookOpen },
+  { key: "ingredients", label: "Nguyên vật liệu", icon: Box },
 ];
 
 function FnB() {
@@ -21,7 +60,19 @@ function FnB() {
   const [tables, setTables] = useState(INITIAL_TABLES);
   const [orders, setOrders] = useState(INITIAL_ORDERS);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
+  const [ingredients, setIngredients] = useState(INITIAL_INGREDIENTS);
   const [activeOrderId, setActiveOrderId] = useState(null);
+  const { reportRows, setReportRows } = usePurchaseReport();
+
+  function handleOrderCheckout(order) {
+    const updated = applyUsage(ingredients, computeOrderUsage(order, categories));
+    setIngredients(updated);
+
+    const newTickets = buildLowStockTickets(updated, reportRows);
+    if (newTickets.length > 0) {
+      setReportRows((prev) => [...newTickets, ...prev]);
+    }
+  }
 
   const activeOrder = orders.find((o) => o.id === activeOrderId) || null;
   const activeOrderTable = activeOrder ? tables.find((t) => t.id === activeOrder.tableId) : null;
@@ -70,7 +121,20 @@ function FnB() {
         <OrdersPanel tables={tables} orders={orders} onOpenOrder={setActiveOrderId} />
       )}
 
-      {tabKey === "menu" && <MenuPanel categories={categories} setCategories={setCategories} onToast={setToastMsg} />}
+      {tabKey === "menu" && (
+        <MenuPanel categories={categories} setCategories={setCategories} ingredients={ingredients} onToast={setToastMsg} />
+      )}
+
+      {tabKey === "ingredients" && (
+        <IngredientsPanel
+          ingredients={ingredients}
+          setIngredients={setIngredients}
+          categories={categories}
+          setCategories={setCategories}
+          onToast={setToastMsg}
+        />
+      )}
+
 
       {activeOrder && (
         <OrderDetailModal
@@ -79,6 +143,7 @@ function FnB() {
           categories={categories}
           setOrders={setOrders}
           setTables={setTables}
+          onCheckout={handleOrderCheckout}
           onClose={() => setActiveOrderId(null)}
           onToast={setToastMsg}
         />

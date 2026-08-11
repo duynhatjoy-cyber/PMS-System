@@ -1,17 +1,17 @@
-import { useMemo, useState } from "react";
-import { Clock, List, Info, DollarSign, MessageSquare, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Clock, List, Info, DollarSign, MessageSquare, Building2, CalendarClock, Plus } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
-import AddPurchaseTicketModal from "../modals/AddPurchaseTicketModal";
+import AddPurchaseOrderModal from "../modals/AddPurchaseOrderModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import statusBadgeClass from "../statusBadge";
-import { ORDER_ROWS, PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
+import { PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
 
-function OrderPanel({ onToast }) {
+function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine, onSeedConsumed }) {
   const {
     preset,
     setPreset,
@@ -27,8 +27,22 @@ function OrderPanel({ onToast }) {
     showAddModal,
     setShowAddModal,
     handleSaveTicket,
-  } = useStockPanel(ORDER_ROWS, "Đã thêm phiếu đặt hàng", onToast);
+  } = useStockPanel(orderRows, "Đã thêm phiếu đặt hàng", onToast, [orderRows, setOrderRows]);
   const [status, setStatus] = useState(PURCHASE_STATUS_OPTIONS[0]);
+
+  useEffect(() => {
+    if (seedLine) setShowAddModal(true);
+  }, [seedLine, setShowAddModal]);
+
+  function closeAddModal() {
+    setShowAddModal(false);
+    onSeedConsumed();
+  }
+
+  function saveOrderTicket(ticket) {
+    handleSaveTicket(ticket);
+    onSeedConsumed();
+  }
 
   const filteredRows = useMemo(() => {
     if (status === "Tất cả") return rows;
@@ -89,6 +103,16 @@ function OrderPanel({ onToast }) {
                 </th>
                 <th>
                   <span className={styles.thLabel}>
+                    <Building2 size={14} /> Nhà cung cấp
+                  </span>
+                </th>
+                <th>
+                  <span className={styles.thLabel}>
+                    <CalendarClock size={14} /> Ngày nhận dự kiến
+                  </span>
+                </th>
+                <th>
+                  <span className={styles.thLabel}>
                     <DollarSign size={14} /> Tổng
                   </span>
                 </th>
@@ -113,7 +137,7 @@ function OrderPanel({ onToast }) {
             <tbody>
               {pagedRows.length === 0 ? (
                 <tr className={styles.emptyRow}>
-                  <td colSpan={6}>
+                  <td colSpan={8}>
                     <EmptyState message="Không tìm thấy phiếu" hint="Nhấn nút + ở góc trên để tạo phiếu đặt hàng mới." />
                   </td>
                 </tr>
@@ -131,6 +155,8 @@ function OrderPanel({ onToast }) {
                         {row.status}
                       </span>
                     </td>
+                    <td>{row.supplier}</td>
+                    <td>{row.expectedDate ? formatDMY(row.expectedDate) : "—"}</td>
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
                     <td />
@@ -151,14 +177,7 @@ function OrderPanel({ onToast }) {
       </div>
 
       {showAddModal && (
-        <AddPurchaseTicketModal
-          title="Thêm phiếu đặt hàng"
-          ticketPrefix="DH"
-          statusOptions={PURCHASE_STATUS_OPTIONS.slice(1)}
-          includeTotal
-          onSave={handleSaveTicket}
-          onClose={() => setShowAddModal(false)}
-        />
+        <AddPurchaseOrderModal seedLine={seedLine} onSave={saveOrderTicket} onClose={closeAddModal} />
       )}
     </div>
   );

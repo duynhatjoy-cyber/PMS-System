@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Calendar, Clock, Plus, X, Trash2 } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
-import { MATERIALS, STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
-import { useActiveWarehouseNames } from "../../../context/WarehouseConfigContext";
+import { STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
+import { useActiveWarehouseNames, useActiveMaterials } from "../../../context/WarehouseConfigContext";
 import { formatDateTimeDMY, formatCurrency } from "../../../utils/format";
 import useLineItems, { lineAmount } from "../hooks/useLineItems";
 import generateTicketNo from "../ticketNo";
@@ -11,6 +11,7 @@ import styles from "./WarehouseModal.module.css";
 
 function AddStockOutModal({ onClose, onSave, onToast }) {
   const activeWarehouseNames = useActiveWarehouseNames();
+  const materials = useActiveMaterials();
 
   function emptyLine(id) {
     return { id, materialId: "", warehouse: activeWarehouseNames[0], qty: "", price: "" };
@@ -128,7 +129,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
           </thead>
           <tbody>
             {lines.map((line) => {
-              const material = MATERIALS.find((m) => m.id === line.materialId);
+              const material = materials.find((m) => m.id === line.materialId);
               return (
                 <tr key={line.id}>
                   <td>
@@ -139,7 +140,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
                         onChange={(e) => updateLine(line.id, { materialId: e.target.value })}
                       >
                         <option value="">Chọn nguyên vật liệu</option>
-                        {MATERIALS.map((m) => (
+                        {materials.map((m) => (
                           <option key={m.id} value={m.id}>
                             {m.name}
                           </option>

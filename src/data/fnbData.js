@@ -42,8 +42,57 @@ export const INITIAL_TABLES = [
   makeTable("S2", 2, "Sân vườn", "vacant"),
 ];
 
-function makeMenuItem(name, price, available = true) {
-  return { id: nextId("mi"), name, price, available };
+// Đơn vị đóng kín (select), không cho tự nhập — tránh cùng 1 nguyên liệu bị
+// ghi nhận lệch đơn vị giữa các lần thêm/sửa.
+export const INGREDIENT_UNITS = ["kg", "Lít", "Quả", "Cái", "Gói", "Thùng"];
+
+// Nguyên vật liệu chế biến — riêng cho bếp F&B, khác với MATERIALS (vật tư/
+// minibar) trong warehouseData.js vì đó là danh sách chung cả khách sạn, không
+// phải nguyên liệu nấu ăn. usedQty là hao hụt lũy kế, cộng dồn mỗi khi một đơn
+// có món dùng nguyên liệu này được thanh toán (xem computeOrderUsage/applyUsage).
+// threshold: mức hao hụt lũy kế mà khi đạt tới, hệ thống tự tạo phiếu báo hàng
+// (xem isOverThreshold, FnB.jsx#handleOrderCheckout).
+function makeIngredient(name, unit, threshold) {
+  return { id: nextId("ing"), name, unit, usedQty: 0, threshold };
+}
+
+export const INITIAL_INGREDIENTS = [
+  makeIngredient("Gạo", "kg", 15),
+  makeIngredient("Tôm", "kg", 5),
+  makeIngredient("Mực", "kg", 5),
+  makeIngredient("Thịt heo", "kg", 6),
+  makeIngredient("Thịt bò", "kg", 6),
+  makeIngredient("Thịt gà", "kg", 6),
+  makeIngredient("Trứng", "Quả", 60),
+  makeIngredient("Bánh tráng", "Cái", 100),
+  makeIngredient("Bánh phở", "kg", 8),
+  makeIngredient("Bún", "kg", 8),
+  makeIngredient("Rau sống", "kg", 6),
+  makeIngredient("Hành lá", "kg", 3),
+  makeIngredient("Hành tây", "kg", 4),
+  makeIngredient("Tỏi", "kg", 2),
+  makeIngredient("Mật ong", "Lít", 3),
+  makeIngredient("Dầu ăn", "Lít", 5),
+];
+
+// threshold rỗng/0 nghĩa là chưa cấu hình cảnh báo cho nguyên liệu đó.
+export function isOverThreshold(ingredient) {
+  return Number(ingredient.threshold) > 0 && ingredient.usedQty >= Number(ingredient.threshold);
+}
+
+function findIngredient(name) {
+  const ing = INITIAL_INGREDIENTS.find((i) => i.name === name);
+  if (!ing) throw new Error(`Chưa khai báo nguyên vật liệu "${name}"`);
+  return ing;
+}
+
+// { ingredientId, qty } — qty tính cho 1 phần của món.
+function recipeLine(name, qty) {
+  return { ingredientId: findIngredient(name).id, qty };
+}
+
+function makeMenuItem(name, price, available = true, recipe = []) {
+  return { id: nextId("mi"), name, price, available, recipe };
 }
 
 function makeCategory(name, items = []) {
@@ -52,14 +101,37 @@ function makeCategory(name, items = []) {
 
 export const INITIAL_CATEGORIES = [
   makeCategory("Khai vị", [
-    makeMenuItem("Gỏi cuốn tôm thịt", 45000),
+    makeMenuItem("Gỏi cuốn tôm thịt", 45000, true, [
+      recipeLine("Bánh tráng", 4),
+      recipeLine("Tôm", 0.06),
+      recipeLine("Thịt heo", 0.04),
+      recipeLine("Bún", 0.05),
+      recipeLine("Rau sống", 0.03),
+    ]),
     makeMenuItem("Súp hải sản", 55000),
     makeMenuItem("Chả giò", 50000),
   ]),
   makeCategory("Món chính", [
-    makeMenuItem("Cơm chiên hải sản", 85000),
-    makeMenuItem("Phở bò tái", 65000),
-    makeMenuItem("Gà nướng mật ong", 120000),
+    makeMenuItem("Cơm chiên hải sản", 85000, true, [
+      recipeLine("Gạo", 0.2),
+      recipeLine("Tôm", 0.05),
+      recipeLine("Mực", 0.05),
+      recipeLine("Trứng", 1),
+      recipeLine("Hành lá", 0.01),
+      recipeLine("Dầu ăn", 0.02),
+    ]),
+    makeMenuItem("Phở bò tái", 65000, true, [
+      recipeLine("Bánh phở", 0.25),
+      recipeLine("Thịt bò", 0.08),
+      recipeLine("Hành tây", 0.02),
+      recipeLine("Hành lá", 0.01),
+    ]),
+    makeMenuItem("Gà nướng mật ong", 120000, true, [
+      recipeLine("Thịt gà", 0.3),
+      recipeLine("Mật ong", 0.03),
+      recipeLine("Tỏi", 0.01),
+      recipeLine("Dầu ăn", 0.01),
+    ]),
     makeMenuItem("Cá lóc kho tộ", 95000, false),
   ]),
   makeCategory("Đồ uống", [
@@ -120,4 +192,32 @@ export const INITIAL_ORDERS = [
 
 export function orderTotal(order) {
   return order.items.reduce((sum, line) => sum + line.price * line.qty, 0);
+}
+
+function findMenuItem(categories, itemId) {
+  for (const cat of categories) {
+    const item = cat.items.find((i) => i.id === itemId);
+    if (item) return item;
+  }
+  return null;
+}
+
+// Công thức chế biến (recipe) của mỗi món x số lượng đã bán trong đơn = nguyên
+// vật liệu hao hụt. Trả về map { ingredientId: qty } cho 1 đơn.
+export function computeOrderUsage(order, categories) {
+  const usage = {};
+  for (const line of order.items) {
+    const menuItem = findMenuItem(categories, line.itemId);
+    for (const r of menuItem?.recipe ?? []) {
+      usage[r.ingredientId] = (usage[r.ingredientId] ?? 0) + r.qty * line.qty;
+    }
+  }
+  return usage;
+}
+
+// Cộng dồn usage (từ computeOrderUsage) vào usedQty lũy kế của từng nguyên vật liệu.
+export function applyUsage(ingredients, usage) {
+  return ingredients.map((ing) =>
+    usage[ing.id] ? { ...ing, usedQty: ing.usedQty + usage[ing.id] } : ing
+  );
 }
