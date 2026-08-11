@@ -125,57 +125,92 @@ export const ROUTES = [
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thông tin khách sạn",
-    path: "/cau-hinh/thong-tin-khach-san",
+    path: "/config/thong-tin-khach-san",
     Component: HotelInfo,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
-    path: "/cau-hinh/phong-va-gia",
+    path: "/config/phong-va-gia/don-gia",
+    Component: RoomPriceConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình Phòng & Giá",
+    path: "/config/phong-va-gia",
     Component: RoomPriceConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Cấu hình giờ",
-    path: "/cau-hinh/cau-hinh-gio",
+    path: "/config/cau-hinh-gio",
     Component: TimeConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Máy in & Mẫu in",
-    path: "/cau-hinh/may-in-mau-in",
+    path: "/config/may-in-mau-in",
     Component: PrinterTemplateConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thuế/Phí",
-    path: "/cau-hinh/thue-phi",
+    path: "/config/thue-phi",
     Component: TaxFeeConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Quản lý đặt phòng",
-    path: "/cau-hinh/quan-ly-dat-phong",
+    path: "/config/quan-ly-dat-phong/phan-loai-booking",
+    Component: BookingConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý đặt phòng",
+    path: "/config/quan-ly-dat-phong",
     Component: BookingConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Dịch vụ",
-    path: "/cau-hinh/dich-vu",
+    path: "/config/dich-vu",
     Component: DichVuConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thanh toán QR code",
-    path: "/cau-hinh/thanh-toan-qr-code",
+    path: "/config/qrcode/stk/id",
+    Component: QrPaymentConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Thanh toán QR code",
+    path: "/config/qrcode",
     Component: QrPaymentConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Thu chi",
-    path: "/cau-hinh/thu-chi",
+    path: "/config/thu-chi/tai-khoan-ngan-hang",
+    Component: ThuChiConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Thu chi",
+    path: "/config/thu-chi",
     Component: ThuChiConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
-    path: "/cau-hinh/quan-ly-kho",
+    path: "/config/quan-ly-kho/nha-cung-cap",
+    Component: WarehouseConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
+    path: "/config/quan-ly-kho/nguyen-vat-lieu",
+    Component: WarehouseConfig,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Quản lý kho",
+    path: "/config/quan-ly-kho",
     Component: WarehouseConfig,
   },
   {
     key: "CÀI ĐẶT::Cấu hình PMS::Tài khoản & phân quyền",
-    path: "/cau-hinh/tai-khoan-phan-quyen",
+    path: "/config/tai-khoan-phan-quyen/phan-quyen",
+    Component: AccountPermissions,
+  },
+  {
+    key: "CÀI ĐẶT::Cấu hình PMS::Tài khoản & phân quyền",
+    path: "/config/tai-khoan-phan-quyen",
     Component: AccountPermissions,
   },
   {

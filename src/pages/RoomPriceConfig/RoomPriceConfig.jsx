@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { BedDouble, Building2, CircleHelp, Layers, PauseCircle, Pencil, PlayCircle, Plus, Trash2, X } from "lucide-react";
+import { BedDouble, Building2, ChevronUp, CircleHelp, Layers, PauseCircle, Pencil, Plane, PlayCircle, Plus, Trash2, Utensils, X } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ROOMS, ROOM_TYPES } from "../../data/roomMapData";
 import styles from "./RoomPriceConfig.module.css";
 
@@ -23,6 +24,8 @@ const initialRoomTypes = ROOM_TYPES.map((type) => {
 });
 
 function RoomPriceConfig() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [roomTypes, setRoomTypes] = useState(initialRoomTypes);
   const [selectedId, setSelectedId] = useState(initialRoomTypes[0]?.id || null);
   const [modal, setModal] = useState(null);
@@ -33,7 +36,7 @@ function RoomPriceConfig() {
     roomTypeId: initialRoomTypes[0]?.id || "",
     floorId: initialRoomTypes[0]?.floors[0]?.id || "",
   });
-  const [activeTab, setActiveTab] = useState("rooms");
+  const activeTab = location.pathname.endsWith("/don-gia") ? "prices" : "rooms";
   const [pricePolicies, setPricePolicies] = useState(() =>
     Object.fromEntries(initialRoomTypes.map((type) => [type.id, [{ id: "default", name: "DEFAULT" }]]))
   );
@@ -158,11 +161,11 @@ function RoomPriceConfig() {
       </div>
 
       <div className={styles.tabs} role="tablist">
-        <button className={activeTab === "rooms" ? styles.tabActive : styles.tab} onClick={() => setActiveTab("rooms")}>Phòng/giường</button>
+        <button className={activeTab === "rooms" ? styles.tabActive : styles.tab} onClick={() => navigate("/config/phong-va-gia")}>Phòng/giường</button>
         <button
           className={activeTab === "prices" ? styles.tabActive : styles.tab}
           onClick={() => {
-            setActiveTab("prices");
+            navigate("/config/phong-va-gia/don-gia");
             setSelectedId(null);
             setSelectedPolicyId(null);
             setSelectedPriceType(null);
@@ -231,6 +234,7 @@ const priceTypes = [
 ];
 
 function PriceBoard({ roomTypes, roomCount, selectedId, onSelectRoom, policies, selectedPolicyId, onSelectPolicy, onAddPolicy, selectedPriceType, enabledTypes, onTogglePriceType, value, onChange, earlyRates, lateRates, onAddSupplement, onUpdateSupplement, onRemoveSupplement }) {
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
   const type = priceTypes.find((item) => item.id === selectedPriceType);
   const title = type?.label || "Giá ngày";
   return <section className={styles.priceBoard}>
@@ -245,14 +249,131 @@ function PriceBoard({ roomTypes, roomCount, selectedId, onSelectRoom, policies, 
     </aside>}
     {selectedPolicyId && <aside className={styles.priceTypeColumn}>
       <div className={styles.priceColumnTitle}>Loại giá</div>
-      {priceTypes.map((item) => { const enabled = enabledTypes.includes(item.id); return <button key={item.id} className={`${styles.priceTypeItem} ${selectedPriceType === item.id ? styles.priceTypeActive : ""}`} onClick={() => onTogglePriceType(item.id)}><span className={`${styles.checkBox} ${enabled ? styles.checkBoxSelected : ""}`}>{enabled ? "✓" : ""}</span>{item.label}</button>; })}
+      {priceTypes.map((item) => { const enabled = enabledTypes.includes(item.id); return <button key={item.id} className={`${styles.priceTypeItem} ${selectedPriceType === item.id && !selectedPackageId ? styles.priceTypeActive : ""}`} onClick={() => { setSelectedPackageId(null); onTogglePriceType(item.id); }}><span className={`${styles.checkBox} ${enabled ? styles.checkBoxSelected : ""}`}>{enabled ? "✓" : ""}</span>{item.label}</button>; })}
     </aside>}
-    {selectedPriceType && <section className={styles.priceEditor}>
+    {selectedPolicyId && <aside className={styles.packageColumn}>
+      <div className={styles.priceColumnTitle}>Gói giá</div>
+      {policies.map((policy) => <button key={policy.id} className={`${styles.packageItem} ${selectedPackageId === policy.id ? styles.packageItemActive : ""}`} onClick={() => setSelectedPackageId(policy.id)}><span className={styles.packageDot} />{policy.name}</button>)}
+    </aside>}
+    {selectedPackageId ? <PackageEditor packageName={policies.find((policy) => policy.id === selectedPackageId)?.name} /> : selectedPriceType && <section className={styles.priceEditor}>
       <header className={styles.priceEditorHeader}><h2>{title} {selectedPriceType === "daily" && <CircleHelp size={17} />}</h2><div><button className={styles.testBtn}>Kiểm tra</button><button className={styles.saveBtn} onClick={() => {}}>Lưu</button></div></header>
       <div className={styles.priceEditorBody}>{selectedPriceType ? <PriceForm type={selectedPriceType} value={value} onChange={onChange} earlyRates={earlyRates} lateRates={lateRates} onAddSupplement={onAddSupplement} onUpdateSupplement={onUpdateSupplement} onRemoveSupplement={onRemoveSupplement} /> : <p className={styles.priceDescription}>Chọn ít nhất một loại giá để bắt đầu thiết lập.</p>}</div>
     </section>}
   </section>;
 }
+
+function PackageEditor({ packageName }) {
+  const [selectedService, setSelectedService] = useState(null);
+  const [discount, setDiscount] = useState("0");
+  const [showExtras, setShowExtras] = useState(true);
+  const [extras, setExtras] = useState({});
+  const [parkingType, setParkingType] = useState("self");
+  const [airportTrip, setAirportTrip] = useState("round-trip");
+  const [parkingDays, setParkingDays] = useState("2");
+  const [foodBenefit, setFoodBenefit] = useState("discount");
+  const [foodDiscount, setFoodDiscount] = useState("0");
+  const [creditPeriod, setCreditPeriod] = useState("daily");
+  const [creditScope, setCreditScope] = useState("adult");
+  const [creditValue, setCreditValue] = useState("0");
+  const [creditCurrency, setCreditCurrency] = useState("property");
+  const [creditDaily, setCreditDaily] = useState(false);
+  const [propertyBenefit, setPropertyBenefit] = useState("discount");
+  const [propertyDiscount, setPropertyDiscount] = useState("0");
+  const [propertyCreditPeriod, setPropertyCreditPeriod] = useState("daily");
+  const [propertyCreditScope, setPropertyCreditScope] = useState("adult");
+  const [propertyCreditValue, setPropertyCreditValue] = useState("0");
+  const [propertyCreditCurrency, setPropertyCreditCurrency] = useState("property");
+  const [propertyCreditDaily, setPropertyCreditDaily] = useState(false);
+  const [spaType, setSpaType] = useState("unlimited");
+  const [spaHours, setSpaHours] = useState("0");
+  const [massageMinutes, setMassageMinutes] = useState("0");
+  const toggleExtra = (id) => setExtras((items) => ({ ...items, [id]: !items[id] }));
+
+  return <section className={styles.packageEditor}>
+    <header className={styles.priceEditorHeader}><h2>Gói giá: {packageName}</h2><button className={styles.saveBtn} type="button">Lưu</button></header>
+    <div className={styles.packageEditorBody}>
+      <p className={styles.priceDescription}>Chọn các quyền lợi và dịch vụ áp dụng cho gói giá này.</p>
+      <PackageOption id="airport" title="Đưa đón sân bay hai chiều" description="Đơn giản hóa việc đến và đi để cải thiện sự hài lòng của khách" icon={Plane} selected={selectedService === "airport"} onSelect={setSelectedService} />
+      <PackageOption id="food" title="Giảm giá cho đồ ăn và đồ uống" description="Khuyến khích chi tiêu trong kỳ lưu trú để tạo trải nghiệm tốt hơn" icon={Utensils} selected={selectedService === "food"} onSelect={setSelectedService}>
+        <label className={styles.packageDiscount}><span>Giá trị giảm giá</span><span><input type="number" min="0" max="100" value={discount} onChange={(event) => setDiscount(event.target.value)} /> %</span></label>
+      </PackageOption>
+
+      <button type="button" className={styles.extraServicesToggle} onClick={() => setShowExtras((shown) => !shown)} aria-expanded={showExtras}>Xem danh sách đầy đủ các dịch vụ giá trị gia tăng <ChevronUp size={20} className={!showExtras ? styles.chevronClosed : ""} /></button>
+      {showExtras && <div className={styles.extraServicesPanel}>
+        <ExtraServiceGroup title="Vật nuôi" items={[{ id: "pet", label: "Đón tiếp vật nuôi" }]} extras={extras} onToggle={toggleExtra} />
+        <section className={styles.extraServiceGroup}>
+          <h3>Chỗ đỗ xe &amp; dịch vụ đưa đón</h3>
+          <ExpandableExtra checked={Boolean(extras.parking)} label="Chỗ đỗ xe" onChange={() => toggleExtra("parking")}>
+            <RadioChoice name="parking-type" value="self" checked={parkingType === "self"} onChange={setParkingType}>Khách tự đỗ xe</RadioChoice>
+            <RadioChoice name="parking-type" value="valet" checked={parkingType === "valet"} onChange={setParkingType}>Dịch vụ đỗ xe cho khách</RadioChoice>
+          </ExpandableExtra>
+          <ExpandableExtra checked={Boolean(extras["airport-service"])} label="Dịch vụ đưa đón sân bay" onChange={() => toggleExtra("airport-service")}>
+            <RadioChoice name="airport-trip" value="round-trip" checked={airportTrip === "round-trip"} onChange={setAirportTrip}>Khứ hồi</RadioChoice>
+            <RadioChoice name="airport-trip" value="one-way" checked={airportTrip === "one-way"} onChange={setAirportTrip}>Một chiều</RadioChoice>
+          </ExpandableExtra>
+          <ExpandableExtra checked={Boolean(extras["park-sleep-fly"])} label="Gói “Park, sleep & fly”" onChange={() => toggleExtra("park-sleep-fly")}>
+            <label className={styles.numberDetail}><span>Số ngày đậu xe tối đa tại chỗ nghỉ</span><input type="number" min="1" value={parkingDays} onChange={(event) => setParkingDays(event.target.value)} /></label>
+          </ExpandableExtra>
+        </section>
+        <section className={styles.extraServiceGroup}>
+          <h3>Đồ ăn &amp; thức uống</h3>
+          <ExpandableExtra checked={Boolean(extras["food-credit"])} label="Tín dụng hoặc giảm giá đồ ăn và thức uống" onChange={() => toggleExtra("food-credit")}>
+            <RadioChoice name="food-benefit" value="discount" checked={foodBenefit === "discount"} onChange={setFoodBenefit}>Giảm giá</RadioChoice>
+            <RadioChoice name="food-benefit" value="credit" checked={foodBenefit === "credit"} onChange={setFoodBenefit}>Tín dụng</RadioChoice>
+            {foodBenefit === "discount" ? <label className={styles.benefitValue}><span>Giá trị giảm giá</span><span><input type="number" min="0" max="100" value={foodDiscount} onChange={(event) => setFoodDiscount(event.target.value)} /> %</span></label> : <div className={styles.creditDetails}>
+              <div><RadioChoice name="credit-period" value="daily" checked={creditPeriod === "daily"} onChange={setCreditPeriod}>Mỗi ngày</RadioChoice><RadioChoice name="credit-period" value="stay" checked={creditPeriod === "stay"} onChange={setCreditPeriod}>Mỗi kỳ lưu trú</RadioChoice></div>
+              <div><RadioChoice name="credit-scope" value="adult" checked={creditScope === "adult"} onChange={setCreditScope}>Mỗi người lớn</RadioChoice><RadioChoice name="credit-scope" value="room" checked={creditScope === "room"} onChange={setCreditScope}>Mỗi phòng</RadioChoice></div>
+              <label className={styles.creditValue}><span>Giá trị tín dụng</span><span><input type="number" min="0" value={creditValue} onChange={(event) => setCreditValue(event.target.value)} /><select value={creditCurrency} onChange={(event) => setCreditCurrency(event.target.value)}><option value="property">Theo loại tiền tệ của chỗ nghỉ</option><option value="usd">USD</option><option value="vnd">VND</option></select></span></label>
+              <label className={styles.dailyCredit}><input type="checkbox" checked={creditDaily} onChange={(event) => setCreditDaily(event.target.checked)} /> Được cung cấp mỗi ngày</label>
+            </div>}
+          </ExpandableExtra>
+          <ExtraServiceItems items={[{ id: "wine", label: "Chai rượu vang" }, { id: "champagne", label: "Chai rượu sâm-panh" }, { id: "welcome-drink", label: "Đồ uống chào mừng" }, { id: "breakfast", label: "Bữa sáng tại khách sạn" }]} extras={extras} onToggle={toggleExtra} />
+        </section>
+        <section className={styles.extraServiceGroup}>
+          <h3>Dịch vụ tại chỗ nghỉ</h3>
+          <ExpandableExtra checked={Boolean(extras["property-credit"])} label="Tín dụng hoặc giảm giá cho dịch vụ tại chỗ nghỉ" onChange={() => toggleExtra("property-credit")}>
+            <RadioChoice name="property-benefit" value="discount" checked={propertyBenefit === "discount"} onChange={setPropertyBenefit}>Giảm giá</RadioChoice>
+            <RadioChoice name="property-benefit" value="credit" checked={propertyBenefit === "credit"} onChange={setPropertyBenefit}>Tín dụng</RadioChoice>
+            {propertyBenefit === "discount" ? <label className={styles.benefitValue}><span>Giá trị giảm giá</span><span><input type="number" min="0" max="100" value={propertyDiscount} onChange={(event) => setPropertyDiscount(event.target.value)} /> %</span></label> : <div className={styles.creditDetails}>
+              <div><RadioChoice name="property-credit-period" value="daily" checked={propertyCreditPeriod === "daily"} onChange={setPropertyCreditPeriod}>Mỗi ngày</RadioChoice><RadioChoice name="property-credit-period" value="stay" checked={propertyCreditPeriod === "stay"} onChange={setPropertyCreditPeriod}>Mỗi kỳ lưu trú</RadioChoice></div>
+              <div><RadioChoice name="property-credit-scope" value="adult" checked={propertyCreditScope === "adult"} onChange={setPropertyCreditScope}>Mỗi người lớn</RadioChoice><RadioChoice name="property-credit-scope" value="room" checked={propertyCreditScope === "room"} onChange={setPropertyCreditScope}>Mỗi phòng</RadioChoice></div>
+              <label className={styles.creditValue}><span>Giá trị tín dụng</span><span><input type="number" min="0" value={propertyCreditValue} onChange={(event) => setPropertyCreditValue(event.target.value)} /><select value={propertyCreditCurrency} onChange={(event) => setPropertyCreditCurrency(event.target.value)}><option value="property">Theo loại tiền tệ của chỗ nghỉ</option><option value="usd">USD</option><option value="vnd">VND</option></select></span></label>
+              <label className={styles.dailyCredit}><input type="checkbox" checked={propertyCreditDaily} onChange={(event) => setPropertyCreditDaily(event.target.checked)} /> Được cung cấp mỗi ngày</label>
+            </div>}
+          </ExpandableExtra>
+        </section>
+        <section className={styles.extraServiceGroup}>
+          <h3>Chăm sóc sức khỏe</h3>
+          <ExpandableExtra checked={Boolean(extras.spa)} label="Quyền sử dụng spa" onChange={() => toggleExtra("spa")}>
+            <RadioChoice name="spa-type" value="unlimited" checked={spaType === "unlimited"} onChange={setSpaType}>Quyền sử dụng spa không giới hạn mỗi ngày cho mỗi người lớn</RadioChoice>
+            <RadioChoice name="spa-type" value="limited" checked={spaType === "limited"} onChange={setSpaType}>Quyền sử dụng spa theo giờ nhất định mỗi ngày cho mỗi người lớn</RadioChoice>
+            {spaType === "limited" && <label className={styles.numberDetail}><span>Quyền sử dụng spa theo giờ nhất định mỗi ngày cho mỗi người lớn</span><input type="number" min="0" value={spaHours} onChange={(event) => setSpaHours(event.target.value)} /></label>}
+          </ExpandableExtra>
+          <ExpandableExtra checked={Boolean(extras.massage)} label="Mát-xa" onChange={() => toggleExtra("massage")}>
+            <label className={styles.numberDetail}><span>Thời gian mát-xa (theo phút) cho mỗi người lớn trên mỗi kỳ lưu trú</span><input type="number" min="0" value={massageMinutes} onChange={(event) => setMassageMinutes(event.target.value)} /></label>
+          </ExpandableExtra>
+        </section>
+      </div>}
+    </div>
+  </section>;
+}
+
+function PackageOption({ id, title, description, icon: Icon, selected, onSelect, children }) {
+  return <article className={`${styles.packageOption} ${selected ? styles.packageOptionSelected : ""}`}>
+    <button type="button" onClick={() => onSelect(selected ? null : id)}><span className={styles.optionRadio}>{selected && <span />}</span><Icon size={30} strokeWidth={1.7} /><span><strong>{title}</strong><small>{description}</small></span></button>
+    {selected && children && <div className={styles.packageOptionDetails}>{children}</div>}
+  </article>;
+}
+
+function ExtraServiceGroup({ title, items, extras, onToggle }) {
+  return <section className={styles.extraServiceGroup}><h3>{title}</h3><ExtraServiceItems items={items} extras={extras} onToggle={onToggle} /></section>;
+}
+
+function ExtraServiceItems({ items, extras, onToggle }) { return items.map((item) => <label className={styles.extraCheck} key={item.id}><input type="checkbox" checked={Boolean(extras[item.id])} onChange={() => onToggle(item.id)} /><span>{item.label}</span>{item.isNew && <em>Mới</em>}</label>); }
+
+function ExpandableExtra({ checked, label, isNew = false, onChange, children }) { return <div className={styles.expandableExtra}><label className={styles.extraCheck}><input type="checkbox" checked={checked} onChange={onChange} /><span>{label}</span>{isNew && <em>Mới</em>}</label>{checked && <div className={styles.extraDetails}>{children}</div>}</div>; }
+
+function RadioChoice({ name, value, checked, onChange, children }) { return <label className={styles.radioChoice}><input type="radio" name={name} value={value} checked={checked} onChange={() => onChange(value)} /><span>{children}</span></label>; }
 
 function PriceForm({ type, value, onChange, earlyRates, lateRates, onAddSupplement, onUpdateSupplement, onRemoveSupplement }) {
   if (type === "hourly") return <><p className={styles.priceDescription}>Thiết lập mức giá áp dụng theo từng giờ lưu trú.</p><div className={styles.formSplit}><PriceInput label="Từ giờ" field="from" placeholder="hh:mm" value={value} onChange={onChange} /><PriceInput label="Giá giờ" value={value} onChange={onChange} /></div><button type="button" className={styles.addRate} onClick={() => onAddSupplement("early")}><Plus size={15} /> Thêm giá giờ</button><SupplementRows rows={earlyRates} kind="early" onUpdate={onUpdateSupplement} onRemove={onRemoveSupplement} /></>;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Globe2, IdCard, LayoutGrid, Palette, Tags, Users2 } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import CardFieldsPanel from "./components/CardFieldsPanel";
@@ -28,6 +29,11 @@ const TABS = [
   },
 ];
 
+const PATH_BY_TAB = {
+  roomMap: "/config/quan-ly-dat-phong",
+  bookingTypes: "/config/quan-ly-dat-phong/phan-loai-booking",
+};
+
 const PANEL_BY_SUBKEY = {
   cardFields: CardFieldsPanel,
   roomColors: RoomColorsPanel,
@@ -36,7 +42,9 @@ const PANEL_BY_SUBKEY = {
 };
 
 function BookingConfig() {
-  const [tabKey, setTabKey] = useState(TABS[0].key);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabKey = location.pathname.endsWith("/phan-loai-booking") ? "bookingTypes" : "roomMap";
   const [subKeyByTab, setSubKeyByTab] = useState({
     roomMap: "cardFields",
     bookingTypes: "sourceGroups",
@@ -68,7 +76,7 @@ function BookingConfig() {
               key={t.key}
               type="button"
               className={`${styles.topTab} ${t.key === tabKey ? styles.topTabActive : ""}`}
-              onClick={() => setTabKey(t.key)}
+              onClick={() => navigate(PATH_BY_TAB[t.key])}
             >
               <TabIcon size={16} />
               {t.label}

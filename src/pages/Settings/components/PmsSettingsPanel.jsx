@@ -44,7 +44,7 @@ function PmsSettingsPanel({ onToast }) {
           <button
             type="button"
             className={`${shared.btn} ${shared.btnSecondary}`}
-            onClick={() => navigate("/cau-hinh/thue-phi")}
+            onClick={() => navigate("/config/thue-phi")}
           >
             Quản lý chi tiết →
           </button>

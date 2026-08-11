@@ -1,8 +1,4 @@
 .page {
-  display: grid;
-  grid-template-columns: minmax(330px, 1fr) minmax(330px, 1fr) minmax(360px, 1fr);
-  align-content: start;
-  gap: 16px;
   min-height: 100%;
   padding: 28px;
   background: var(--fd-bg);
@@ -11,9 +7,50 @@
 }
 
 .pageHeading {
-  grid-column: 1 / -1;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
+
+.topTabs {
+  display: flex;
+  width: fit-content;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 5px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  background: var(--fd-surface-hover);
+}
+
+.topTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: var(--fd-radius-sm);
+  background: transparent;
+  color: var(--fd-text-secondary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topTab:hover { color: var(--fd-text); }
+
+.topTabActive {
+  background: var(--fd-surface);
+  color: var(--fd-primary);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.qrContent {
+  display: grid;
+  grid-template-columns: minmax(330px, 1fr) minmax(330px, 1fr) minmax(360px, 1fr);
+  align-content: start;
+  gap: 16px;
+}
+
+.bankAccountsContent { width: 100%; }
 
 .pageHeading h1 {
   font-size: 25px;
@@ -179,6 +216,10 @@
 
 @media (max-width: 1050px) {
   .page {
+    padding: 28px;
+  }
+
+  .qrContent {
     grid-template-columns: minmax(300px, 0.9fr) minmax(300px, 1.1fr);
   }
 
@@ -198,11 +239,11 @@
 
 @media (max-width: 700px) {
   .page {
-    display: block;
     padding: 18px 16px;
   }
 
-  .pageHeading,
+  .qrContent { display: block; }
+
   .registration,
   .connections,
   .providerForm,
