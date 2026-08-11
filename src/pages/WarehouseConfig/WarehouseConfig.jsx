@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Building2, Warehouse } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import WarehousesPanel from "./components/WarehousesPanel";
@@ -6,12 +7,14 @@ import SuppliersPanel from "./components/SuppliersPanel";
 import styles from "./WarehouseConfig.module.css";
 
 const TABS = [
-  { key: "warehouses", label: "Kho", icon: Warehouse, Panel: WarehousesPanel },
-  { key: "suppliers", label: "Nhà cung cấp", icon: Building2, Panel: SuppliersPanel },
+  { key: "warehouses", label: "Kho", path: "/config/quan-ly-kho", icon: Warehouse, Panel: WarehousesPanel },
+  { key: "suppliers", label: "Nhà cung cấp", path: "/config/quan-ly-kho/nha-cung-cap", icon: Building2, Panel: SuppliersPanel },
 ];
 
 function WarehouseConfig() {
-  const [tabKey, setTabKey] = useState(TABS[0].key);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabKey = location.pathname.endsWith("/nha-cung-cap") ? "suppliers" : "warehouses";
   const [toastMsg, setToastMsg] = useState("");
 
   const tab = TABS.find((t) => t.key === tabKey);
@@ -34,7 +37,7 @@ function WarehouseConfig() {
               key={t.key}
               type="button"
               className={`${styles.topTab} ${t.key === tabKey ? styles.topTabActive : ""}`}
-              onClick={() => setTabKey(t.key)}
+              onClick={() => navigate(t.path)}
             >
               <TabIcon size={16} />
               {t.label}

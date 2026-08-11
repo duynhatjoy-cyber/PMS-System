@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Landmark, ListTree } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import CategoryTreePanel from "./components/CategoryTreePanel";
@@ -6,12 +7,14 @@ import BankAccountsPanel from "./components/BankAccountsPanel";
 import styles from "./ThuChiConfig.module.css";
 
 const TABS = [
-  { key: "categories", label: "Danh mục thu chi", icon: ListTree, Panel: CategoryTreePanel },
-  { key: "bankAccounts", label: "Tài khoản ngân hàng", icon: Landmark, Panel: BankAccountsPanel },
+  { key: "categories", label: "Danh mục thu chi", path: "/config/thu-chi", icon: ListTree, Panel: CategoryTreePanel },
+  { key: "bankAccounts", label: "Tài khoản ngân hàng", path: "/config/thu-chi/tai-khoan-ngan-hang", icon: Landmark, Panel: BankAccountsPanel },
 ];
 
 function ThuChiConfig() {
-  const [tabKey, setTabKey] = useState(TABS[0].key);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabKey = location.pathname.endsWith("/tai-khoan-ngan-hang") ? "bankAccounts" : "categories";
   const [toastMsg, setToastMsg] = useState("");
 
   const tab = TABS.find((t) => t.key === tabKey);
@@ -35,7 +38,7 @@ function ThuChiConfig() {
               key={t.key}
               type="button"
               className={`${styles.topTab} ${t.key === tabKey ? styles.topTabActive : ""}`}
-              onClick={() => setTabKey(t.key)}
+              onClick={() => navigate(t.path)}
             >
               <TabIcon size={16} />
               {t.label}

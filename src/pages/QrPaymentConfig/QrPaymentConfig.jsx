@@ -1,6 +1,18 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Landmark, QrCode, X } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import Toast from "../FrontDesk/components/Toast";
+import BankAccountsPanel from "../ThuChiConfig/components/BankAccountsPanel";
+import bankStyles from "../ThuChiConfig/ThuChiConfig.module.css";
 import styles from "./QrPaymentConfig.module.css";
+
+const QR_PATH = "/config/qrcode";
+const BANK_ACCOUNTS_PATH = "/config/qrcode/stk/id";
+
+const TABS = [
+  { label: "Thanh toán QR code", path: QR_PATH, icon: QrCode },
+  { label: "Tài khoản ngân hàng", path: BANK_ACCOUNTS_PATH, icon: Landmark },
+];
 
 const PROVIDERS = [
   {
@@ -105,6 +117,9 @@ function ProviderForm({ provider, values, onChange }) {
 }
 
 function QrPaymentConfig() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [toastMsg, setToastMsg] = useState("");
   const [enabled, setEnabled] = useState(["bidv"]);
   const [activeKey, setActiveKey] = useState("bidv");
   const [configs, setConfigs] = useState(() => Object.fromEntries(PROVIDERS.map((provider) => [
@@ -137,27 +152,55 @@ function QrPaymentConfig() {
     <main className={styles.page}>
       <header className={styles.pageHeading}>
         <h1>Thanh toán QR code</h1>
-        <p>Kết nối và cấu hình các cổng thanh toán QR cho khách sạn.</p>
+        <p>Quản lý tài khoản ngân hàng và kết nối các cổng thanh toán QR cho khách sạn.</p>
       </header>
-      <RegistrationPanel />
-      <section className={styles.connections}>
-        <h2>Kết nối với cổng thanh toán</h2>
-        <div className={styles.providerList}>
-          {PROVIDERS.map((provider) => {
-            const isEnabled = enabled.includes(provider.key);
-            return (
-              <label key={provider.key} className={activeKey === provider.key ? styles.activeProvider : ""}>
-                <input type="checkbox" checked={isEnabled} onChange={() => toggleProvider(provider.key)} />
-                <span>{provider.label}</span>
-              </label>
-            );
-          })}
+
+      <nav className={styles.topTabs} aria-label="Cấu hình thanh toán">
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = location.pathname === tab.path;
+          return (
+            <button
+              key={tab.path}
+              type="button"
+              className={`${styles.topTab} ${isActive ? styles.topTabActive : ""}`}
+              onClick={() => navigate(tab.path)}
+            >
+              <Icon size={16} />
+              {tab.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      {location.pathname === BANK_ACCOUNTS_PATH ? (
+        <div className={styles.bankAccountsContent}>
+          <BankAccountsPanel styles={bankStyles} onToast={setToastMsg} />
+          <Toast message={toastMsg} onDismiss={() => setToastMsg("")} />
         </div>
-      </section>
-      {activeProvider ? (
-        <ProviderForm provider={activeProvider} values={configs[activeKey]} onChange={updateConfig} />
       ) : (
-        <section className={styles.emptyForm}>Chọn một cổng thanh toán để cấu hình.</section>
+        <div className={styles.qrContent}>
+          <RegistrationPanel />
+          <section className={styles.connections}>
+            <h2>Kết nối với cổng thanh toán</h2>
+            <div className={styles.providerList}>
+              {PROVIDERS.map((provider) => {
+                const isEnabled = enabled.includes(provider.key);
+                return (
+                  <label key={provider.key} className={activeKey === provider.key ? styles.activeProvider : ""}>
+                    <input type="checkbox" checked={isEnabled} onChange={() => toggleProvider(provider.key)} />
+                    <span>{provider.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </section>
+          {activeProvider ? (
+            <ProviderForm provider={activeProvider} values={configs[activeKey]} onChange={updateConfig} />
+          ) : (
+            <section className={styles.emptyForm}>Chọn một cổng thanh toán để cấu hình.</section>
+          )}
+        </div>
       )}
     </main>
   );

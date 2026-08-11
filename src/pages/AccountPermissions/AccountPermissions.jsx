@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight, Minus, PauseCircle, Plus, UserRound, X } from "lucide-react";
 import styles from "./AccountPermissions.module.css";
 
@@ -11,7 +12,9 @@ const INITIAL_USERS = [
 const ROLES = ["Quản lý", "Lễ tân", "Buồng phòng", "Kế toán"];
 
 function AccountPermissions() {
-  const [activeTab, setActiveTab] = useState("accounts");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeTab = location.pathname.endsWith("/phan-quyen") ? "permissions" : "accounts";
   const [users, setUsers] = useState(INITIAL_USERS);
   const [selectedId, setSelectedId] = useState("owner");
   const [showInvite, setShowInvite] = useState(false);
@@ -25,8 +28,8 @@ function AccountPermissions() {
   return (
     <main className={styles.page}>
       <div className={styles.tabs}>
-        <button className={activeTab === "accounts" ? styles.tabActive : ""} onClick={() => setActiveTab("accounts")}>Tài khoản</button>
-        <button className={activeTab === "permissions" ? styles.tabActive : ""} onClick={() => setActiveTab("permissions")}>Phân quyền</button>
+        <button className={activeTab === "accounts" ? styles.tabActive : ""} onClick={() => navigate("/config/tai-khoan-phan-quyen")}>Tài khoản</button>
+        <button className={activeTab === "permissions" ? styles.tabActive : ""} onClick={() => navigate("/config/tai-khoan-phan-quyen/phan-quyen")}>Phân quyền</button>
       </div>
 
       {activeTab === "accounts" ? (
