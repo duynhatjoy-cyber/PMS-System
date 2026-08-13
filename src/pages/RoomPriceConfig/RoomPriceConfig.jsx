@@ -237,6 +237,16 @@ function PriceBoard({ roomTypes, roomCount, selectedId, onSelectRoom, policies, 
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const type = priceTypes.find((item) => item.id === selectedPriceType);
   const title = type?.label || "Giá ngày";
+  const selectedPolicy = policies.find((policy) => policy.id === selectedPolicyId);
+  const packages = selectedPolicy
+    ? priceTypes
+        .filter((priceType) => enabledTypes.includes(priceType.id))
+        .map((priceType) => ({
+          id: `${selectedPolicy.id}:${priceType.id}`,
+          name: `${selectedPolicy.name} - ${priceType.label}`,
+        }))
+    : [];
+  const selectedPackage = packages.find((item) => item.id === selectedPackageId);
   return <section className={styles.priceBoard}>
     <aside className={styles.priceRoomColumn}>
       <div className={styles.priceColumnTitle}>Loại phòng</div>
@@ -253,9 +263,9 @@ function PriceBoard({ roomTypes, roomCount, selectedId, onSelectRoom, policies, 
     </aside>}
     {selectedPolicyId && <aside className={styles.packageColumn}>
       <div className={styles.priceColumnTitle}>Gói giá</div>
-      {policies.map((policy) => <button key={policy.id} className={`${styles.packageItem} ${selectedPackageId === policy.id ? styles.packageItemActive : ""}`} onClick={() => setSelectedPackageId(policy.id)}><span className={styles.packageDot} />{policy.name}</button>)}
+      {packages.map((item) => <button key={item.id} className={`${styles.packageItem} ${selectedPackageId === item.id ? styles.packageItemActive : ""}`} onClick={() => setSelectedPackageId(item.id)}><span className={styles.packageDot} />{item.name}</button>)}
     </aside>}
-    {selectedPackageId ? <PackageEditor packageName={policies.find((policy) => policy.id === selectedPackageId)?.name} /> : selectedPriceType && <section className={styles.priceEditor}>
+    {selectedPackage ? <PackageEditor packageName={selectedPackage.name} /> : selectedPriceType && <section className={styles.priceEditor}>
       <header className={styles.priceEditorHeader}><h2>{title} {selectedPriceType === "daily" && <CircleHelp size={17} />}</h2><div><button className={styles.testBtn}>Kiểm tra</button><button className={styles.saveBtn} onClick={() => {}}>Lưu</button></div></header>
       <div className={styles.priceEditorBody}>{selectedPriceType ? <PriceForm type={selectedPriceType} value={value} onChange={onChange} earlyRates={earlyRates} lateRates={lateRates} onAddSupplement={onAddSupplement} onUpdateSupplement={onUpdateSupplement} onRemoveSupplement={onRemoveSupplement} /> : <p className={styles.priceDescription}>Chọn ít nhất một loại giá để bắt đầu thiết lập.</p>}</div>
     </section>}

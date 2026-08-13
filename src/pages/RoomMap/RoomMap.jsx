@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Grid3x3, LayoutGrid, Rocket, SlidersHorizontal, Wrench } from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutGrid, Rocket, SlidersHorizontal, Wrench } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import DateNavPopover from "./components/DateNavPopover";
 import GanttBoard from "./components/GanttBoard";
@@ -33,22 +33,15 @@ const PERIODS = [
   { key: "month", label: "Tháng" },
 ];
 
-const GROUPS = [
-  { key: "type", label: "Loại" },
-  { key: "room", label: "Phòng" },
-];
-
 const VIEW_MODES = [
   { key: "gantt", label: "Dòng thời gian", Icon: SlidersHorizontal },
   { key: "grid-detailed", label: "Chi tiết", Icon: LayoutGrid },
-  { key: "grid-compact", label: "Đơn giản", Icon: Grid3x3 },
 ];
 
 function RoomMap() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [selectedDate, setSelectedDate] = useState(today);
   const [periodMode, setPeriodMode] = useState("day");
-  const [groupMode, setGroupMode] = useState("room");
   const [saleMode, setSaleMode] = useState("sell");
   const [viewMode, setViewMode] = useState("gantt");
   const [statusFilter, setStatusFilter] = useState(null);
@@ -300,19 +293,6 @@ function RoomMap() {
                   ))}
                 </div>
 
-                <div className={styles.segmented}>
-                  {GROUPS.map((g) => (
-                    <button
-                      key={g.key}
-                      type="button"
-                      className={`${styles.segmentBtn} ${groupMode === g.key ? styles.segmentActive : ""}`}
-                      onClick={() => setGroupMode(g.key)}
-                    >
-                      {g.label}
-                    </button>
-                  ))}
-                </div>
-
                 <label className={styles.checkboxLabel}>
                   <input type="checkbox" checked={showToday} onChange={(e) => setShowToday(e.target.checked)} />
                   Xem ngày
@@ -343,7 +323,7 @@ function RoomMap() {
             bookings={bookings}
             selectedDate={selectedDate}
             periodMode={periodMode}
-            groupMode={groupMode}
+            groupMode="type"
             saleMode={saleMode}
             highlightStatus={statusFilter}
             highlightToday={showToday}
