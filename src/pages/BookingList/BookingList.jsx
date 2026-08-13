@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CalendarDays,
   ChevronDown,
   CloudDownload,
@@ -11,7 +10,8 @@ import {
 import styles from "./BookingList.module.css";
 import { useBookings } from "../../context/BookingsContext";
 
-const NAV_ITEMS = [
+const BOOKING_VIEW_FILTERS = [
+  "Tất cả đặt phòng",
   "Khách sẽ đến",
   "Khách đã đến",
   "Khách đang ở",
@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   "Đặt phòng tạo bởi mình",
   "Phòng chiếm dụng",
   "Booking OTA",
-  "Danh sách đặt phòng",
   "Export Rev Data",
 ];
 
@@ -104,6 +103,7 @@ function SelectionPanel({ title, groups, selected, onToggle, onDefault, onCancel
 function BookingList() {
   const { bookings, today } = useBookings();
   const [activeNav, setActiveNav] = useState("Danh sách đặt phòng");
+  const [bookingViewFilter, setBookingViewFilter] = useState("Tất cả đặt phòng");
   const [guest, setGuest] = useState("");
   const [bookingId, setBookingId] = useState("");
   const [filterValues, setFilterValues] = useState({});
@@ -121,14 +121,15 @@ function BookingList() {
     const now = new Date();
     const isToday = (date) => date >= today && date < new Date(today.getTime() + 86400000);
     const matchesSection = (() => {
-      if (activeNav === "Khách sẽ đến") return booking.stage === "arrival" && booking.checkIn >= today;
-      if (activeNav === "Khách đã đến") return booking.stage === "inhouse";
-      if (activeNav === "Khách đang ở") return booking.stage === "inhouse" && booking.checkIn <= now && booking.checkOut >= now;
-      if (activeNav === "Khách sẽ đi") return booking.stage === "inhouse" && isToday(booking.checkOut);
-      if (activeNav === "Khách đã đi") return booking.stage === "checkedout" || booking.checkOut < today;
-      if (activeNav === "Đặt phòng tạo bởi mình") return booking.createdBy === CURRENT_USER;
-      if (activeNav === "Phòng chiếm dụng") return booking.stage === "inhouse" && Boolean(booking.room);
       if (activeNav === "Booking OTA") return booking.source === "OTA" || booking.source === "Traveloka" || booking.source === "Booking.com";
+      if (activeNav !== "Danh sách đặt phòng" || bookingViewFilter === "Tất cả đặt phòng") return true;
+      if (bookingViewFilter === "Khách sẽ đến") return booking.stage === "arrival" && booking.checkIn >= today;
+      if (bookingViewFilter === "Khách đã đến") return booking.stage === "inhouse";
+      if (bookingViewFilter === "Khách đang ở") return booking.stage === "inhouse" && booking.checkIn <= now && booking.checkOut >= now;
+      if (bookingViewFilter === "Khách sẽ đi") return booking.stage === "inhouse" && isToday(booking.checkOut);
+      if (bookingViewFilter === "Khách đã đi") return booking.stage === "checkedout" || booking.checkOut < today;
+      if (bookingViewFilter === "Đặt phòng tạo bởi mình") return booking.createdBy === CURRENT_USER;
+      if (bookingViewFilter === "Phòng chiếm dụng") return booking.stage === "inhouse" && Boolean(booking.room);
       return true;
     })();
     const guestMatch = !applied.guest || booking.guest.name.toLowerCase().includes(applied.guest.toLowerCase());
@@ -146,7 +147,7 @@ function BookingList() {
       return (!from || bookingDate >= from) && (!to || bookingDate <= to);
     });
     return matchesSection && guestMatch && idMatch && statusMatch && roomMatch && sourceMatch && companyMatch && dateMatch;
-  }), [activeNav, applied, bookings, today]);
+  }), [activeNav, applied, bookingViewFilter, bookings, today]);
 
   const columns = visibleColumns.map((key) => {
     const definition = COLUMN_DEFS.find((column) => column.key === key);
@@ -215,6 +216,15 @@ function BookingList() {
     }
   }
 
+  function selectBookingView(value) {
+    if (value === "Booking OTA" || value === "Export Rev Data") {
+      selectNavigation(value);
+      return;
+    }
+    setBookingViewFilter(value);
+    selectNavigation("Danh sách đặt phòng");
+  }
+
   const subtitle = activeNav === "Booking OTA" ? "Danh sách booking OTA : OTA Booking List" : activeNav === "Export Rev Data" ? "" : "Danh sách đón khách hôm nay";
   const viewDefaultFilters = activeNav === "Booking OTA" ? OTA_FILTERS : activeNav === "Export Rev Data" ? EXPORT_FILTERS : DEFAULT_FILTERS;
   const viewDefaultColumns = activeNav === "Booking OTA" ? OTA_COLUMNS : activeNav === "Export Rev Data" ? EXPORT_COLUMNS : DEFAULT_COLUMNS;
@@ -238,21 +248,6 @@ function BookingList() {
 
   return (
     <div className={styles.page}>
-      <aside className={styles.localNav}>
-        <button className={styles.backButton} type="button"><ArrowLeft size={17} /> Quay lại</button>
-        <div className={styles.navTitle}>Mặc định</div>
-        {NAV_ITEMS.map((item, index) => (
-          <button
-            type="button"
-            key={item}
-            className={`${styles.navItem} ${activeNav === item ? styles.navActive : ""} ${index === 8 ? styles.navDivider : ""}`}
-            onClick={() => selectNavigation(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </aside>
-
       <section className={styles.workspace}>
         <div className={styles.headingRow}>
           <div className={styles.heading}><h1>{activeNav}</h1><ChevronDown size={16} />{subtitle && <span>{subtitle}</span>}</div>
@@ -272,7 +267,15 @@ function BookingList() {
 
         {openPanel === "filters" && <SelectionPanel title="Danh sách bộ lọc" groups={FILTER_GROUPS} selected={draftFilters} onToggle={(field) => toggleItem(setDraftFilters, field)} onDefault={() => setDraftFilters([...viewDefaultFilters])} onCancel={() => setOpenPanel(null)} onApply={() => { setActiveFilters([...draftFilters]); setOpenPanel(null); }} />}
         {openPanel === "columns" && <SelectionPanel title="Danh sách cột hiển thị" groups={COLUMN_GROUPS} selected={draftColumns} onToggle={(field) => toggleItem(setDraftColumns, field)} onDefault={() => setDraftColumns([...viewDefaultColumns])} onCancel={() => setOpenPanel(null)} onApply={() => { setVisibleColumns([...draftColumns]); setOpenPanel(null); }} />}
-        <div className={styles.tableTools}><button type="button" onClick={() => { setDraftColumns(visibleColumns); setOpenPanel("columns"); }}>Cột hiển thị <ChevronDown size={14} /></button></div>
+        <div className={styles.tableTools}>
+          <label className={styles.bookingViewFilter}>
+            <span className={styles.srOnly}>Lọc danh sách đặt phòng</span>
+            <select value={activeNav === "Danh sách đặt phòng" ? bookingViewFilter : activeNav} onChange={(event) => selectBookingView(event.target.value)}>
+              {BOOKING_VIEW_FILTERS.map((filter) => <option key={filter} value={filter}>{filter}</option>)}
+            </select>
+          </label>
+          <button type="button" onClick={() => { setDraftColumns(visibleColumns); setOpenPanel("columns"); }}>Cột hiển thị <ChevronDown size={14} /></button>
+        </div>
         <div className={styles.tableScroll}>
           <table style={{ width: `${Math.max(tableWidth, 700)}px` }}>
             <colgroup>{columns.map((column) => <col key={column.key} style={{ width: `${column.width || 140}px` }} />)}</colgroup>

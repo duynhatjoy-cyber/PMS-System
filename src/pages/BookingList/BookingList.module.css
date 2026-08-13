@@ -1,12 +1,8 @@
 .page { min-height: 100%; display: flex; background: var(--fd-bg); color: var(--fd-text); font-size: 13px; }
-.localNav { width: 184px; min-width: 184px; border-right: 1px solid var(--fd-border-strong); background: var(--fd-surface); padding-top: 4px; }
-.backButton, .navItem { width: 100%; border: 0; background: transparent; color: #253247; text-align: left; cursor: pointer; }
-.backButton { height: 36px; display: flex; align-items: center; gap: 9px; padding: 0 9px; border-bottom: 1px solid var(--fd-border-strong); }
-.navTitle { padding: 10px 6px 7px; }
-.navItem { min-height: 33px; padding: 7px 8px 7px 35px; font-size: 12px; }
-.navItem:hover { background: var(--fd-surface-hover); }
-.navActive { color: var(--fd-primary); background: var(--fd-primary-soft); font-weight: 600; }
-.navDivider { margin-top: 5px; border-top: 1px solid #d8dce1; padding-top: 11px; }
+.bookingViewFilter { display: block; }
+.bookingViewFilter select { min-width: 170px; height: 26px; padding: 0 28px 0 9px; border: 1px solid var(--fd-border-strong); border-radius: 7px; background: var(--fd-surface); color: var(--fd-text); font: inherit; font-size: 12px; cursor: pointer; outline: none; }
+.bookingViewFilter select:focus { border-color: var(--fd-primary); box-shadow: 0 0 0 3px var(--fd-primary-soft); }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .workspace { position: relative; flex: 1; min-width: 0; background: var(--fd-surface); }
 .headingRow { height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px 0 17px; }
 .heading { display: flex; align-items: center; gap: 7px; }
@@ -35,7 +31,7 @@
 .statusMenu input { width: 17px; height: 17px; accent-color: var(--fd-primary); }
 .searchButton { margin-left: auto; height: 29px; display: flex; align-items: center; gap: 6px; border: 0; border-radius: 7px; padding: 0 14px; background: var(--fd-navy); color: #fff; font-weight: 600; cursor: pointer; }
 .searchButton:hover { background: var(--fd-navy-hover); }
-.tableTools { height: 41px; display: flex; justify-content: flex-end; align-items: center; padding: 0 14px; }
+.tableTools { height: 41px; display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 0 14px; }
 .tableTools button { height: 26px; display: flex; align-items: center; gap: 16px; padding: 0 9px; border: 1px solid #d8dde3; border-radius: 7px; background: white; cursor: pointer; }
 .selectionPanel { position: absolute; z-index: 20; top: 150px; right: 14px; width: min(720px, calc(100% - 220px)); background: #fff; border: 1px solid #d9dde2; border-radius: 4px; box-shadow: 0 8px 28px rgba(23, 34, 49, .2); }
 .panelHeading { height: 39px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid #d9dde2; }
@@ -59,4 +55,4 @@
 .flag { display: inline-flex; width: 19px; height: 14px; align-items: center; justify-content: center; background: linear-gradient(#ff3737, #e60000); color: #ffe94f; font-size: 8px; }
 .note { line-height: 13px; }
 .empty { height: 100px; text-align: center; vertical-align: middle !important; color: #7b8490; }
-@media (max-width: 1150px) { .filters { flex-wrap: wrap; }.searchButton { margin-left: 0; }.localNav { width: 165px; min-width: 165px; }.dateRange { order: 4; }.selectionPanel { top: 185px; width: calc(100% - 195px); }.panelGroups { gap: 12px; } }
+@media (max-width: 1150px) { .filters { flex-wrap: wrap; }.searchButton { margin-left: 0; }.dateRange { order: 4; }.selectionPanel { top: 185px; width: calc(100% - 28px); }.panelGroups { gap: 12px; } }

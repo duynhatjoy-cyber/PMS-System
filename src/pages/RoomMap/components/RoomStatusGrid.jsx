@@ -21,7 +21,6 @@ const GROUP_TABS = [
   { key: "status", label: "Đặt phòng" },
   { key: "type", label: "Loại" },
   { key: "floor", label: "Tầng" },
-  { key: "room", label: "Phòng" },
 ];
 
 function buildSections(groupTab, snapshots) {
