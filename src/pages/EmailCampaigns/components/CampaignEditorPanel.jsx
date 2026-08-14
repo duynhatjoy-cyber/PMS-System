@@ -25,8 +25,8 @@ const TRIGGER_ICONS = {
   Cake,
 };
 
-function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
-  const [trigger, setTrigger] = useState(campaign.trigger || "upcoming");
+function CampaignEditorPanel({ campaign, activeTrigger, onTriggerChange, onBack, onSave, onToast }) {
+  const trigger = activeTrigger || campaign.trigger || "upcoming";
   const [subject, setSubject] = useState(campaign.subject || "");
   const [sendMode, setSendMode] = useState(campaign.sendMode || "draft"); // "auto" | "draft"
   const [sendAnchor, setSendAnchor] = useState(campaign.sendAnchor || "before_arrival");
@@ -39,31 +39,49 @@ function CampaignEditorPanel({ campaign, onBack, onSave, onToast }) {
   const bodyRef = useRef(null);
   const savedRangeRef = useRef(null);
   const bodyByTriggerRef = useRef({});
+  const renderedTriggerRef = useRef(trigger);
 
   useEffect(() => {
     bodyByTriggerRef.current = { ...(campaign.bodyByTrigger || {}) };
     if (bodyRef.current) {
-      const initialTrigger = campaign.trigger || "upcoming";
+      const initialTrigger = activeTrigger || campaign.trigger || "upcoming";
       bodyRef.current.innerHTML =
-        campaign.bodyHtml ||
         bodyByTriggerRef.current[initialTrigger] ||
+        (initialTrigger === campaign.trigger ? campaign.bodyHtml : "") ||
         TEMPLATES_BY_TRIGGER[initialTrigger] ||
         TEMPLATES_BY_TRIGGER.upcoming;
+      renderedTriggerRef.current = initialTrigger;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [campaign.id]);
+
+  useEffect(() => {
+    if (!activeTrigger || activeTrigger === renderedTriggerRef.current) return;
+    if (bodyRef.current) {
+      bodyByTriggerRef.current[renderedTriggerRef.current] = bodyRef.current.innerHTML;
+    }
+    savedRangeRef.current = null;
+    if (bodyRef.current) {
+      bodyRef.current.innerHTML =
+        bodyByTriggerRef.current[activeTrigger] ||
+        TEMPLATES_BY_TRIGGER[activeTrigger] ||
+        TEMPLATES_BY_TRIGGER.upcoming;
+    }
+    renderedTriggerRef.current = activeTrigger;
+  }, [activeTrigger]);
 
   function handleTriggerChange(nextTrigger) {
     if (nextTrigger === trigger) return;
     if (bodyRef.current) {
       bodyByTriggerRef.current[trigger] = bodyRef.current.innerHTML;
     }
-    setTrigger(nextTrigger);
+    onTriggerChange(nextTrigger);
     savedRangeRef.current = null;
     if (bodyRef.current) {
       bodyRef.current.innerHTML =
         bodyByTriggerRef.current[nextTrigger] || TEMPLATES_BY_TRIGGER[nextTrigger] || TEMPLATES_BY_TRIGGER.upcoming;
     }
+    renderedTriggerRef.current = nextTrigger;
   }
 
   const visibleTagGroups = useMemo(
