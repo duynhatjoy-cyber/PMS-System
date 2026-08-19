@@ -564,6 +564,16 @@
   border-radius: 6px;
 }
 
+/* Keeps multiple row-action icons (print/delete, etc.) on one line instead
+   of wrapping under the column's default inline flow. */
+.rowActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+}
+
 .viewBtn:hover {
   background: var(--fd-bg);
   color: var(--fd-text);

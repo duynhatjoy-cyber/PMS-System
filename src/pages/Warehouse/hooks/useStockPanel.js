@@ -20,11 +20,25 @@ export default function useStockPanel(initialRows, savedMessage, onToast, extern
   const [pageSize, setPageSize] = useState(10);
   const [showAddModal, setShowAddModal] = useState(false);
   const [printTicket, setPrintTicket] = useState(null);
+  const [detailRow, setDetailRow] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   function handleSaveTicket(ticket) {
     setRows((prev) => [ticket, ...prev]);
     setShowAddModal(false);
     onToast(savedMessage);
+  }
+
+  function handleUpdateTicket(updated) {
+    setRows((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+    setDetailRow(null);
+    onToast("Đã lưu thay đổi phiếu");
+  }
+
+  function handleConfirmDelete() {
+    setRows((prev) => prev.filter((r) => r.id !== deleteTarget.id));
+    onToast(`Đã xóa phiếu ${deleteTarget.ticketNo}`);
+    setDeleteTarget(null);
   }
 
   function changePageSize(size) {
@@ -49,6 +63,12 @@ export default function useStockPanel(initialRows, savedMessage, onToast, extern
     setShowAddModal,
     printTicket,
     setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   };
 }
