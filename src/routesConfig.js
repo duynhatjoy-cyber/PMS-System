@@ -59,11 +59,6 @@ export const ROUTES = [
     Component: GuestsHub,
   },
   {
-    key: "LỄ TÂN::Nhóm",
-    path: "/le-tan/nhom",
-    Component: GuestsHub,
-  },
-  {
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",
     path: "/ban-hang/tao-hoa-don",
     Component: CreateInvoice,
