@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { CloudUpload, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import TierBadge from "./TierBadge";
 import { NATIONALITIES } from "../../../data/guestData";
@@ -71,26 +70,16 @@ function GuestFormModal({ guest, onClose, onSave }) {
   const guestGroups = form.id ? getGuestGroups(form.id) : [];
 
   return (
-    <ModalShell
-      title={guest ? "Sửa khách" : "Thêm khách mới"}
-      onClose={onClose}
-      width={showUpload ? 980 : 720}
-      footer={
-        <>
-          <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
-            Huỷ
+    <div className={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <aside className={styles.panel} style={{ width: showUpload ? "min(980px, 100%)" : "min(720px, 100%)" }}>
+        <div className={styles.head}>
+          <h2 className={styles.title}>{guest ? "Sửa khách" : "Thêm khách mới"}</h2>
+          <button type="button" className={styles.closeBtn} onClick={onClose} title="Đóng" aria-label="Đóng">
+            <X size={18} />
           </button>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnPrimary}`}
-            disabled={!canSave}
-            onClick={() => onSave(form)}
-          >
-            Lưu
-          </button>
-        </>
-      }
-    >
+        </div>
+
+        <div className={styles.panelBody}>
       <div className={styles.uploadToggleRow}>
         <button
           type="button"
@@ -274,7 +263,23 @@ function GuestFormModal({ guest, onClose, onSave }) {
           </div>
         )}
       </div>
-    </ModalShell>
+        </div>
+
+        <div className={styles.footer}>
+          <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
+            Huỷ
+          </button>
+          <button
+            type="button"
+            className={`${shared.btn} ${shared.btnPrimary}`}
+            disabled={!canSave}
+            onClick={() => onSave(form)}
+          >
+            Lưu
+          </button>
+        </div>
+      </aside>
+    </div>
   );
 }
 

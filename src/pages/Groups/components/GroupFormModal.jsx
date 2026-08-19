@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { Crown, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { GUESTS } from "../../../data/guestData";
 import styles from "./GroupFormModal.module.css";
@@ -42,26 +41,16 @@ function GroupFormModal({ group, onClose, onSave }) {
   const canSave = form.name.trim().length > 0 && form.leaderGuestId && form.memberGuestIds.length > 0;
 
   return (
-    <ModalShell
-      title={group ? "Sửa đoàn" : "Thêm đoàn"}
-      onClose={onClose}
-      width={640}
-      footer={
-        <>
-          <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
-            Huỷ
+    <div className={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <aside className={styles.panel} style={{ width: "min(640px, 100%)" }}>
+        <div className={styles.head}>
+          <h2 className={styles.title}>{group ? "Sửa đoàn" : "Thêm đoàn"}</h2>
+          <button type="button" className={styles.closeBtn} onClick={onClose} title="Đóng" aria-label="Đóng">
+            <X size={18} />
           </button>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnPrimary}`}
-            disabled={!canSave}
-            onClick={() => onSave(form)}
-          >
-            Lưu
-          </button>
-        </>
-      }
-    >
+        </div>
+
+        <div className={styles.panelBody}>
       <div className={styles.form}>
         <div className={shared.field}>
           <span className={shared.label}>Tên đoàn *</span>
@@ -142,7 +131,23 @@ function GroupFormModal({ group, onClose, onSave }) {
           <textarea className={shared.textarea} value={form.note} onChange={(e) => patch({ note: e.target.value })} />
         </div>
       </div>
-    </ModalShell>
+        </div>
+
+        <div className={styles.footer}>
+          <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
+            Huỷ
+          </button>
+          <button
+            type="button"
+            className={`${shared.btn} ${shared.btnPrimary}`}
+            disabled={!canSave}
+            onClick={() => onSave(form)}
+          >
+            Lưu
+          </button>
+        </div>
+      </aside>
+    </div>
   );
 }
 

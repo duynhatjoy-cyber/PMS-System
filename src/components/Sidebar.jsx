@@ -8,7 +8,6 @@ import {
   ClipboardList,
   LayoutGrid,
   Users,
-  UserRound,
   BedDouble,
   Utensils,
   ConciergeBell,
@@ -43,7 +42,6 @@ const menuSections = [
       { label: "Danh sách đặt phòng", icon: ClipboardList },
       { label: "Sơ đồ phòng", icon: LayoutGrid },
       { label: "Khách", icon: Users },
-      { label: "Nhóm", icon: UserRound },
     ],
   },
   {
