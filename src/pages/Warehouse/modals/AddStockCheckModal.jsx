@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, Plus, X, Trash2 } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { STOCK_SUMMARY_ROWS } from "../../../data/warehouseData";
 import { useActiveWarehouseNames, useActiveMaterials } from "../../../context/WarehouseConfigContext";
@@ -51,7 +51,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
   }
 
   return (
-    <ModalShell title="Thêm phiếu kiểm kê kho" onClose={onClose} tone="brand" width={1000}>
+    <SlidePanelShell title="Thêm phiếu kiểm kê kho" onClose={onClose} tone="brand" width={1000}>
       <div className={styles.formGrid}>
         <div className={styles.field}>
           <input
@@ -271,7 +271,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UserPlus } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
@@ -125,7 +125,7 @@ function StaffPanel({ onToast }) {
       </div>
 
       {inviteForm && (
-        <ModalShell
+        <SlidePanelShell
           title="Mời nhân viên"
           onClose={() => setInviteForm(null)}
           width={440}
@@ -181,11 +181,11 @@ function StaffPanel({ onToast }) {
               </select>
             </label>
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {roleModalTarget && (
-        <ModalShell
+        <SlidePanelShell
           title={`Đổi quyền — ${roleModalTarget.name}`}
           onClose={() => setRoleModalTarget(null)}
           width={400}
@@ -218,7 +218,7 @@ function StaffPanel({ onToast }) {
               ))}
             </select>
           </label>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deactivateTarget && (

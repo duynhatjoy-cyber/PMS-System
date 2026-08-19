@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CirclePause, CirclePlay, Plus, X } from "lucide-react";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import { EXPENSE_GROUPS, INCOME_GROUPS } from "../../../data/thuChiConfigData";
@@ -283,7 +283,7 @@ function CategoryTreePanel({ styles, onToast }) {
       </div>
 
       {addModal && (
-        <ModalShell
+        <SlidePanelShell
           title={addModal.kind === "group" ? "Thêm nhóm" : "Thêm danh mục"}
           onClose={() => setAddModal(null)}
           width={420}
@@ -320,7 +320,7 @@ function CategoryTreePanel({ styles, onToast }) {
               onChange={(e) => setAddModal((prev) => ({ ...prev, value: e.target.value }))}
             />
           </label>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deleteTarget && (

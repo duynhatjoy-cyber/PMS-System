@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { avatarColorAt } from "./ingredientAvatar";
 import styles from "../FnB.module.css";
@@ -37,7 +37,7 @@ function RecipeModal({ item, ingredients, onSave, onClose }) {
   }
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={`Công thức chế biến — ${item.name}`}
       onClose={onClose}
       tone="brand"
@@ -120,7 +120,7 @@ function RecipeModal({ item, ingredients, onSave, onClose }) {
           <Plus size={14} /> Thêm nguyên liệu
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

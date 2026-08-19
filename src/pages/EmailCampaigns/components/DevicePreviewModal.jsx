@@ -1,5 +1,5 @@
 import { Monitor, Tablet, Smartphone } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import EmailRenderedContent from "../../../components/EmailRenderedContent";
 import { fillTemplate } from "../../../data/emailHistoryData";
 import { TEMPLATES_BY_TRIGGER } from "../../../data/emailCampaignData";
@@ -20,7 +20,7 @@ function DevicePreviewModal({ campaign, device, onClose }) {
   const hotelName = "Nhà Của My";
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={
         <span className={styles.deviceModalTitle}>
           <Icon size={17} /> Xem trước · {config.label}
@@ -46,7 +46,7 @@ function DevicePreviewModal({ campaign, device, onClose }) {
           <EmailRenderedContent html={html} stacked={device === "mobile"} />
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

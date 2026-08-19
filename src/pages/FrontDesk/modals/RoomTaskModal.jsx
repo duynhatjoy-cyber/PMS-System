@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import shared from "./shared.module.css";
 import { toLocalInputValue } from "../../../utils/format";
 
@@ -10,7 +10,7 @@ function RoomTaskModal({ booking, onClose, onSave }) {
   const [content, setContent] = useState("");
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title="Việc cần làm"
       onClose={onClose}
       width={640}
@@ -32,7 +32,7 @@ function RoomTaskModal({ booking, onClose, onSave }) {
         </div>
         <label className={shared.field}><span className={shared.label}>Nội dung *</span><textarea className={shared.textarea} maxLength={400} value={content} onChange={(e) => setContent(e.target.value)} /><span className={shared.label}>{content.length}/400</span></label>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

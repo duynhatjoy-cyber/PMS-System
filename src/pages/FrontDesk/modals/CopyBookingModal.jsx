@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import { roomTypes, ratePlans, AVAILABLE_ROOMS } from "../../../data/frontDeskData";
 import { formatCurrency, formatDateTimeDMY, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
@@ -17,7 +17,7 @@ function CopyBookingModal({ booking, onClose, onConfirm }) {
   const availableRooms = useMemo(() => AVAILABLE_ROOMS[roomTypeId] || [], [roomTypeId]);
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title="Sao chép đặt phòng"
       tone="brand"
       onClose={onClose}
@@ -168,7 +168,7 @@ function CopyBookingModal({ booking, onClose, onConfirm }) {
           </div>
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { formatCurrency } from "../../../utils/format";
 import { KITCHEN_STATUS_ORDER, KITCHEN_STEP_LABELS, orderTotal } from "../../../data/fnbData";
@@ -71,7 +71,7 @@ function OrderDetailModal({ order, table, categories, setOrders, setTables, onCh
   const isReadyToPay = stepIndex === KITCHEN_STATUS_ORDER.length - 1;
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={`Đơn hàng — Bàn ${table ? table.number : "?"}`}
       onClose={onClose}
       width={620}
@@ -192,7 +192,7 @@ function OrderDetailModal({ order, table, categories, setOrders, setTables, onCh
           ))}
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

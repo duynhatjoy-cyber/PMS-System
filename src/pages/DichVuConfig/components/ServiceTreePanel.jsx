@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import ServiceFormModal from "./ServiceFormModal";
@@ -268,7 +268,7 @@ function ServiceTreePanel({ onToast }) {
       </div>
 
       {addGroupModal && (
-        <ModalShell
+        <SlidePanelShell
           title="Thêm nhóm dịch vụ"
           onClose={() => setAddGroupModal(null)}
           width={420}
@@ -302,13 +302,13 @@ function ServiceTreePanel({ onToast }) {
               onChange={(e) => setAddGroupModal((prev) => ({ ...prev, value: e.target.value }))}
             />
           </label>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {addServiceModal && <ServiceFormModal onClose={() => setAddServiceModal(false)} onSave={handleAddService} />}
 
       {moveGroupTarget && (
-        <ModalShell
+        <SlidePanelShell
           title="Chuyển nhóm dịch vụ"
           onClose={() => setMoveGroupTarget(null)}
           width={420}
@@ -349,11 +349,11 @@ function ServiceTreePanel({ onToast }) {
               </button>
             ))}
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {moveServiceTarget && (
-        <ModalShell
+        <SlidePanelShell
           title="Chuyển nhóm"
           onClose={() => setMoveServiceTarget(null)}
           width={420}
@@ -394,7 +394,7 @@ function ServiceTreePanel({ onToast }) {
               </button>
             ))}
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deleteGroupTarget && (
