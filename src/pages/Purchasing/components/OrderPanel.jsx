@@ -1,15 +1,45 @@
 import { useEffect, useMemo, useState } from "react";
-import { Clock, List, Info, DollarSign, MessageSquare, Building2, CalendarClock, Plus } from "lucide-react";
+import {
+  Clock,
+  List,
+  Info,
+  DollarSign,
+  MessageSquare,
+  Building2,
+  CalendarClock,
+  Plus,
+  Printer,
+  Trash2,
+} from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseOrderModal from "../modals/AddPurchaseOrderModal";
+import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
+import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import statusBadgeClass from "../statusBadge";
 import { PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
+
+const ORDER_FIELDS = [
+  { key: "date", label: "Ngày đặt", type: "date" },
+  { key: "status", label: "Trạng thái", type: "select", options: PURCHASE_STATUS_OPTIONS.slice(1) },
+  { key: "supplier", label: "Nhà cung cấp", type: "text" },
+  { key: "expectedDate", label: "Ngày nhận dự kiến", type: "date" },
+  { key: "total", label: "Tổng", type: "currency", editable: false },
+  { key: "note", label: "Diễn giải", type: "text" },
+];
+
+const ORDER_LINE_COLUMNS = [
+  { key: "name", label: "Tên hàng" },
+  { key: "unit", label: "Đơn vị" },
+  { key: "qty", label: "Số lượng", numeric: true },
+  { key: "price", label: "Đơn giá", numeric: true, format: (v) => formatCurrency(v) },
+];
 
 function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine, onSeedConsumed }) {
   const {
@@ -26,7 +56,15 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
     changePageSize,
     showAddModal,
     setShowAddModal,
+    printTicket,
+    setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   } = useStockPanel(orderRows, "Đã thêm phiếu đặt hàng", onToast, [orderRows, setOrderRows]);
   const [status, setStatus] = useState(PURCHASE_STATUS_OPTIONS[0]);
 
@@ -146,7 +184,7 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
                   <tr key={row.id}>
                     <td>{formatDMY(row.date)}</td>
                     <td>
-                      <button type="button" className={styles.rowLink}>
+                      <button type="button" className={styles.rowLink} onClick={() => setDetailRow(row)}>
                         {row.ticketNo}
                       </button>
                     </td>
@@ -159,7 +197,28 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
                     <td>{row.expectedDate ? formatDMY(row.expectedDate) : "—"}</td>
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
-                    <td />
+                    <td>
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="In phiếu đặt hàng"
+                          aria-label="In phiếu đặt hàng"
+                          onClick={() => setPrintTicket(row)}
+                        >
+                          <Printer size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="Xóa phiếu đặt hàng"
+                          aria-label="Xóa phiếu đặt hàng"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -178,6 +237,47 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
 
       {showAddModal && (
         <AddPurchaseOrderModal seedLine={seedLine} onSave={saveOrderTicket} onClose={closeAddModal} />
+      )}
+
+      {detailRow && (
+        <TicketDetailModal
+          title="Phiếu đặt hàng"
+          row={detailRow}
+          fields={ORDER_FIELDS}
+          lineColumns={ORDER_LINE_COLUMNS}
+          onClose={() => setDetailRow(null)}
+          onSave={handleUpdateTicket}
+        />
+      )}
+
+      {printTicket && (
+        <PrintPreviewModal
+          title="Phiếu đặt hàng"
+          ticketNo={printTicket.ticketNo}
+          date={formatDMY(printTicket.date)}
+          fields={[
+            { label: "Trạng thái", value: printTicket.status },
+            { label: "Nhà cung cấp", value: printTicket.supplier || "—" },
+            {
+              label: "Ngày nhận dự kiến",
+              value: printTicket.expectedDate ? formatDMY(printTicket.expectedDate) : "—",
+            },
+            { label: "Diễn giải", value: printTicket.note || "—" },
+            { label: "Tổng", value: formatCurrency(printTicket.total) },
+          ]}
+          onClose={() => setPrintTicket(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xóa phiếu đặt hàng"
+          message={`Bạn có chắc chắn muốn xóa phiếu ${deleteTarget.ticketNo}?`}
+          confirmLabel="Xóa"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
+        />
       )}
     </div>
   );
