@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 
 function EditPriceModal({ item, onClose, onConfirm }) {
@@ -13,7 +13,7 @@ function EditPriceModal({ item, onClose, onConfirm }) {
   }
 
   return (
-    <ModalShell title={item.name} onClose={onClose} width={360}>
+    <SlidePanelShell title={item.name} onClose={onClose} width={360}>
       <div className={shared.row} style={{ marginBottom: 14 }}>
         <div className={shared.field}>
           <label className={shared.label}>Đơn giá (VND)</label>
@@ -46,7 +46,7 @@ function EditPriceModal({ item, onClose, onConfirm }) {
       >
         Thêm vào hóa đơn
       </button>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

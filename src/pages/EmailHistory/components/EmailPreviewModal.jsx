@@ -1,4 +1,4 @@
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import EmailRenderedContent from "../../../components/EmailRenderedContent";
 import { buildPreviewHtml } from "../../../data/emailHistoryData";
 import styles from "../EmailHistory.module.css";
@@ -7,7 +7,7 @@ function EmailPreviewModal({ entry, onClose }) {
   const html = buildPreviewHtml(entry);
 
   return (
-    <ModalShell title="Xem trước email" onClose={onClose} width={620}>
+    <SlidePanelShell title="Xem trước email" onClose={onClose} width={620}>
       <div className={styles.previewBanner}>Nhà Của My</div>
 
       <EmailRenderedContent html={html} className={styles.previewBody} />
@@ -18,7 +18,7 @@ function EmailPreviewModal({ entry, onClose }) {
         <div>A: 12 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</div>
         <div>E: info@nhacuamy.vn</div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

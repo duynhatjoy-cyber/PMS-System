@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { TAX_FEE_TYPES } from "../../../data/taxFeeData";
 import styles from "./AddTaxFeeModal.module.css";
@@ -25,7 +25,7 @@ function AddTaxFeeModal({ onClose, onSave }) {
   }
 
   return (
-    <ModalShell title={`Thêm ${typeLabel}`} onClose={onClose} width={460}>
+    <SlidePanelShell title={`Thêm ${typeLabel}`} onClose={onClose} width={460}>
       <div className={shared.field}>
         <label className={shared.label}>Loại</label>
         <select className={shared.select} value={type} onChange={(e) => setType(e.target.value)}>
@@ -90,7 +90,7 @@ function AddTaxFeeModal({ onClose, onSave }) {
           Lưu {typeLabel}
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

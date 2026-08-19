@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, Clock, Plus, X, Trash2 } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
 import { useActiveWarehouseNames, useActiveMaterials } from "../../../context/WarehouseConfigContext";
@@ -44,7 +44,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
   }
 
   return (
-    <ModalShell title="Thêm phiếu xuất kho" onClose={onClose} tone="brand" width={900}>
+    <SlidePanelShell title="Thêm phiếu xuất kho" onClose={onClose} tone="brand" width={900}>
       <div className={styles.formGrid}>
         <div>
           <div className={styles.field}>
@@ -231,7 +231,7 @@ function AddStockOutModal({ onClose, onSave, onToast }) {
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

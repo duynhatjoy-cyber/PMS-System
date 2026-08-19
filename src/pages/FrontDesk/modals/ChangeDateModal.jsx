@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import BookingIdentityHeader from "./BookingIdentityHeader";
 import { toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
@@ -13,7 +13,7 @@ function ChangeDateModal({ booking, onClose, onSave }) {
   }
 
   return (
-    <ModalShell
+    <SlidePanelShell
       header={<BookingIdentityHeader title="Đổi ngày ở" booking={booking} />}
       onClose={onClose}
       width={480}
@@ -62,7 +62,7 @@ function ChangeDateModal({ booking, onClose, onSave }) {
           </div>
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

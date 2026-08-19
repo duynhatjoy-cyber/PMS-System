@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { useActiveSuppliers } from "../../../context/WarehouseConfigContext";
 import { formatDMY } from "../../../utils/format";
@@ -46,7 +46,7 @@ function AddPurchaseTicketModal({
   }
 
   return (
-    <ModalShell title={title} onClose={onClose} tone="brand" width={520}>
+    <SlidePanelShell title={title} onClose={onClose} tone="brand" width={520}>
       <div className={styles.field}>
         <label className={styles.label}>Ngày</label>
         <div className={styles.datetimeRow}>
@@ -136,7 +136,7 @@ function AddPurchaseTicketModal({
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

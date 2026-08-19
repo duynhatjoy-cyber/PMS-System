@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, Clock } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { formatDateTimeDMY, formatCurrency } from "../../../utils/format";
 import styles from "../../Warehouse/modals/WarehouseModal.module.css";
@@ -51,7 +51,7 @@ function AddFundVoucherModal({
   }
 
   return (
-    <ModalShell title={title} onClose={onClose} tone="brand" width={640}>
+    <SlidePanelShell title={title} onClose={onClose} tone="brand" width={640}>
       <div className={styles.formGrid}>
         <div>
           <div className={styles.field}>
@@ -135,7 +135,7 @@ function AddFundVoucherModal({
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

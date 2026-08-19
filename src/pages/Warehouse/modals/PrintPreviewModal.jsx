@@ -1,4 +1,4 @@
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import styles from "./WarehouseModal.module.css";
 
@@ -47,7 +47,7 @@ function PrintPreviewModal({ title, ticketNo, date, fields, onClose }) {
   }
 
   return (
-    <ModalShell title={title} onClose={onClose} tone="brand" width={560}>
+    <SlidePanelShell title={title} onClose={onClose} tone="brand" width={560}>
       <div className={styles.printSheet}>
         <div className={styles.printHotel}>{HOTEL_NAME}</div>
         <div className={styles.printTitle}>{title}</div>
@@ -71,7 +71,7 @@ function PrintPreviewModal({ title, ticketNo, date, fields, onClose }) {
           ĐÓNG
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

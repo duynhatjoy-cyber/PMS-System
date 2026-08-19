@@ -1,10 +1,10 @@
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import shared from "./shared.module.css";
 import { formatDateTimeDMY } from "../../../utils/format";
 
 function UserActivityModal({ booking, onClose }) {
   return (
-    <ModalShell title="Thao tác người dùng" onClose={onClose} width={640}>
+    <SlidePanelShell title="Thao tác người dùng" onClose={onClose} width={640}>
       <div className={shared.stack}>
         <div className={shared.row}>
           <label className={shared.field}>
@@ -23,7 +23,7 @@ function UserActivityModal({ booking, onClose }) {
           Thực hiện đặt phòng #{booking.bookingCode}, phòng {booking.room}, khách {booking.guest.name}.
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

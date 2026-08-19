@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { addDays, toLocalInputValue } from "../../../utils/format";
 
@@ -15,7 +15,7 @@ function RoomMaintenanceModal({ room, initialValue, onClose, onSave, onDelete })
   const [reason, setReason] = useState(initialValue?.reason || "");
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={`${editing ? "Điều chỉnh khóa/sửa phòng" : "Thiết lập sửa phòng"} - Phòng ${room.number}`}
       onClose={onClose}
       width={620}
@@ -59,7 +59,7 @@ function RoomMaintenanceModal({ room, initialValue, onClose, onSave, onDelete })
           </button>
         )}
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

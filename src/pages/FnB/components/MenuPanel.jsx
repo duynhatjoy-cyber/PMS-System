@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChefHat, Plus } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
@@ -222,7 +222,7 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
       </div>
 
       {itemModal && (
-        <ModalShell
+        <SlidePanelShell
           title={itemModal.editing ? "Sửa món" : "Thêm món"}
           onClose={() => setItemModal(null)}
           width={420}
@@ -267,11 +267,11 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
               />
             </label>
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {renameCategoryTarget && (
-        <ModalShell
+        <SlidePanelShell
           title="Đổi tên danh mục"
           onClose={() => setRenameCategoryTarget(null)}
           width={400}
@@ -304,7 +304,7 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
               onChange={(e) => setRenameCategoryTarget((prev) => ({ ...prev, value: e.target.value }))}
             />
           </label>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deleteCategoryTarget && (
