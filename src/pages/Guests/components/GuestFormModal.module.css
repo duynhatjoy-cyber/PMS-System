@@ -99,6 +99,10 @@
   color: #fff;
 }
 
+.uploadToggle.uploadToggleActive:hover {
+  color: #fff;
+}
+
 .uploadPanel {
   display: flex;
   flex-direction: column;

@@ -1,13 +1,44 @@
 import { useMemo } from "react";
-import { Clock, List, Hash, Building2, DollarSign, MessageSquare, CheckCircle2, AlertTriangle, Plus } from "lucide-react";
+import {
+  Clock,
+  List,
+  Hash,
+  Building2,
+  DollarSign,
+  MessageSquare,
+  CheckCircle2,
+  AlertTriangle,
+  Plus,
+  Printer,
+  Trash2,
+} from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddReceiptModal from "../modals/AddReceiptModal";
+import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
+import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
+
+const RECEIPT_FIELDS = [
+  { key: "date", label: "Ngày nhập", type: "date" },
+  { key: "docRef", label: "Số hóa đơn", type: "text" },
+  { key: "supplier", label: "Nhà cung cấp", type: "text" },
+  { key: "orderRef", label: "Từ đơn đặt hàng", type: "text", editable: false },
+  { key: "total", label: "Tổng", type: "currency", editable: false },
+  { key: "note", label: "Diễn giải", type: "text" },
+];
+
+const RECEIPT_LINE_COLUMNS = [
+  { key: "name", label: "Tên hàng" },
+  { key: "unit", label: "Đơn vị" },
+  { key: "qty", label: "Số lượng", numeric: true },
+  { key: "price", label: "Đơn giá", numeric: true, format: (v) => formatCurrency(v) },
+];
 
 // Khác với Trả lại hàng mua (vẫn dùng PurchaseDocPanel chung, phiếu đơn giản
 // không cần so sánh) — Nhập hàng có thể gắn với 1 đơn Đặt hàng và so sánh
@@ -28,7 +59,15 @@ function ReceiptPanel({ onToast, rows: receiptRows, setRows: setReceiptRows, ord
     changePageSize,
     showAddModal,
     setShowAddModal,
+    printTicket,
+    setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   } = useStockPanel(receiptRows, "Đã thêm phiếu nhập hàng", onToast, [receiptRows, setReceiptRows]);
 
   const openOrders = useMemo(() => orderRows.filter((o) => o.status !== "Đã thực hiện"), [orderRows]);
@@ -112,7 +151,7 @@ function ReceiptPanel({ onToast, rows: receiptRows, setRows: setReceiptRows, ord
                   <tr key={row.id}>
                     <td>{formatDMY(row.date)}</td>
                     <td>
-                      <button type="button" className={styles.rowLink}>
+                      <button type="button" className={styles.rowLink} onClick={() => setDetailRow(row)}>
                         {row.ticketNo}
                       </button>
                     </td>
@@ -133,7 +172,28 @@ function ReceiptPanel({ onToast, rows: receiptRows, setRows: setReceiptRows, ord
                     </td>
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
-                    <td />
+                    <td>
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="In phiếu nhập hàng"
+                          aria-label="In phiếu nhập hàng"
+                          onClick={() => setPrintTicket(row)}
+                        >
+                          <Printer size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="Xóa phiếu nhập hàng"
+                          aria-label="Xóa phiếu nhập hàng"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -152,6 +212,44 @@ function ReceiptPanel({ onToast, rows: receiptRows, setRows: setReceiptRows, ord
 
       {showAddModal && (
         <AddReceiptModal openOrders={openOrders} onSave={saveReceiptTicket} onClose={() => setShowAddModal(false)} />
+      )}
+
+      {detailRow && (
+        <TicketDetailModal
+          title="Phiếu nhập hàng"
+          row={detailRow}
+          fields={RECEIPT_FIELDS}
+          lineColumns={RECEIPT_LINE_COLUMNS}
+          onClose={() => setDetailRow(null)}
+          onSave={handleUpdateTicket}
+        />
+      )}
+
+      {printTicket && (
+        <PrintPreviewModal
+          title="Phiếu nhập hàng"
+          ticketNo={printTicket.ticketNo}
+          date={formatDMY(printTicket.date)}
+          fields={[
+            { label: "Số hóa đơn", value: printTicket.docRef || "—" },
+            { label: "Nhà cung cấp", value: printTicket.supplier || "—" },
+            { label: "Từ đơn đặt hàng", value: printTicket.orderRef || "—" },
+            { label: "Diễn giải", value: printTicket.note || "—" },
+            { label: "Tổng", value: formatCurrency(printTicket.total) },
+          ]}
+          onClose={() => setPrintTicket(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xóa phiếu nhập hàng"
+          message={`Bạn có chắc chắn muốn xóa phiếu ${deleteTarget.ticketNo}?`}
+          confirmLabel="Xóa"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
+        />
       )}
     </div>
   );

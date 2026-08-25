@@ -1,4 +1,4 @@
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import tableStyles from "../Warehouse.module.css";
@@ -6,7 +6,7 @@ import styles from "./WarehouseModal.module.css";
 
 function StockDetailModal({ kho, material, fromDate, toDate, onClose, onToast }) {
   return (
-    <ModalShell title="Chi tiết nhập - xuất - tồn kho" onClose={onClose} tone="brand" width={1400}>
+    <SlidePanelShell title="Chi tiết nhập - xuất - tồn kho" onClose={onClose} tone="brand" width={1400}>
       <p className={styles.contextLine}>
         Kho: {kho}, NVL: {material.material}, Từ ngày {formatDMY(fromDate)} Đến ngày {formatDMY(toDate)}
       </p>
@@ -71,7 +71,7 @@ function StockDetailModal({ kho, material, fromDate, toDate, onClose, onToast })
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

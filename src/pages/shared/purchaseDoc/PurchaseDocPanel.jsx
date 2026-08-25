@@ -1,10 +1,13 @@
 import { useMemo } from "react";
-import { Clock, List, Hash, Building2, DollarSign, MessageSquare, Plus } from "lucide-react";
+import { Clock, List, Hash, Building2, DollarSign, MessageSquare, Plus, Printer, Trash2 } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseTicketModal from "../../Purchasing/modals/AddPurchaseTicketModal";
+import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
+import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
@@ -38,8 +41,25 @@ function PurchaseDocPanel({
     changePageSize,
     showAddModal,
     setShowAddModal,
+    printTicket,
+    setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   } = useStockPanel(initialRows, savedMessage, onToast);
+
+  const docTitle = addTitle.replace(/^Thêm /, "");
+  const docFields = [
+    { key: "date", label: "Ngày", type: "date" },
+    { key: "docRef", label: docColumnLabel, type: "text" },
+    { key: "supplier", label: "Nhà cung cấp", type: "text" },
+    { key: "total", label: "Tổng", type: "currency" },
+    { key: "note", label: "Diễn giải", type: "text" },
+  ];
 
   const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
 
@@ -115,7 +135,7 @@ function PurchaseDocPanel({
                   <tr key={row.id}>
                     <td>{formatDMY(row.date)}</td>
                     <td>
-                      <button type="button" className={styles.rowLink}>
+                      <button type="button" className={styles.rowLink} onClick={() => setDetailRow(row)}>
                         {row.ticketNo}
                       </button>
                     </td>
@@ -123,7 +143,28 @@ function PurchaseDocPanel({
                     <td>{row.supplier}</td>
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
-                    <td />
+                    <td>
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title={`In ${docTitle}`}
+                          aria-label={`In ${docTitle}`}
+                          onClick={() => setPrintTicket(row)}
+                        >
+                          <Printer size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title={`Xóa ${docTitle}`}
+                          aria-label={`Xóa ${docTitle}`}
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -149,6 +190,42 @@ function PurchaseDocPanel({
           docRefLabel={docColumnLabel}
           onSave={handleSaveTicket}
           onClose={() => setShowAddModal(false)}
+        />
+      )}
+
+      {detailRow && (
+        <TicketDetailModal
+          title={docTitle}
+          row={detailRow}
+          fields={docFields}
+          onClose={() => setDetailRow(null)}
+          onSave={handleUpdateTicket}
+        />
+      )}
+
+      {printTicket && (
+        <PrintPreviewModal
+          title={docTitle}
+          ticketNo={printTicket.ticketNo}
+          date={formatDMY(printTicket.date)}
+          fields={[
+            { label: docColumnLabel, value: printTicket.docRef || "—" },
+            { label: "Nhà cung cấp", value: printTicket.supplier || "—" },
+            { label: "Diễn giải", value: printTicket.note || "—" },
+            { label: "Tổng", value: formatCurrency(printTicket.total) },
+          ]}
+          onClose={() => setPrintTicket(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title={`Xóa ${docTitle}`}
+          message={`Bạn có chắc chắn muốn xóa phiếu ${deleteTarget.ticketNo}?`}
+          confirmLabel="Xóa"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
         />
       )}
     </div>

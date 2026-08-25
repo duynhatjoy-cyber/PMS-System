@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, Plus, Trash2 } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { useActiveSuppliers } from "../../../context/WarehouseConfigContext";
 import { formatDMY, formatCurrency } from "../../../utils/format";
@@ -108,7 +108,7 @@ function AddReceiptModal({ openOrders, onSave, onClose }) {
   }
 
   return (
-    <ModalShell title="Thêm phiếu nhập hàng" onClose={onClose} tone="brand" width={900}>
+    <SlidePanelShell title="Thêm phiếu nhập hàng" onClose={onClose} tone="brand" width={900}>
       <div className={styles.formGrid}>
         <div>
           <div className={styles.field}>
@@ -277,7 +277,7 @@ function AddReceiptModal({ openOrders, onSave, onClose }) {
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

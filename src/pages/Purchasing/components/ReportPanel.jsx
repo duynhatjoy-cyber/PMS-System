@@ -1,16 +1,25 @@
 import { useMemo, useState } from "react";
-import { Clock, List, Info, MessageSquare, Plus, ShoppingCart } from "lucide-react";
+import { Clock, List, Info, MessageSquare, Plus, ShoppingCart, Printer, Trash2 } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseTicketModal from "../modals/AddPurchaseTicketModal";
+import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
+import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import statusBadgeClass from "../statusBadge";
 import { usePurchaseReport } from "../../../context/PurchaseReportContext";
 import { REPORT_ROWS, PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import { formatDMY } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
+
+const REPORT_FIELDS = [
+  { key: "date", label: "Ngày", type: "date" },
+  { key: "status", label: "Trạng thái", type: "select", options: PURCHASE_STATUS_OPTIONS.slice(1) },
+  { key: "note", label: "Diễn giải", type: "text" },
+];
 
 function ReportPanel({ onToast, onCreateOrder }) {
   const { reportRows, setReportRows } = usePurchaseReport();
@@ -28,7 +37,15 @@ function ReportPanel({ onToast, onCreateOrder }) {
     changePageSize,
     showAddModal,
     setShowAddModal,
+    printTicket,
+    setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   } = useStockPanel(REPORT_ROWS, "Đã thêm phiếu báo hàng", onToast, [reportRows, setReportRows]);
   const [status, setStatus] = useState(PURCHASE_STATUS_OPTIONS[0]);
 
@@ -127,7 +144,7 @@ function ReportPanel({ onToast, onCreateOrder }) {
                   <tr key={row.id}>
                     <td>{formatDMY(row.date)}</td>
                     <td>
-                      <button type="button" className={styles.rowLink}>
+                      <button type="button" className={styles.rowLink} onClick={() => setDetailRow(row)}>
                         {row.ticketNo}
                       </button>
                     </td>
@@ -138,16 +155,36 @@ function ReportPanel({ onToast, onCreateOrder }) {
                     </td>
                     <td>{row.note}</td>
                     <td>
-                      {row.status !== "Đã thực hiện" && (
+                      <div className={styles.rowActions}>
+                        {row.status !== "Đã thực hiện" && (
+                          <button
+                            type="button"
+                            className={styles.inlineActionBtn}
+                            title="Tạo đơn đặt hàng từ phiếu này"
+                            onClick={() => handleCreateOrder(row)}
+                          >
+                            <ShoppingCart size={14} /> Tạo đơn đặt hàng
+                          </button>
+                        )}
                         <button
                           type="button"
-                          className={styles.inlineActionBtn}
-                          title="Tạo đơn đặt hàng từ phiếu này"
-                          onClick={() => handleCreateOrder(row)}
+                          className={styles.viewBtn}
+                          title="In phiếu báo hàng"
+                          aria-label="In phiếu báo hàng"
+                          onClick={() => setPrintTicket(row)}
                         >
-                          <ShoppingCart size={14} /> Tạo đơn đặt hàng
+                          <Printer size={16} />
                         </button>
-                      )}
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="Xóa phiếu báo hàng"
+                          aria-label="Xóa phiếu báo hàng"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -172,6 +209,40 @@ function ReportPanel({ onToast, onCreateOrder }) {
           statusOptions={PURCHASE_STATUS_OPTIONS.slice(1)}
           onSave={handleSaveTicket}
           onClose={() => setShowAddModal(false)}
+        />
+      )}
+
+      {detailRow && (
+        <TicketDetailModal
+          title="Phiếu báo hàng"
+          row={detailRow}
+          fields={REPORT_FIELDS}
+          onClose={() => setDetailRow(null)}
+          onSave={handleUpdateTicket}
+        />
+      )}
+
+      {printTicket && (
+        <PrintPreviewModal
+          title="Phiếu báo hàng"
+          ticketNo={printTicket.ticketNo}
+          date={formatDMY(printTicket.date)}
+          fields={[
+            { label: "Trạng thái", value: printTicket.status },
+            { label: "Diễn giải", value: printTicket.note || "—" },
+          ]}
+          onClose={() => setPrintTicket(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xóa phiếu báo hàng"
+          message={`Bạn có chắc chắn muốn xóa phiếu ${deleteTarget.ticketNo}?`}
+          confirmLabel="Xóa"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
         />
       )}
     </div>

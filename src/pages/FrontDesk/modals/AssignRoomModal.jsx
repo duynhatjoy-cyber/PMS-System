@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import BookingIdentityHeader from "./BookingIdentityHeader";
 import { roomTypes, ratePlans, AVAILABLE_ROOMS } from "../../../data/frontDeskData";
 import shared from "./shared.module.css";
@@ -15,7 +15,7 @@ function AssignRoomModal({ booking, onClose, onSave, title = "Gán phòng" }) {
   const roomTypeLabel = roomTypes.find((rt) => rt.id === roomTypeId)?.name || "";
 
   return (
-    <ModalShell
+    <SlidePanelShell
       header={<BookingIdentityHeader title={title} booking={booking} />}
       onClose={onClose}
       width={480}
@@ -87,7 +87,7 @@ function AssignRoomModal({ booking, onClose, onSave, title = "Gán phòng" }) {
           </div>
         )}
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

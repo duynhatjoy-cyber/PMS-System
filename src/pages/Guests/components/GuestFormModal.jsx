@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { CloudUpload, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import TierBadge from "./TierBadge";
 import { NATIONALITIES } from "../../../data/guestData";
@@ -71,7 +71,7 @@ function GuestFormModal({ guest, onClose, onSave }) {
   const guestGroups = form.id ? getGuestGroups(form.id) : [];
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={guest ? "Sửa khách" : "Thêm khách mới"}
       onClose={onClose}
       width={showUpload ? 980 : 720}
@@ -274,7 +274,7 @@ function GuestFormModal({ guest, onClose, onSave }) {
           </div>
         )}
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { CloudUpload, Plus, User, X } from "lucide-react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import shared from "./shared.module.css";
 import styles from "./EditGuestModal.module.css";
 
@@ -93,7 +93,7 @@ function EditGuestModal({ booking, initialSelectedId, onClose, onSave }) {
   }
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title="Sửa khách"
       onClose={onClose}
       width={showUpload ? 1180 : 780}
@@ -354,7 +354,7 @@ function EditGuestModal({ booking, initialSelectedId, onClose, onSave }) {
           </div>
         )}
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

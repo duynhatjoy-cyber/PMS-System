@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Calendar, Clock, Plus, X, Trash2 } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { useActiveWarehouseNames, useActiveMaterials } from "../../../context/WarehouseConfigContext";
 import { formatDateTimeDMY, formatCurrency } from "../../../utils/format";
@@ -45,7 +45,7 @@ function AddStockTransferModal({ onClose, onSave, onToast }) {
   }
 
   return (
-    <ModalShell title="Thêm phiếu chuyển kho" onClose={onClose} tone="brand" width={1080}>
+    <SlidePanelShell title="Thêm phiếu chuyển kho" onClose={onClose} tone="brand" width={1080}>
       <div className={styles.formGrid}>
         <div>
           <div className={styles.field}>
@@ -226,7 +226,7 @@ function AddStockTransferModal({ onClose, onSave, onToast }) {
           BỎ QUA
         </button>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

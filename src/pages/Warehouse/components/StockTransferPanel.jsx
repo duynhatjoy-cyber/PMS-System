@@ -1,15 +1,24 @@
 import { useMemo } from "react";
-import { Clock, List, User, DollarSign, MessageSquare, Plus, Printer } from "lucide-react";
+import { Clock, List, User, DollarSign, MessageSquare, Plus, Printer, Trash2 } from "lucide-react";
 import FilterBar from "./FilterBar";
 import WarehousePagination from "./WarehousePagination";
 import AddStockTransferModal from "../modals/AddStockTransferModal";
 import PrintPreviewModal from "../modals/PrintPreviewModal";
+import TicketDetailModal from "../modals/TicketDetailModal";
 import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import { STOCK_TRANSFER_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
+
+const STOCK_TRANSFER_FIELDS = [
+  { key: "date", label: "Ngày chuyển", type: "date" },
+  { key: "carrier", label: "Người vận chuyển", type: "text" },
+  { key: "total", label: "Tổng", type: "currency" },
+  { key: "note", label: "Diễn giải", type: "text" },
+];
 
 function StockTransferPanel({ onToast }) {
   const {
@@ -28,7 +37,13 @@ function StockTransferPanel({ onToast }) {
     setShowAddModal,
     printTicket,
     setPrintTicket,
+    detailRow,
+    setDetailRow,
+    deleteTarget,
+    setDeleteTarget,
     handleSaveTicket,
+    handleUpdateTicket,
+    handleConfirmDelete,
   } = useStockPanel(STOCK_TRANSFER_ROWS, "Đã thêm phiếu chuyển kho", onToast);
 
   const pagedRows = useMemo(() => paginate(rows, page, pageSize), [rows, page, pageSize]);
@@ -100,7 +115,7 @@ function StockTransferPanel({ onToast }) {
                   <tr key={row.id}>
                     <td>{formatDMY(row.date)}</td>
                     <td>
-                      <button type="button" className={styles.rowLink}>
+                      <button type="button" className={styles.rowLink} onClick={() => setDetailRow(row)}>
                         {row.ticketNo}
                       </button>
                     </td>
@@ -108,15 +123,26 @@ function StockTransferPanel({ onToast }) {
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
                     <td>
-                      <button
-                        type="button"
-                        className={styles.viewBtn}
-                        title="In phiếu chuyển kho"
-                        aria-label="In phiếu chuyển kho"
-                        onClick={() => setPrintTicket(row)}
-                      >
-                        <Printer size={16} />
-                      </button>
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="In phiếu chuyển kho"
+                          aria-label="In phiếu chuyển kho"
+                          onClick={() => setPrintTicket(row)}
+                        >
+                          <Printer size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.viewBtn}
+                          title="Xóa phiếu chuyển kho"
+                          aria-label="Xóa phiếu chuyển kho"
+                          onClick={() => setDeleteTarget(row)}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -153,6 +179,27 @@ function StockTransferPanel({ onToast }) {
             { label: "Tổng", value: formatCurrency(printTicket.total) },
           ]}
           onClose={() => setPrintTicket(null)}
+        />
+      )}
+
+      {detailRow && (
+        <TicketDetailModal
+          title="Phiếu chuyển kho"
+          row={detailRow}
+          fields={STOCK_TRANSFER_FIELDS}
+          onClose={() => setDetailRow(null)}
+          onSave={handleUpdateTicket}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Xóa phiếu chuyển kho"
+          message={`Bạn có chắc chắn muốn xóa phiếu ${deleteTarget.ticketNo}?`}
+          confirmLabel="Xóa"
+          danger
+          onConfirm={handleConfirmDelete}
+          onClose={() => setDeleteTarget(null)}
         />
       )}
     </div>

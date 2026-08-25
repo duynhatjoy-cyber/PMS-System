@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Crown, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import { GUESTS } from "../../../data/guestData";
 import styles from "./GroupFormModal.module.css";
@@ -42,7 +42,7 @@ function GroupFormModal({ group, onClose, onSave }) {
   const canSave = form.name.trim().length > 0 && form.leaderGuestId && form.memberGuestIds.length > 0;
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title={group ? "Sửa đoàn" : "Thêm đoàn"}
       onClose={onClose}
       width={640}
@@ -142,7 +142,7 @@ function GroupFormModal({ group, onClose, onSave }) {
           <textarea className={shared.textarea} value={form.note} onChange={(e) => patch({ note: e.target.value })} />
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

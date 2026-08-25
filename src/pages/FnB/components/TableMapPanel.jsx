@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus, Users } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
@@ -193,7 +193,7 @@ function TableMapPanel({ tables, setTables, orders, setOrders, onOpenOrder, onTo
       )}
 
       {formModal && (
-        <ModalShell
+        <SlidePanelShell
           title={formModal.editing ? "Sửa bàn" : "Thêm bàn"}
           onClose={() => setFormModal(null)}
           width={420}
@@ -255,7 +255,7 @@ function TableMapPanel({ tables, setTables, orders, setOrders, onOpenOrder, onTo
               </label>
             </div>
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deleteTarget && (

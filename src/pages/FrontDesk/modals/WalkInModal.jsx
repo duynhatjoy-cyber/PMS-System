@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, Minus, Plus, Search } from "lucide-react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import { roomTypes, ratePlans, bookingSources, guestDirectory } from "../../../data/frontDeskData";
 import { formatCurrency, formatDMY, formatDateTimeDMY, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
@@ -196,7 +196,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
   })();
 
   return (
-    <ModalShell
+    <SlidePanelShell
       header={
         <div>
           <h2 className={styles.title}>Đặt phòng mới</h2>
@@ -527,7 +527,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
           </div>
         </div>
       )}
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

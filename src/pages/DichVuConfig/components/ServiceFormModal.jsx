@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import styles from "../DichVuConfig.module.css";
 
@@ -40,7 +40,7 @@ function ServiceFormModal({ onClose, onSave }) {
   }
 
   return (
-    <ModalShell
+    <SlidePanelShell
       title="Thêm dịch vụ"
       onClose={onClose}
       width={640}
@@ -150,7 +150,7 @@ function ServiceFormModal({ onClose, onSave }) {
           </div>
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 

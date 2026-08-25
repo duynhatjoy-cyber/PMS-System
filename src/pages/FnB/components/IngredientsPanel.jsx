@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Box, Plus, AlertTriangle, Search } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
+import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
@@ -249,7 +249,7 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
       </div>
 
       {modal && (
-        <ModalShell
+        <SlidePanelShell
           title={modal.editing ? "Sửa nguyên vật liệu" : "Thêm nguyên vật liệu"}
           onClose={() => setModal(null)}
           width={420}
@@ -304,7 +304,7 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
               </span>
             </label>
           </div>
-        </ModalShell>
+        </SlidePanelShell>
       )}
 
       {deleteTarget && (

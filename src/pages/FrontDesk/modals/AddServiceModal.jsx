@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Minus, Plus, Search, Trash2 } from "lucide-react";
-import ModalShell from "./ModalShell";
+import SlidePanelShell from "./SlidePanelShell";
 import { formatCurrency } from "../../../utils/format";
 import shared from "./shared.module.css";
 import styles from "./AddServiceModal.module.css";
@@ -64,7 +64,7 @@ function AddServiceModal({ onClose, onSave }) {
   const total = cart.reduce((sum, line) => sum + line.price * line.qty, 0);
 
   return (
-    <ModalShell title="Thêm dịch vụ" onClose={onClose} width={760}>
+    <SlidePanelShell title="Thêm dịch vụ" onClose={onClose} width={760}>
       <div className={styles.searchBar}>
         <Search size={16} />
         <input
@@ -149,7 +149,7 @@ function AddServiceModal({ onClose, onSave }) {
           </div>
         </div>
       </div>
-    </ModalShell>
+    </SlidePanelShell>
   );
 }
 
