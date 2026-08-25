@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Plus } from "lucide-react";
+import { ChefHat, ImagePlus, Plus, X } from "lucide-react";
 import ModalShell from "../../FrontDesk/modals/ModalShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -14,8 +14,11 @@ function emptyItemForm(item) {
   return {
     name: item?.name ?? "",
     price: item ? String(item.price) : "",
+    image: item?.image ?? "",
   };
 }
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 function MenuPanel({ categories, setCategories, ingredients, onToast }) {
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? null);
@@ -25,6 +28,7 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState(null);
   const [renameCategoryTarget, setRenameCategoryTarget] = useState(null); // { id, value }
   const [recipeItem, setRecipeItem] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   const category = categories.find((c) => c.id === categoryId) || categories[0] || null;
 
@@ -71,15 +75,39 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
   }
 
   function openAddItemModal() {
+    setImageError("");
     setItemModal({ editing: null, form: emptyItemForm(null) });
   }
 
   function openEditItemModal(item) {
+    setImageError("");
     setItemModal({ editing: item, form: emptyItemForm(item) });
   }
 
   function patchItemForm(key, value) {
     setItemModal((prev) => ({ ...prev, form: { ...prev.form, [key]: value } }));
+  }
+
+  function handleImageChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setImageError("Vui lòng chọn tệp hình ảnh.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      setImageError("Dung lượng ảnh không được vượt quá 5 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      patchItemForm("image", String(reader.result));
+      setImageError("");
+    };
+    reader.onerror = () => setImageError("Không thể đọc ảnh. Vui lòng thử lại.");
+    reader.readAsDataURL(file);
   }
 
   function handleSaveItem() {
@@ -92,9 +120,9 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
       prev.map((c) => {
         if (c.id !== categoryId) return c;
         if (editing) {
-          return { ...c, items: c.items.map((i) => (i.id === editing.id ? { ...i, name, price } : i)) };
+          return { ...c, items: c.items.map((i) => (i.id === editing.id ? { ...i, name, price, image: form.image } : i)) };
         }
-        return { ...c, items: [...c.items, { id: nextDraftId("mi"), name, price, available: true }] };
+        return { ...c, items: [...c.items, { id: nextDraftId("mi"), name, price, image: form.image, available: true, recipe: [] }] };
       })
     );
     onToast(editing ? `Đã cập nhật món "${name}"` : `Đã thêm món "${name}"`);
@@ -199,7 +227,19 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
                     key={item.id}
                     className={`${styles.menuItemCard} ${!item.available ? styles.menuItemCardInactive : ""}`}
                   >
-                    <div>
+                    <div className={styles.menuItemMedia}>
+                      {item.image ? (
+                        <img className={styles.menuItemImage} src={item.image} alt={item.name} />
+                      ) : (
+                        <div className={styles.menuItemImagePlaceholder} aria-hidden="true">
+                          <ImagePlus size={24} />
+                        </div>
+                      )}
+                    </div>
+                    <div className={styles.menuItemActions}>
+                      <RowActionMenu items={itemMenuItems(item)} />
+                    </div>
+                    <div className={styles.menuItemContent}>
                       <div className={styles.menuItemName}>{item.name}</div>
                       <div className={styles.menuItemPrice}>{formatCurrency(item.price)}</div>
                       {!item.available && <span className={styles.inactiveTag}>Hết hàng</span>}
@@ -210,7 +250,6 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
                         {item.recipe.length > 0 ? `${item.recipe.length} nguyên liệu` : "Chưa có công thức"}
                       </span>
                     </div>
-                    <RowActionMenu items={itemMenuItems(item)} />
                   </div>
                 ))}
               </div>
@@ -266,6 +305,40 @@ function MenuPanel({ categories, setCategories, ingredients, onToast }) {
                 onChange={(e) => patchItemForm("price", e.target.value)}
               />
             </label>
+            <div className={shared.field}>
+              <span className={shared.label}>Hình ảnh món ăn</span>
+              {itemModal.form.image ? (
+                <div className={styles.imagePreviewWrap}>
+                  <img className={styles.imagePreview} src={itemModal.form.image} alt="Xem trước món ăn" />
+                  <button
+                    type="button"
+                    className={styles.removeImageBtn}
+                    aria-label="Xóa hình ảnh"
+                    title="Xóa hình ảnh"
+                    onClick={() => {
+                      patchItemForm("image", "");
+                      setImageError("");
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <label className={styles.imageUpload}>
+                  <ImagePlus size={24} />
+                  <span>Chọn ảnh món ăn</span>
+                  <small>PNG, JPG, WEBP — tối đa 5 MB</small>
+                  <input type="file" accept="image/*" onChange={handleImageChange} />
+                </label>
+              )}
+              {itemModal.form.image && (
+                <label className={styles.changeImageBtn}>
+                  <ImagePlus size={15} /> Đổi ảnh
+                  <input type="file" accept="image/*" onChange={handleImageChange} />
+                </label>
+              )}
+              {imageError && <span className={styles.imageError}>{imageError}</span>}
+            </div>
           </div>
         </ModalShell>
       )}

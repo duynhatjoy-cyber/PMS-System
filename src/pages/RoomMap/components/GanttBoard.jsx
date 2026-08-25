@@ -407,8 +407,8 @@ function GanttBoard({
                             : {
                                 left: `${layout.leftPct}%`,
                                 width: `${layout.widthPct}%`,
-                                background: `${statusColor}1a`,
-                                color: statusColor,
+                                background: statusColor,
+                                color: "#ffffff",
                                 borderLeftColor: statusColor,
                               }
                         }
