@@ -175,7 +175,8 @@ function OrderDetailModal({ order, table, categories, setOrders, setTables, onCh
               key={item.id}
               className={`${styles.pickerRow} ${!item.available ? styles.pickerRowUnavailable : ""}`}
             >
-              <span>
+              {item.image && <img className={styles.pickerImage} src={item.image} alt="" />}
+              <span className={styles.pickerInfo}>
                 <span className={styles.pickerName}>{item.name}</span>
                 <span className={styles.pickerPrice}>{formatCurrency(item.price)}</span>
               </span>
