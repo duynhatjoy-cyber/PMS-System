@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { ChefHat, ImagePlus, Plus, X } from "lucide-react";
-import ModalShell from "../../FrontDesk/modals/ModalShell";
-import { ChefHat, Plus } from "lucide-react";
 import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
