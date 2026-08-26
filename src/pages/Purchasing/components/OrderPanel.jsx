@@ -82,6 +82,15 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
     onSeedConsumed();
   }
 
+  function handleExecuteOrder(row) {
+    handleUpdateTicket({ ...row, status: "Đang thực hiện" });
+  }
+
+  function handleCancelOrder(row) {
+    setDetailRow(null);
+    setDeleteTarget(row);
+  }
+
   const filteredRows = useMemo(() => {
     if (status === "Tất cả") return rows;
     return rows.filter((row) => row.status === status);
@@ -247,6 +256,14 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
           lineColumns={ORDER_LINE_COLUMNS}
           onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
+          actions={
+            detailRow.status === "Chưa thực hiện"
+              ? [
+                  { label: "THỰC HIỆN ĐẶT HÀNG", onClick: () => handleExecuteOrder(detailRow) },
+                  { label: "HỦY", onClick: () => handleCancelOrder(detailRow), danger: true },
+                ]
+              : []
+          }
         />
       )}
 
