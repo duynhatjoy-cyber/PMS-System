@@ -2,7 +2,9 @@ import { useState } from "react";
 import { CirclePause, CirclePlay, Plus, Search, X } from "lucide-react";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import ImageUploadField from "../../../components/ImageUploadField";
 import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
+import shared from "../../FrontDesk/modals/shared.module.css";
 import { useWarehouseConfig } from "../../../context/WarehouseConfigContext";
 import { createIdSequence } from "../../../utils/id";
 
@@ -23,13 +25,18 @@ function emptyDraft() {
     vatCode: "",
     contactPhone: "",
     contactEmail: "",
+    bankName: "",
+    bankAccountNumber: "",
+    bankAccountHolder: "",
+    qrCodeImage: "",
     active: true,
   };
 }
 
 function SuppliersPanel({ styles, onToast }) {
-  const { suppliers, setSuppliers } = useWarehouseConfig();
+  const { suppliers, setSuppliers, materials, setMaterials } = useWarehouseConfig();
   const [query, setQuery] = useState("");
+  const [materialQuery, setMaterialQuery] = useState("");
   const [selectedId, setSelectedId] = useState(suppliers[0]?.id ?? null);
   const [draft, setDraft] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -98,6 +105,12 @@ function SuppliersPanel({ styles, onToast }) {
     );
     onToast(`Đã ngừng sử dụng nhà cung cấp "${deactivateTarget.name}"`);
     setDeactivateTarget(null);
+  }
+
+  function toggleMaterialSupplier(materialId, checked) {
+    setMaterials((prev) =>
+      prev.map((m) => (m.id === materialId ? { ...m, supplierId: checked ? selectedId : "" } : m))
+    );
   }
 
   function rowMenuItems(s) {
@@ -293,6 +306,76 @@ function SuppliersPanel({ styles, onToast }) {
                       onChange={(e) => patchField("contactEmail", e.target.value)}
                     />
                   </label>
+                </div>
+
+                <div className={styles.detailCol}>
+                  <div className={styles.detailColLabel}>Ngân hàng &amp; thanh toán</div>
+
+                  <label className={styles.field}>
+                    <span className={styles.fieldLabel}>Tên ngân hàng</span>
+                    <input
+                      className={styles.fieldInput}
+                      value={selected.bankName}
+                      onChange={(e) => patchField("bankName", e.target.value)}
+                    />
+                  </label>
+
+                  <label className={styles.field}>
+                    <span className={styles.fieldLabel}>Số tài khoản</span>
+                    <input
+                      className={styles.fieldInput}
+                      value={selected.bankAccountNumber}
+                      onChange={(e) => patchField("bankAccountNumber", e.target.value)}
+                    />
+                  </label>
+
+                  <label className={styles.field}>
+                    <span className={styles.fieldLabel}>Chủ tài khoản</span>
+                    <input
+                      className={styles.fieldInput}
+                      value={selected.bankAccountHolder}
+                      onChange={(e) => patchField("bankAccountHolder", e.target.value)}
+                    />
+                  </label>
+
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Mã QR chuyển khoản</span>
+                    <ImageUploadField
+                      value={selected.qrCodeImage}
+                      onChange={(value) => patchField("qrCodeImage", value)}
+                      label="Chọn ảnh mã QR"
+                    />
+                  </div>
+
+                  {!isNew && (
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>
+                        Nguyên vật liệu cung cấp ({materials.filter((m) => m.supplierId === selected.id).length})
+                      </span>
+                      <div className={styles.listSearch}>
+                        <Search size={14} />
+                        <input
+                          placeholder="Lọc nguyên vật liệu"
+                          value={materialQuery}
+                          onChange={(e) => setMaterialQuery(e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.scrollList} style={{ maxHeight: 220 }}>
+                        {materials
+                          .filter((m) => m.name.toLowerCase().includes(materialQuery.trim().toLowerCase()))
+                          .map((m) => (
+                            <label key={m.id} className={shared.checkboxRow} style={{ padding: "8px 12px" }}>
+                              <input
+                                type="checkbox"
+                                checked={m.supplierId === selected.id}
+                                onChange={(e) => toggleMaterialSupplier(m.id, e.target.checked)}
+                              />
+                              <span className={!m.active ? styles.rowInactive : ""}>{m.name}</span>
+                            </label>
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

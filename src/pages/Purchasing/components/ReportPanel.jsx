@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Clock, List, Info, MessageSquare, Plus, ShoppingCart, Printer, Trash2 } from "lucide-react";
 import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
-import AddPurchaseTicketModal from "../modals/AddPurchaseTicketModal";
+import AddReportModal from "../modals/AddReportModal";
 import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
 import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
@@ -18,7 +18,18 @@ import styles from "../../Warehouse/Warehouse.module.css";
 const REPORT_FIELDS = [
   { key: "date", label: "Ngày", type: "date" },
   { key: "status", label: "Trạng thái", type: "select", options: PURCHASE_STATUS_OPTIONS.slice(1) },
-  { key: "note", label: "Diễn giải", type: "text" },
+  { key: "reporter", label: "Người báo hàng", type: "text" },
+  { key: "address", label: "Địa chỉ", type: "text" },
+  { key: "reference", label: "Tham chiếu", type: "text" },
+  { key: "note", label: "Mô tả", type: "text" },
+];
+
+const REPORT_LINE_COLUMNS = [
+  { key: "name", label: "Nguyên vật liệu" },
+  { key: "unit", label: "Đơn vị" },
+  { key: "neededQty", label: "Số lượng cần", numeric: true },
+  { key: "stockQty", label: "Số lượng tồn", numeric: true },
+  { key: "requestedQty", label: "Số lượng đề nghị", numeric: true },
 ];
 
 function ReportPanel({ onToast, onCreateOrder }) {
@@ -49,11 +60,15 @@ function ReportPanel({ onToast, onCreateOrder }) {
   } = useStockPanel(REPORT_ROWS, "Đã thêm phiếu báo hàng", onToast, [reportRows, setReportRows]);
   const [status, setStatus] = useState(PURCHASE_STATUS_OPTIONS[0]);
 
+  // Phiếu báo hàng có thể có nhiều dòng nguyên vật liệu (tạo tay hoặc tự sinh
+  // từ cảnh báo hao hụt F&B) — seedLine của Đặt hàng chỉ điền sẵn 1 dòng nên
+  // lấy dòng đầu tiên, các dòng còn lại người dùng tự thêm nếu cần.
   function handleCreateOrder(row) {
+    const line = row.lines?.[0];
     onCreateOrder({
-      name: row.ingredientName || row.note || "",
-      unit: row.unit || "",
-      qty: row.qty ?? "",
+      name: line?.name || row.note || "",
+      unit: line?.unit || "",
+      qty: line?.requestedQty ?? "",
     });
   }
 
@@ -203,9 +218,7 @@ function ReportPanel({ onToast, onCreateOrder }) {
       </div>
 
       {showAddModal && (
-        <AddPurchaseTicketModal
-          title="Thêm phiếu báo hàng"
-          ticketPrefix="BH"
+        <AddReportModal
           statusOptions={PURCHASE_STATUS_OPTIONS.slice(1)}
           onSave={handleSaveTicket}
           onClose={() => setShowAddModal(false)}
@@ -217,6 +230,7 @@ function ReportPanel({ onToast, onCreateOrder }) {
           title="Phiếu báo hàng"
           row={detailRow}
           fields={REPORT_FIELDS}
+          lineColumns={REPORT_LINE_COLUMNS}
           onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
         />
@@ -229,7 +243,10 @@ function ReportPanel({ onToast, onCreateOrder }) {
           date={formatDMY(printTicket.date)}
           fields={[
             { label: "Trạng thái", value: printTicket.status },
-            { label: "Diễn giải", value: printTicket.note || "—" },
+            { label: "Người báo hàng", value: printTicket.reporter || "—" },
+            { label: "Địa chỉ", value: printTicket.address || "—" },
+            { label: "Tham chiếu", value: printTicket.reference || "—" },
+            { label: "Mô tả", value: printTicket.note || "—" },
           ]}
           onClose={() => setPrintTicket(null)}
         />

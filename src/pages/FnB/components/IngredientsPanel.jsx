@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Box, Plus, AlertTriangle, Search } from "lucide-react";
+import { Box, Plus, AlertTriangle, ClipboardList, Search } from "lucide-react";
 import SlidePanelShell from "../../FrontDesk/modals/SlidePanelShell";
 import shared from "../../FrontDesk/modals/shared.module.css";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -7,6 +7,7 @@ import RowActionMenu from "../../FrontDesk/components/RowActionMenu";
 import EmptyState from "../../../components/EmptyState";
 import StatCard from "../../FrontDesk/components/StatCard";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
+import CreateReportModal from "./CreateReportModal";
 import { avatarColorAt } from "./ingredientAvatar";
 import { nextDraftId, INGREDIENT_UNITS, isOverThreshold } from "../../../data/fnbData";
 import { paginate } from "../../../utils/pagination";
@@ -21,19 +22,31 @@ function emptyForm(ingredient) {
   };
 }
 
-function IngredientsPanel({ ingredients, setIngredients, categories, setCategories, onToast }) {
+function IngredientsPanel({
+  ingredients,
+  setIngredients,
+  categories,
+  setCategories,
+  onToast,
+  onCreateCustomReport,
+}) {
   const [modal, setModal] = useState(null); // { editing: ingredient|null, form }
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  // null = đóng; mảng = mở CreateReportModal điền sẵn đúng các nguyên liệu này
+  // (nút đầu trang seed = nguyên liệu vượt ngưỡng, "Tạo phiếu báo hàng" ở
+  // từng dòng seed = đúng 1 nguyên liệu đó) — luôn mở form cho xem/sửa trước
+  // khi lưu, không tạo phiếu ngay khi bấm.
+  const [createReportSeed, setCreateReportSeed] = useState(null);
 
   const usedIngredientIds = new Set(
     categories.flatMap((c) => c.items.flatMap((item) => item.recipe.map((r) => r.ingredientId)))
   );
   const inUseCount = ingredients.filter((i) => usedIngredientIds.has(i.id)).length;
   const depletedCount = ingredients.filter((i) => i.usedQty > 0).length;
-  const overThresholdCount = ingredients.filter(isOverThreshold).length;
+  const overThresholdIngredients = ingredients.filter(isOverThreshold);
   const topUsed = ingredients.reduce((max, i) => (i.usedQty > (max?.usedQty ?? 0) ? i : max), null);
 
   const filteredIngredients = useMemo(() => {
@@ -108,9 +121,20 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
             </p>
           </div>
         </div>
-        <button type="button" className={fnbStyles.addBtn} onClick={openAddModal}>
-          <Plus size={16} /> Thêm nguyên vật liệu
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            type="button"
+            className={`${fnbStyles.addBtn} ${overThresholdIngredients.length > 0 ? fnbStyles.addBtnWarning : ""}`}
+            onClick={() => setCreateReportSeed(overThresholdIngredients)}
+            title="Chọn 1 hoặc nhiều nguyên vật liệu để tạo phiếu báo hàng"
+          >
+            <ClipboardList size={16} /> Tạo phiếu báo hàng
+            {overThresholdIngredients.length > 0 && ` (${overThresholdIngredients.length})`}
+          </button>
+          <button type="button" className={fnbStyles.addBtn} onClick={openAddModal}>
+            <Plus size={16} /> Thêm nguyên vật liệu
+          </button>
+        </div>
       </div>
 
       <div className={fnbStyles.statsRow}>
@@ -133,7 +157,7 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
         <div className={fnbStyles.statAccent} style={{ borderTopColor: "var(--fd-danger)" }}>
           <StatCard
             label="Cần báo hàng"
-            value={overThresholdCount}
+            value={overThresholdIngredients.length}
             hint="đã vượt ngưỡng cảnh báo"
           />
         </div>
@@ -218,6 +242,11 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
                         <RowActionMenu
                           items={[
                             { key: "edit", label: "Sửa", onClick: () => openEditModal(ing) },
+                            {
+                              key: "report",
+                              label: "Tạo phiếu báo hàng",
+                              onClick: () => setCreateReportSeed([ing]),
+                            },
                             {
                               key: "delete",
                               label: "Xóa",
@@ -315,6 +344,18 @@ function IngredientsPanel({ ingredients, setIngredients, categories, setCategori
           danger
           onConfirm={handleConfirmDelete}
           onClose={() => setDeleteTarget(null)}
+        />
+      )}
+
+      {createReportSeed && (
+        <CreateReportModal
+          ingredients={ingredients}
+          seedIngredients={createReportSeed}
+          onSave={(selections, note) => {
+            onCreateCustomReport(selections, note);
+            setCreateReportSeed(null);
+          }}
+          onClose={() => setCreateReportSeed(null)}
         />
       )}
     </div>

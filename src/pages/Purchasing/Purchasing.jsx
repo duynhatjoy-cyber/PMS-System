@@ -5,7 +5,7 @@ import ReceiptPanel from "./components/ReceiptPanel";
 import ReturnPanel from "./components/ReturnPanel";
 import DebtPanel from "./components/DebtPanel";
 import Toast from "../FrontDesk/components/Toast";
-import { ORDER_ROWS, RECEIPT_ROWS } from "../../data/purchasingData";
+import { ORDER_ROWS, RECEIPT_ROWS, RETURN_ROWS, PAYMENT_ROWS } from "../../data/purchasingData";
 import styles from "../Warehouse/Warehouse.module.css";
 
 const TABS = [
@@ -21,9 +21,14 @@ function Purchasing() {
   const [toastMsg, setToastMsg] = useState("");
   const [orderRows, setOrderRows] = useState(ORDER_ROWS);
   const [receiptRows, setReceiptRows] = useState(RECEIPT_ROWS);
+  const [returnRows, setReturnRows] = useState(RETURN_ROWS);
+  const [paymentRows, setPaymentRows] = useState(PAYMENT_ROWS);
   // Dòng hàng gợi ý khi tạo đơn đặt hàng từ 1 phiếu báo hàng — xem
   // ReportPanel's "Tạo đơn đặt hàng". null khi mở modal thủ công qua nút +.
   const [orderSeedLine, setOrderSeedLine] = useState(null);
+  // Phiếu nhập hàng gợi ý khi tạo trả lại hàng mua từ bước kiểm kê hàng hóa
+  // (ReceiptPanel's "Trả lại hàng mua") — xem ReceiptInspectionModal.
+  const [returnSeedReceiptId, setReturnSeedReceiptId] = useState(null);
 
   function toast(message) {
     setToastMsg(message);
@@ -32,6 +37,11 @@ function Purchasing() {
   function handleCreateOrderFromReport(seedLine) {
     setOrderSeedLine(seedLine);
     setActiveTab("order");
+  }
+
+  function handleCreateReturnFromReceipt(receiptId) {
+    setReturnSeedReceiptId(receiptId);
+    setActiveTab("return");
   }
 
   function handleOrderReceived(orderId) {
@@ -75,10 +85,28 @@ function Purchasing() {
             setRows={setReceiptRows}
             orderRows={orderRows}
             onOrderReceived={handleOrderReceived}
+            onCreateReturn={handleCreateReturnFromReceipt}
           />
         )}
-        {activeTab === "return" && <ReturnPanel onToast={toast} />}
-        {activeTab === "debt" && <DebtPanel onToast={toast} />}
+        {activeTab === "return" && (
+          <ReturnPanel
+            onToast={toast}
+            rows={returnRows}
+            setRows={setReturnRows}
+            receiptRows={receiptRows}
+            seedReceiptId={returnSeedReceiptId}
+            onSeedConsumed={() => setReturnSeedReceiptId(null)}
+          />
+        )}
+        {activeTab === "debt" && (
+          <DebtPanel
+            onToast={toast}
+            receiptRows={receiptRows}
+            returnRows={returnRows}
+            paymentRows={paymentRows}
+            setPaymentRows={setPaymentRows}
+          />
+        )}
       </div>
 
       <Toast message={toastMsg} onDismiss={() => setToastMsg("")} />
