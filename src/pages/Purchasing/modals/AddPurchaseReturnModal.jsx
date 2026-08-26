@@ -8,15 +8,16 @@ import { lineAmount } from "../../Warehouse/hooks/useLineItems";
 import generateTicketNo from "../../Warehouse/ticketNo";
 import styles from "../../Warehouse/modals/WarehouseModal.module.css";
 
-const PAYMENT_METHODS = ["Ghi nợ NCC", "Thanh toán ngay"];
+const PAYMENT_METHODS = ["Giảm trừ công nợ", "Nhận lại tiền"];
 
-// Nhập hàng có thể chọn "Từ đơn đặt hàng" (1 phiếu Đặt hàng chưa hoàn tất) —
-// khi chọn, các dòng hàng được điền sẵn nguyên vật liệu/số lượng/đơn giá đã
-// đặt để người dùng sửa lại theo hàng thực nhận + chọn Kho nhận, dòng nào lệch
-// so với lúc đặt được đánh dấu ngay trong bảng. Không dùng useLineItems ở đây
-// vì cần thay TOÀN BỘ danh sách dòng mỗi khi đổi đơn đặt hàng — khác với nhu
-// cầu chỉ thêm/xóa từng dòng của hook đó.
-function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
+// Trả lại hàng mua xuất nguyên vật liệu ra khỏi kho (giống Xuất kho) nên dùng
+// lại chipCell nguyên vật liệu/kho của AddStockOutModal. Có thể chọn "Từ
+// phiếu nhập hàng" để điền sẵn đúng nguyên vật liệu/kho/đơn giá đã nhận (như
+// Nhập hàng điền sẵn từ Đặt hàng) — người dùng chỉ cần sửa lại Số lượng theo
+// phần thực tế muốn trả, dòng nào để 0 sẽ tự bị bỏ qua lúc lưu. `initialReceiptId`
+// (từ bước kiểm kê hàng hóa ở Nhập hàng — xem ReceiptInspectionModal) chọn
+// sẵn phiếu nhập tương ứng ngay khi mở, không cần tự tìm lại trong dropdown.
+function AddPurchaseReturnModal({ receiptRows, initialReceiptId, onSave, onClose, onToast }) {
   const activeSuppliers = useActiveSuppliers();
   const activeWarehouseNames = useActiveWarehouseNames();
   const materials = useActiveMaterials();
@@ -26,36 +27,40 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
   }
 
   const [ticketDate] = useState(() => new Date());
-  const [orderIndex, setOrderIndex] = useState("");
+  const [receiptIndex, setReceiptIndex] = useState(() => {
+    if (!initialReceiptId) return "";
+    const idx = receiptRows.findIndex((r) => r.id === initialReceiptId);
+    return idx === -1 ? "" : idx;
+  });
   const [manualSupplierIndex, setManualSupplierIndex] = useState("");
-  const [deliveryPerson, setDeliveryPerson] = useState("");
-  const [reference, setReference] = useState("");
+  const [receiver, setReceiver] = useState("");
   const [note, setNote] = useState("");
+  const [reference, setReference] = useState("");
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
   const [lines, setLines] = useState([blankLine(1)]);
   const [nextLineId, setNextLineId] = useState(2);
-  // Theo dõi lần đổi "Từ đơn đặt hàng" gần nhất để nạp lại toàn bộ dòng hàng
-  // ngay trong lúc render (không dùng effect) — mẫu "adjusting state during
-  // render" của React, tránh setState lồng trong effect.
-  const [linesForOrderIndex, setLinesForOrderIndex] = useState(orderIndex);
+  // Theo dõi lần đổi "Từ phiếu nhập hàng" gần nhất để nạp lại toàn bộ dòng
+  // hàng ngay trong lúc render (không dùng effect) — cùng mẫu với AddReceiptModal.
+  // Khởi tạo khác receiptIndex để nếu đã có initialReceiptId thì nạp dòng
+  // hàng ngay từ lần render đầu tiên thay vì chờ người dùng đổi dropdown.
+  const [linesForReceiptIndex, setLinesForReceiptIndex] = useState("");
 
-  const selectedOrder = orderIndex === "" ? null : openOrders[Number(orderIndex)];
+  const selectedReceipt = receiptIndex === "" ? null : receiptRows[Number(receiptIndex)];
 
-  if (orderIndex !== linesForOrderIndex) {
-    setLinesForOrderIndex(orderIndex);
-    if (selectedOrder) {
+  if (receiptIndex !== linesForReceiptIndex) {
+    setLinesForReceiptIndex(receiptIndex);
+    if (selectedReceipt) {
       setLines(
-        selectedOrder.lines.map((l, i) => ({
+        selectedReceipt.lines.map((l, i) => ({
           id: i + 1,
           materialId: materials.find((m) => m.name === l.name)?.id || "",
-          warehouse: activeWarehouseNames[0] || "",
-          orderedQty: l.qty,
-          orderedPrice: l.price,
+          warehouse: l.warehouse || activeWarehouseNames[0] || "",
+          fromReceipt: true,
           qty: l.qty,
           price: l.price,
         }))
       );
-      setNextLineId(selectedOrder.lines.length + 1);
+      setNextLineId(selectedReceipt.lines.length + 1);
     } else {
       setLines([blankLine(1)]);
       setNextLineId(2);
@@ -75,35 +80,24 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
     setLines((prev) => (prev.length > 1 ? prev.filter((l) => l.id !== id) : prev));
   }
 
-  function isMismatchLine(line) {
-    return (
-      line.orderedQty != null &&
-      (Number(line.qty) !== Number(line.orderedQty) || Number(line.price) !== Number(line.orderedPrice))
-    );
-  }
-
   const manualSupplier = manualSupplierIndex === "" ? null : activeSuppliers[Number(manualSupplierIndex)];
   const total = lines.reduce((sum, line) => sum + lineAmount(line), 0);
-  const anyMismatch = lines.some(isMismatchLine);
   const canSave = lines.some((line) => line.materialId && line.warehouse && Number(line.qty) > 0);
 
   function handleSave() {
     if (!canSave) return;
-    const ticketNo = generateTicketNo("PN");
+    const ticketNo = generateTicketNo("PT");
     onSave({
       id: ticketNo,
       ticketNo,
       date: ticketDate,
+      supplier: selectedReceipt ? selectedReceipt.supplier : manualSupplier?.name || "",
+      receiptRef: selectedReceipt?.ticketNo,
+      receiver,
       reference,
-      deliveryPerson,
       paymentMethod,
-      inspectionStatus: "Chưa kiểm kê hàng hóa",
-      supplier: selectedOrder ? selectedOrder.supplier : manualSupplier?.name || "",
-      total,
       note,
-      orderRef: selectedOrder?.ticketNo,
-      orderId: selectedOrder?.id,
-      mismatch: selectedOrder ? anyMismatch : false,
+      total,
       lines: lines
         .filter((line) => line.materialId && line.warehouse && Number(line.qty) > 0)
         .map((line) => {
@@ -114,36 +108,34 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
             warehouse: line.warehouse,
             qty: Number(line.qty) || 0,
             price: Number(line.price) || 0,
-            orderedQty: line.orderedQty,
-            orderedPrice: line.orderedPrice,
           };
         }),
     });
   }
 
   return (
-    <SlidePanelShell title="Thêm phiếu nhập hàng" onClose={onClose} tone="brand" width={900}>
+    <SlidePanelShell title="Phiếu trả lại hàng mua" onClose={onClose} tone="brand" width={900}>
       <div className={styles.formGrid}>
         <div>
           <div className={styles.field}>
-            <label className={styles.label}>Từ đơn đặt hàng</label>
+            <label className={styles.label}>Từ phiếu nhập hàng</label>
             <select
               className={styles.underlineSelect}
-              value={orderIndex}
-              onChange={(e) => setOrderIndex(e.target.value)}
+              value={receiptIndex}
+              onChange={(e) => setReceiptIndex(e.target.value)}
             >
-              <option value="">Nhập trực tiếp, không theo đơn đặt hàng</option>
-              {openOrders.map((o, i) => (
-                <option key={o.id} value={i}>
-                  {o.ticketNo} — {o.supplier || "Chưa có NCC"} ({formatDateTimeDMY(o.date)})
+              <option value="">Nhập trực tiếp, không theo phiếu nhập hàng</option>
+              {receiptRows.map((r, i) => (
+                <option key={r.id} value={i}>
+                  {r.ticketNo} — {r.supplier || "Chưa có NCC"} ({formatDateTimeDMY(r.date)})
                 </option>
               ))}
             </select>
           </div>
 
           <div className={styles.field}>
-            {selectedOrder ? (
-              <input type="text" className={styles.underlineInput} value={selectedOrder.supplier || ""} readOnly />
+            {selectedReceipt ? (
+              <input type="text" className={styles.underlineInput} value={selectedReceipt.supplier || ""} readOnly />
             ) : (
               <select
                 className={styles.underlineSelect}
@@ -161,13 +153,13 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>Người giao hàng</label>
+            <label className={styles.label}>Người nhận</label>
             <input
               type="text"
               className={styles.underlineInput}
-              value={deliveryPerson}
-              onChange={(e) => setDeliveryPerson(e.target.value)}
-              placeholder="Người giao hàng"
+              value={receiver}
+              onChange={(e) => setReceiver(e.target.value)}
+              placeholder="Người nhận"
             />
           </div>
 
@@ -199,7 +191,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>Ngày nhập hàng</label>
+            <label className={styles.label}>Ngày trả lại hàng</label>
             <div className={styles.datetimeRow}>
               <span>{formatDateTimeDMY(ticketDate)}</span>
               <Calendar size={14} />
@@ -214,7 +206,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                 <label key={opt} className={styles.radioLabel}>
                   <input
                     type="radio"
-                    name="receiptPaymentMethod"
+                    name="returnPaymentMethod"
                     checked={paymentMethod === opt}
                     onChange={() => setPaymentMethod(opt)}
                   />
@@ -226,10 +218,10 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
         </div>
       </div>
 
-      {selectedOrder && (
+      {selectedReceipt && (
         <p className={styles.tableHint}>
-          Đang so sánh với đơn <strong>{selectedOrder.ticketNo}</strong> — sửa lại Số lượng/Đơn giá theo hàng thực
-          nhận, dòng lệch so với lúc đặt sẽ hiện màu đỏ.
+          Đang lấy nguyên vật liệu/kho/đơn giá từ phiếu <strong>{selectedReceipt.ticketNo}</strong> — sửa lại Số
+          lượng theo phần thực tế muốn trả, để 0 nếu không trả dòng đó.
         </p>
       )}
 
@@ -240,8 +232,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
               <th>Nguyên vật liệu</th>
               <th>Đơn vị</th>
               <th>Kho (*)</th>
-              {selectedOrder && <th>SL/Giá đã đặt</th>}
-              <th>Số lượng (*)</th>
+              <th>Số lượng đề nghị (*)</th>
               <th>Đơn giá</th>
               <th>Thành tiền</th>
               <th className={styles.thAction}>
@@ -254,8 +245,6 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
           <tbody>
             {lines.map((line) => {
               const material = materials.find((m) => m.id === line.materialId);
-              const mismatch = isMismatchLine(line);
-              const fromOrder = line.orderedQty != null;
               return (
                 <tr key={line.id}>
                   <td>
@@ -263,7 +252,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                       <select
                         className={styles.chipSelect}
                         value={line.materialId}
-                        disabled={fromOrder}
+                        disabled={line.fromReceipt}
                         onChange={(e) => updateLine(line.id, { materialId: e.target.value })}
                       >
                         <option value="">Chọn nguyên vật liệu</option>
@@ -273,7 +262,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                           </option>
                         ))}
                       </select>
-                      {line.materialId && !fromOrder && (
+                      {line.materialId && !line.fromReceipt && (
                         <button
                           type="button"
                           className={styles.chipClearBtn}
@@ -282,7 +271,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                           <X size={13} />
                         </button>
                       )}
-                      {!fromOrder && (
+                      {!line.fromReceipt && (
                         <button
                           type="button"
                           className={styles.chipAddBtn}
@@ -318,20 +307,14 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                       )}
                     </div>
                   </td>
-                  {selectedOrder && (
-                    <td className={styles.numCell}>
-                      {fromOrder ? `${line.orderedQty} × ${formatCurrency(line.orderedPrice)}` : "—"}
-                    </td>
-                  )}
                   <td>
                     <input
                       type="number"
                       min="0"
                       className={styles.numInput}
-                      style={mismatch ? { borderColor: "var(--fd-danger)", color: "var(--fd-danger)" } : undefined}
                       value={line.qty}
                       onChange={(e) => updateLine(line.id, { qty: e.target.value })}
-                      placeholder="0"
+                      placeholder="0.00"
                     />
                   </td>
                   <td>
@@ -339,14 +322,13 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
                       type="number"
                       min="0"
                       className={styles.numInput}
-                      style={mismatch ? { borderColor: "var(--fd-danger)", color: "var(--fd-danger)" } : undefined}
                       value={line.price}
                       onChange={(e) => updateLine(line.id, { price: e.target.value })}
                     />
                   </td>
                   <td className={styles.thanhTien}>{formatCurrency(lineAmount(line))}</td>
                   <td>
-                    {!fromOrder && (
+                    {!line.fromReceipt && (
                       <button type="button" className={styles.removeBtn} onClick={() => removeLine(line.id)}>
                         <Trash2 size={15} />
                       </button>
@@ -358,7 +340,7 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
           </tbody>
           <tfoot>
             <tr className={styles.totalRow}>
-              <td colSpan={selectedOrder ? 6 : 5}>Tổng</td>
+              <td colSpan={5}>Tổng</td>
               <td colSpan={2}>{formatCurrency(total)}</td>
             </tr>
           </tfoot>
@@ -366,7 +348,12 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
       </div>
 
       <div className={styles.footerBtns}>
-        <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} disabled={!canSave} onClick={handleSave}>
+        <button
+          type="button"
+          className={`${shared.btn} ${shared.btnPrimary}`}
+          disabled={!canSave}
+          onClick={handleSave}
+        >
           LƯU
         </button>
         <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
@@ -377,4 +364,4 @@ function AddReceiptModal({ openOrders, onSave, onClose, onToast }) {
   );
 }
 
-export default AddReceiptModal;
+export default AddPurchaseReturnModal;

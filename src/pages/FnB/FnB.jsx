@@ -19,31 +19,43 @@ import {
 } from "../../data/fnbData";
 import styles from "./FnB.module.css";
 
+// 1 dòng nguyên vật liệu — cùng khoá name/unit/neededQty/stockQty/requestedQty
+// với AddReportModal (Mua hàng > Báo hàng) để phiếu tạo từ F&B hiện đúng
+// bảng nguyên vật liệu như phiếu tạo tay, không phải chỉ 1 dòng note chữ.
+// qtyOverride dùng khi người dùng tự nhập số lượng ở CreateReportModal, thay
+// vì suy ra từ ngưỡng cảnh báo/hao hụt hiện tại.
+function buildReportLine(ing, qtyOverride) {
+  const qty = qtyOverride ?? (ing.threshold || Number(ing.usedQty.toFixed(2)) || 0);
+  return { name: ing.name, unit: ing.unit, neededQty: qty, stockQty: 0, requestedQty: qty };
+}
+
+// Nhiều nguyên vật liệu cần báo cùng lúc → gộp thành 1 phiếu nhiều dòng,
+// không tách mỗi nguyên vật liệu 1 phiếu riêng.
+function buildReportTicket(lines, note) {
+  const ticketNo = generateTicketNo("BH");
+  return { id: ticketNo, ticketNo, date: new Date(), status: "Chưa thực hiện", note, lines };
+}
+
+function hasOpenTicket(ing, reportRows) {
+  return reportRows.some(
+    (r) => r.status !== "Đã thực hiện" && (r.lines || []).some((l) => l.name === ing.name)
+  );
+}
+
 // Vượt ngưỡng cảnh báo lúc thanh toán → tự tạo phiếu Báo hàng (Mua hàng >
-// Báo hàng). Không tạo thêm nếu nguyên liệu đó đã có phiếu chưa xử lý, để
-// tránh bắn liên tục 1 cảnh báo mỗi lần có đơn mới dùng nguyên liệu đó.
-function buildLowStockTickets(ingredients, reportRows) {
-  return ingredients
-    .filter(
-      (ing) =>
-        isOverThreshold(ing) &&
-        !reportRows.some((r) => r.ingredientId === ing.id && r.status !== "Đã thực hiện")
-    )
-    .map((ing) => {
-      const ticketNo = generateTicketNo("BH");
-      const usedQty = Number(ing.usedQty.toFixed(2));
-      return {
-        id: ticketNo,
-        ticketNo,
-        date: new Date(),
-        status: "Chưa thực hiện",
-        note: `Nguyên liệu "${ing.name}" đã hao hụt ${usedQty} ${ing.unit}, vượt ngưỡng cảnh báo ${ing.threshold} ${ing.unit}.`,
-        ingredientId: ing.id,
-        ingredientName: ing.name,
-        qty: ing.threshold,
-        unit: ing.unit,
-      };
-    });
+// Báo hàng), gộp mọi nguyên liệu vừa vượt ngưỡng vào 1 phiếu. Không tạo lại
+// cho nguyên liệu đã có phiếu chưa xử lý, để tránh bắn liên tục 1 cảnh báo
+// mỗi lần có đơn mới dùng nguyên liệu đó. Cùng những nguyên liệu này còn
+// được điền sẵn khi mở CreateReportModal (nút "+ Tạo phiếu báo hàng") để
+// người dùng xem lại/sửa trước khi lưu, thay vì tạo phiếu ngay không qua soát.
+function buildLowStockTicket(ingredients, reportRows) {
+  const overIngredients = ingredients.filter((ing) => isOverThreshold(ing) && !hasOpenTicket(ing, reportRows));
+  if (overIngredients.length === 0) return null;
+  const names = overIngredients.map((ing) => `"${ing.name}"`).join(", ");
+  return buildReportTicket(
+    overIngredients.map((ing) => buildReportLine(ing)),
+    `Nguyên liệu ${names} đã vượt ngưỡng cảnh báo hao hụt.`
+  );
 }
 
 const TABS = [
@@ -68,10 +80,17 @@ function FnB() {
     const updated = applyUsage(ingredients, computeOrderUsage(order, categories));
     setIngredients(updated);
 
-    const newTickets = buildLowStockTickets(updated, reportRows);
-    if (newTickets.length > 0) {
-      setReportRows((prev) => [...newTickets, ...prev]);
-    }
+    const ticket = buildLowStockTicket(updated, reportRows);
+    if (ticket) setReportRows((prev) => [ticket, ...prev]);
+  }
+
+  // Tạo phiếu tự chọn nhiều nguyên liệu + số lượng đề nghị từ CreateReportModal
+  // (nút "+ Tạo phiếu báo hàng") — độc lập với ngưỡng cảnh báo, phục vụ khi
+  // nhân viên muốn báo hàng loạt theo ý mình thay vì chờ hệ thống phát hiện.
+  function handleCreateCustomReport(selections, note) {
+    const lines = selections.map(({ ingredient, qty }) => buildReportLine(ingredient, qty));
+    setReportRows((prev) => [buildReportTicket(lines, note), ...prev]);
+    setToastMsg(`Đã tạo phiếu báo hàng cho ${lines.length} nguyên liệu`);
   }
 
   const activeOrder = orders.find((o) => o.id === activeOrderId) || null;
@@ -132,6 +151,7 @@ function FnB() {
           categories={categories}
           setCategories={setCategories}
           onToast={setToastMsg}
+          onCreateCustomReport={handleCreateCustomReport}
         />
       )}
 

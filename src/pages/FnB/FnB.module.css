@@ -125,6 +125,14 @@
   background: var(--fd-navy-hover);
 }
 
+.addBtnWarning {
+  background: var(--fd-warning);
+}
+
+.addBtnWarning:hover {
+  filter: brightness(0.94);
+}
+
 /* =========================
    SƠ ĐỒ BÀN
 ========================= */

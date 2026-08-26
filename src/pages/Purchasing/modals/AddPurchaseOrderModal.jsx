@@ -10,9 +10,8 @@ import { PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import styles from "../../Warehouse/modals/WarehouseModal.module.css";
 
 // Phiếu đặt hàng có dòng hàng (tên - đơn vị - số lượng - đơn giá) để Nhập
-// hàng sau này so sánh với hàng nhận thực tế, khác với AddPurchaseTicketModal
-// (chỉ 1 ô "Tổng") vẫn dùng cho Báo hàng/Trả lại hàng mua. seedLine điền sẵn
-// dòng đầu khi tạo đơn từ 1 phiếu báo hàng (ReportPanel).
+// hàng sau này so sánh với hàng nhận thực tế. seedLine điền sẵn dòng đầu khi
+// tạo đơn từ 1 phiếu báo hàng (ReportPanel).
 function AddPurchaseOrderModal({ seedLine, onSave, onClose }) {
   const activeSuppliers = useActiveSuppliers();
   const [ticketDate] = useState(() => new Date());

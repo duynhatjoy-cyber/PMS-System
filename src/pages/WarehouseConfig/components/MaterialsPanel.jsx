@@ -13,11 +13,12 @@ const UNIT_SUGGESTIONS = ["Cái", "Chai", "Kg", "Thùng", "Gói", "Lít"];
 const nextId = createIdSequence();
 
 function emptyDraft() {
-  return { name: "", unit: "", active: true };
+  return { name: "", unit: "", supplierId: "", active: true };
 }
 
 function MaterialsPanel({ styles, onToast }) {
-  const { materials, setMaterials } = useWarehouseConfig();
+  const { materials, setMaterials, suppliers } = useWarehouseConfig();
+  const activeSuppliers = suppliers.filter((s) => s.active);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(materials[0]?.id ?? null);
   const [draft, setDraft] = useState(null);
@@ -201,6 +202,22 @@ function MaterialsPanel({ styles, onToast }) {
                       <option key={u} value={u} />
                     ))}
                   </datalist>
+
+                  <label className={styles.field}>
+                    <span className={styles.fieldLabel}>Nhà cung cấp</span>
+                    <select
+                      className={styles.fieldInput}
+                      value={selected.supplierId || ""}
+                      onChange={(e) => patchField("supplierId", e.target.value)}
+                    >
+                      <option value="">Chưa gán nhà cung cấp</option>
+                      {activeSuppliers.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
               </div>
 

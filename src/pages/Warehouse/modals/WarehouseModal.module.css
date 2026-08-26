@@ -112,6 +112,26 @@
   margin-left: auto;
 }
 
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--fd-text);
+  cursor: pointer;
+}
+
+.radioLabel input {
+  accent-color: var(--fd-primary);
+}
+
 .tableWrap {
   overflow-x: auto;
   border: 1px solid var(--fd-border);

@@ -1,0 +1,87 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upload {
+  min-height: 120px;
+  border: 1px dashed var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--fd-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.upload:hover {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+}
+
+.upload small {
+  color: var(--fd-text-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.upload input,
+.changeBtn input {
+  display: none;
+}
+
+.previewWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 220px;
+  overflow: hidden;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-surface-hover);
+  padding: 8px;
+}
+
+.preview {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fd-border);
+  border-radius: 999px;
+  color: var(--fd-danger);
+  background: #fff;
+  cursor: pointer;
+}
+
+.changeBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fd-primary);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error {
+  color: var(--fd-danger);
+  font-size: 12px;
+}
