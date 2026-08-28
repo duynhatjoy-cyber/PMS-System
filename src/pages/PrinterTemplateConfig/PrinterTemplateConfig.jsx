@@ -1,5 +1,9 @@
 import { useRef, useState } from "react";
-import { AlignLeft, Bold, Image, Italic, Link, List, Printer, Save, Underline } from "lucide-react";
+import {
+  AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Code2, Eraser,
+  Image, IndentDecrease, IndentIncrease, Italic, Link, List, ListOrdered,
+  Printer, Quote, Redo2, Save, Strikethrough, Table2, Underline, Undo2, Unlink,
+} from "lucide-react";
 import styles from "./PrinterTemplateConfig.module.css";
 
 const ROOM_INVOICE_SIZES = [
@@ -32,6 +36,7 @@ function PrinterTemplateConfig() {
   const [showTemplate, setShowTemplate] = useState(false);
   const [templateType, setTemplateType] = useState("Đăng ký");
   const [language, setLanguage] = useState("Vietnam");
+  const [htmlMode, setHtmlMode] = useState(false);
   const editorRef = useRef(null);
 
   const update = (field, value) => {
@@ -44,8 +49,39 @@ function PrinterTemplateConfig() {
   }
 
   function runEditorCommand(command, value = null) {
+    if (htmlMode) return;
     editorRef.current?.focus();
     document.execCommand(command, false, value);
+  }
+
+  function toggleHtmlMode() {
+    const editor = editorRef.current;
+    if (!editor) return;
+    if (htmlMode) editor.innerHTML = editor.textContent;
+    else editor.textContent = editor.innerHTML;
+    setHtmlMode((current) => !current);
+    window.requestAnimationFrame(() => editor.focus());
+  }
+
+  function insertLink() {
+    const url = window.prompt("Nhập địa chỉ liên kết (URL):", "https://");
+    if (url) runEditorCommand("createLink", url);
+  }
+
+  function insertImage() {
+    const url = window.prompt("Nhập địa chỉ ảnh (URL):", "https://");
+    if (url) runEditorCommand("insertImage", url);
+  }
+
+  function insertTable() {
+    const rowInput = window.prompt("Số hàng (1–10):", "2");
+    if (rowInput === null || !Number(rowInput)) return;
+    const columnInput = window.prompt("Số cột (1–10):", "2");
+    if (columnInput === null || !Number(columnInput)) return;
+    const rows = Math.max(1, Math.min(10, Math.floor(Number(rowInput))));
+    const columns = Math.max(1, Math.min(10, Math.floor(Number(columnInput))));
+    const cells = Array.from({ length: rows }, () => `<tr>${"<td>&nbsp;</td>".repeat(columns)}</tr>`).join("");
+    runEditorCommand("insertHTML", `<table border="1" style="width:100%;border-collapse:collapse"><tbody>${cells}</tbody></table>`);
   }
 
   function insertParameter(param) {
@@ -86,27 +122,89 @@ function PrinterTemplateConfig() {
                 }}>Copy mẫu</button>
               </div>
               <div className={styles.toolbar}>
-                <button type="button" title="In" onMouseDown={(e) => e.preventDefault()} onClick={() => window.print()}><Printer size={16} /></button>
-                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("formatBlock", "pre")}>Mã HTML</button>
-                <button type="button" title="In đậm" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("bold")}><Bold size={16} /></button>
-                <button type="button" title="In nghiêng" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("italic")}><Italic size={16} /></button>
-                <button type="button" title="Gạch chân" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("underline")}><Underline size={16} /></button>
-                <button type="button" title="Căn trái" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("justifyLeft")}><AlignLeft size={16} /></button>
-                <button type="button" title="Danh sách" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("insertUnorderedList")}><List size={16} /></button>
-                <button type="button" title="Chèn liên kết" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("createLink", "https://")}><Link size={16} /></button>
-                <button type="button" title="Chèn ảnh" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("insertImage", "https://")}><Image size={16} /></button>
-              </div>
-              <article ref={editorRef} className={styles.paper} contentEditable suppressContentEditableWarning tabIndex={0}>
-                <h2>PHIẾU ĐĂNG KÝ / REGISTRATION FORM</h2>
-                <div className={styles.formGrid}>
-                  <p>Họ Tên/Full Name: <mark>[Full_name]</mark></p><p>Tổng tiền/Total price: <mark>[Total_price]</mark></p>
-                  <p>Mã đặt phòng: <mark>[Booking_number]</mark></p><p>Loại phòng: <mark>[Room_type]</mark></p>
-                  <p>Số điện thoại: <mark>[Customer_phone]</mark></p><p>Ngày đến: <mark>[Arrival]</mark></p>
-                  <p>Số phòng: <mark>[Room_name]</mark></p><p>Ngày đi: <mark>[Departure]</mark></p>
+                <div className={styles.toolGroup}>
+                  <button type="button" title="In biểu mẫu" onMouseDown={(e) => e.preventDefault()} onClick={() => window.print()}><Printer size={15} /></button>
+                  <button type="button" title={htmlMode ? "Quay lại trình soạn thảo" : "Chỉnh sửa mã HTML"} className={htmlMode ? styles.toolActive : ""} onMouseDown={(e) => e.preventDefault()} onClick={toggleHtmlMode}><Code2 size={15} /> Mã HTML</button>
                 </div>
-                <h3>Thông tin khác</h3>
-                <p>Khách lưu trú vui lòng đăng ký đầy đủ thông tin tại quầy lễ tân. Giờ nhận phòng từ 14:00 và trả phòng trước 12:00.</p>
-                <p>Mọi dịch vụ phát sinh trong thời gian lưu trú sẽ được cập nhật vào hóa đơn phòng.</p>
+                <div className={styles.toolGroup}>
+                  <button type="button" title="Hoàn tác" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("undo")}><Undo2 size={15} /></button>
+                  <button type="button" title="Làm lại" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("redo")}><Redo2 size={15} /></button>
+                </div>
+                <select title="Định dạng đoạn" defaultValue="" onChange={(e) => { runEditorCommand("formatBlock", e.target.value); e.target.value = ""; }} disabled={htmlMode}>
+                  <option value="" disabled>Định dạng</option><option value="p">Đoạn văn</option><option value="h1">Tiêu đề 1</option><option value="h2">Tiêu đề 2</option><option value="h3">Tiêu đề 3</option><option value="blockquote">Trích dẫn</option>
+                </select>
+                <select title="Phông chữ" defaultValue="" onChange={(e) => { runEditorCommand("fontName", e.target.value); e.target.value = ""; }} disabled={htmlMode}>
+                  <option value="" disabled>Phông</option><option value="Arial">Arial</option><option value="Times New Roman">Times New Roman</option><option value="Georgia">Georgia</option><option value="Tahoma">Tahoma</option><option value="Verdana">Verdana</option>
+                </select>
+                <select title="Cỡ chữ" defaultValue="" onChange={(e) => { runEditorCommand("fontSize", e.target.value); e.target.value = ""; }} disabled={htmlMode}>
+                  <option value="" disabled>Cỡ chữ</option><option value="1">8 px</option><option value="2">10 px</option><option value="3">12 px</option><option value="4">14 px</option><option value="5">18 px</option><option value="6">24 px</option><option value="7">32 px</option>
+                </select>
+                <div className={styles.toolGroup}>
+                  <button type="button" title="In đậm" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("bold")}><Bold size={15} /></button>
+                  <button type="button" title="In nghiêng" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("italic")}><Italic size={15} /></button>
+                  <button type="button" title="Gạch chân" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("underline")}><Underline size={15} /></button>
+                  <button type="button" title="Gạch ngang" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("strikeThrough")}><Strikethrough size={15} /></button>
+                  <button type="button" title="Xóa định dạng" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("removeFormat")}><Eraser size={15} /></button>
+                </div>
+                <label className={styles.colorTool} title="Màu chữ"><span>A</span><input type="color" defaultValue="#111111" disabled={htmlMode} onChange={(e) => runEditorCommand("foreColor", e.target.value)} /></label>
+                <label className={styles.colorTool} title="Màu nền chữ"><span>A</span><input type="color" defaultValue="#fff200" disabled={htmlMode} onChange={(e) => runEditorCommand("hiliteColor", e.target.value)} /></label>
+                <div className={styles.toolGroup}>
+                  <button type="button" title="Căn trái" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("justifyLeft")}><AlignLeft size={15} /></button>
+                  <button type="button" title="Căn giữa" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("justifyCenter")}><AlignCenter size={15} /></button>
+                  <button type="button" title="Căn phải" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("justifyRight")}><AlignRight size={15} /></button>
+                  <button type="button" title="Căn đều" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("justifyFull")}><AlignJustify size={15} /></button>
+                </div>
+                <div className={styles.toolGroup}>
+                  <button type="button" title="Chèn liên kết" onMouseDown={(e) => e.preventDefault()} onClick={insertLink}><Link size={15} /></button>
+                  <button type="button" title="Xóa liên kết" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("unlink")}><Unlink size={15} /></button>
+                  <button type="button" title="Danh sách dấu đầu dòng" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("insertUnorderedList")}><List size={15} /></button>
+                  <button type="button" title="Danh sách đánh số" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("insertOrderedList")}><ListOrdered size={15} /></button>
+                  <button type="button" title="Giảm thụt lề" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("outdent")}><IndentDecrease size={15} /></button>
+                  <button type="button" title="Tăng thụt lề" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("indent")}><IndentIncrease size={15} /></button>
+                  <button type="button" title="Trích dẫn" onMouseDown={(e) => e.preventDefault()} onClick={() => runEditorCommand("formatBlock", "blockquote")}><Quote size={15} /></button>
+                  <button type="button" title="Chèn ảnh" onMouseDown={(e) => e.preventDefault()} onClick={insertImage}><Image size={15} /></button>
+                  <button type="button" title="Chèn bảng" onMouseDown={(e) => e.preventDefault()} onClick={insertTable}><Table2 size={15} /></button>
+                </div>
+              </div>
+              <article ref={editorRef} className={`${styles.paper} ${htmlMode ? styles.htmlEditor : ""}`} contentEditable suppressContentEditableWarning tabIndex={0}>
+                <h2>PHIẾU ĐĂNG KÝ/REGISTRATION FORM</h2>
+                <div className={styles.registrationGrid}>
+                  <div className={styles.registrationColumn}>
+                    <p>Họ Tên/<i>Full Name:</i> <mark>[Full_name]</mark></p>
+                    <p>Mã đặt phòng/<i>Bks ID:</i> <mark>[Code]</mark></p>
+                    <p>CCCD/ ID: <mark>[Customer_identity_number]</mark></p>
+                    <p>Ngày sinh/<i>DOB:</i> <mark>[Customer_birthday]</mark></p>
+                    <p>Số điện thoại/<i>Phone no.:</i> <mark>[Customer_phone]</mark></p>
+                    <p>Số phòng/<i>Room no.:</i> <mark>[Room_name]</mark></p>
+                  </div>
+                  <div className={styles.registrationColumn}>
+                    <p>Tổng tiền/<i>Total price:</i> <mark>[Total_price]</mark></p>
+                    <p>Đã cọc/<i>Deposited:</i> ................ Còn lại/<i>Amount:</i> ................</p>
+                    <p>Loại phòng/<i>Room type:</i> <mark>[Room_type]</mark></p>
+                    <p>Đêm phòng/<i>Room night:</i> <mark>[Total_night]</mark></p>
+                    <p>Ngày đến/<i>Arrival date:</i> <mark>[Arrival]</mark></p>
+                    <p>Ngày đi/<i>Departure date:</i> <mark>[Departure]</mark></p>
+                  </div>
+                </div>
+                <section className={styles.otherInfo}>
+                  <h3>Thông tin khác:</h3>
+                  <div className={styles.otherInfoGrid}>
+                    <p>- Biển số xe hơi: ...........................................</p>
+                    <p>- Yêu cầu đặc biệt: ...........................................</p>
+                    <p>- Thuê xe máy: ...............................................</p>
+                    <p>- Chèo SUP: ....................................................</p>
+                  </div>
+                </section>
+                <section className={styles.terms}>
+                  <p>- Tất cả các khách lưu trú tại khách sạn cần được đăng ký lưu trú với lễ tân khách sạn. Trường hợp có ý không đăng ký đầy đủ với lễ tân, phía khách sạn sẽ không chịu trách nhiệm. <i>Guests stay at hotel must be registered at reception desk.</i></p>
+                  <p>- Giờ nhận phòng quy định của Joi là 14:00 và trả phòng trước 12:00 ngày check out. Trường hợp quý khách có nhu cầu nhận phòng sớm/trả phòng trễ vui lòng báo trước với lễ tân để được hỗ trợ tùy theo tình trạng phòng trống của khách sạn. <i>Check-in time is 14:00 and check-out before 12:00 noon. In case you need request for late check-out/early check-in, it depend on our availability, please contact to receptionist for more information.</i></p>
+                  <p>- Phí phụ thu dọn dẹp 500,000 VNĐ sẽ được áp dụng cho các trường hợp có ý hút thuốc, mang thú cưng vào và ăn uống trong phòng không dọn dẹp. <i>Our hotel rooms are non-smoking, pet are not allowed and do not bring strong smell food to our rooms like durian, seafood. 500,000 surcharge fee will be apply if you violate.</i></p>
+                  <p>- Trong phòng Joi có cung cấp 02 chai nước suối nhỏ miễn phí, còn lại sẽ được tính phí nếu quý khách sử dụng minibar gồm 02 nước suối lớn, 02 mì ly, 01 coca, 01 trà, 01 bánh oreo, 01 đậu phộng và 01 bánh khoai tây. <i>We have 02 complimentary small water bottles in room, other minibar will be charged included 02 water bottle, 02 instant noodle, 01 for coke, tea, cookies, chips, crispy peanuts.</i></p>
+                </section>
+                <footer className={styles.signatures}>
+                  <div>Chữ ký khách hàng/<i>Guest signature</i></div>
+                  <div>Chữ ký của nhân viên/<i>Staff signature</i></div>
+                </footer>
               </article>
             </section>
             <aside className={styles.paramsColumn}>
