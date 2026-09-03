@@ -51,7 +51,7 @@ function AddStockCheckModal({ onClose, onSave, onToast }) {
   }
 
   return (
-    <SlidePanelShell title="Thêm phiếu kiểm kê kho" onClose={onClose} tone="brand" width={1000}>
+    <SlidePanelShell title="Thêm phiếu kiểm kê kho" onClose={onClose} tone="brand" width={1080}>
       <div className={styles.formGrid}>
         <div className={styles.field}>
           <input

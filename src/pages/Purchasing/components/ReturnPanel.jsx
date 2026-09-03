@@ -4,31 +4,12 @@ import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseReturnModal from "../modals/AddPurchaseReturnModal";
 import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
-import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
-
-const RETURN_FIELDS = [
-  { key: "date", label: "Ngày trả lại hàng", type: "date" },
-  { key: "reference", label: "Tham chiếu", type: "text" },
-  { key: "supplier", label: "Nhà cung cấp", type: "text" },
-  { key: "receiver", label: "Người nhận", type: "text" },
-  { key: "receiptRef", label: "Từ phiếu nhập hàng", type: "text", editable: false },
-  { key: "note", label: "Mô tả", type: "text" },
-  { key: "total", label: "Tổng", type: "currency", editable: false },
-];
-
-const RETURN_LINE_COLUMNS = [
-  { key: "name", label: "Nguyên vật liệu" },
-  { key: "unit", label: "Đơn vị" },
-  { key: "warehouse", label: "Kho" },
-  { key: "qty", label: "Số lượng đề nghị", numeric: true },
-  { key: "price", label: "Đơn giá", numeric: true, format: (v) => formatCurrency(v) },
-];
 
 // Trả lại hàng mua xuất nguyên vật liệu theo dòng (nguyên vật liệu/kho/số
 // lượng/đơn giá) như Nhập hàng/Đặt hàng nên có panel + modal riêng
@@ -216,13 +197,12 @@ function ReturnPanel({
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu trả lại hàng mua"
+        <AddPurchaseReturnModal
           row={detailRow}
-          fields={RETURN_FIELDS}
-          lineColumns={RETURN_LINE_COLUMNS}
-          onClose={() => setDetailRow(null)}
+          receiptRows={receiptRows}
           onSave={handleUpdateTicket}
+          onClose={() => setDetailRow(null)}
+          onToast={onToast}
         />
       )}
 

@@ -15,7 +15,6 @@ import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddPurchaseOrderModal from "../modals/AddPurchaseOrderModal";
 import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
-import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -24,22 +23,6 @@ import { PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
-
-const ORDER_FIELDS = [
-  { key: "date", label: "Ngày đặt", type: "date" },
-  { key: "status", label: "Trạng thái", type: "select", options: PURCHASE_STATUS_OPTIONS.slice(1) },
-  { key: "supplier", label: "Nhà cung cấp", type: "text" },
-  { key: "expectedDate", label: "Ngày nhận dự kiến", type: "date" },
-  { key: "total", label: "Tổng", type: "currency", editable: false },
-  { key: "note", label: "Diễn giải", type: "text" },
-];
-
-const ORDER_LINE_COLUMNS = [
-  { key: "name", label: "Tên hàng" },
-  { key: "unit", label: "Đơn vị" },
-  { key: "qty", label: "Số lượng", numeric: true },
-  { key: "price", label: "Đơn giá", numeric: true, format: (v) => formatCurrency(v) },
-];
 
 function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine, onSeedConsumed }) {
   const {
@@ -245,17 +228,20 @@ function OrderPanel({ onToast, rows: orderRows, setRows: setOrderRows, seedLine,
       </div>
 
       {showAddModal && (
-        <AddPurchaseOrderModal seedLine={seedLine} onSave={saveOrderTicket} onClose={closeAddModal} />
+        <AddPurchaseOrderModal
+          seedLine={seedLine}
+          onSave={saveOrderTicket}
+          onClose={closeAddModal}
+          onToast={onToast}
+        />
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu đặt hàng"
+        <AddPurchaseOrderModal
           row={detailRow}
-          fields={ORDER_FIELDS}
-          lineColumns={ORDER_LINE_COLUMNS}
-          onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
+          onClose={() => setDetailRow(null)}
+          onToast={onToast}
           actions={
             detailRow.status === "Chưa thực hiện"
               ? [
