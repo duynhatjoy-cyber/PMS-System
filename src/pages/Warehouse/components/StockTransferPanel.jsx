@@ -4,7 +4,6 @@ import FilterBar from "./FilterBar";
 import WarehousePagination from "./WarehousePagination";
 import AddStockTransferModal from "../modals/AddStockTransferModal";
 import PrintPreviewModal from "../modals/PrintPreviewModal";
-import TicketDetailModal from "../modals/TicketDetailModal";
 import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -12,13 +11,6 @@ import { STOCK_TRANSFER_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
-
-const STOCK_TRANSFER_FIELDS = [
-  { key: "date", label: "Ngày chuyển", type: "date" },
-  { key: "carrier", label: "Người vận chuyển", type: "text" },
-  { key: "total", label: "Tổng", type: "currency" },
-  { key: "note", label: "Diễn giải", type: "text" },
-];
 
 function StockTransferPanel({ onToast }) {
   const {
@@ -183,12 +175,11 @@ function StockTransferPanel({ onToast }) {
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu chuyển kho"
+        <AddStockTransferModal
           row={detailRow}
-          fields={STOCK_TRANSFER_FIELDS}
           onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
+          onToast={onToast}
         />
       )}
 

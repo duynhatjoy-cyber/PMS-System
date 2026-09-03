@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Clock, List, Hash, DollarSign, MessageSquare, User, FileText, Plus, Printer, Trash2 } from "lucide-react";
 import FilterBar from "./FilterBar";
 import WarehousePagination from "./WarehousePagination";
@@ -8,24 +9,40 @@ import TicketDetailModal from "../modals/TicketDetailModal";
 import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import { STOCK_OUT_ROWS, STOCK_OUT_DOC_TYPES } from "../../../data/warehouseData";
+import { useActiveMaterials } from "../../../context/WarehouseConfigContext";
+import { STOCK_OUT_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency, startOfDay } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
 
 const today = startOfDay(new Date());
 
-const STOCK_OUT_FIELDS = [
-  { key: "date", label: "Ngày xuất", type: "date" },
-  { key: "bookingCode", label: "Mã đặt phòng", type: "text" },
-  { key: "invoiceCode", label: "Mã hóa đơn", type: "text" },
-  { key: "target", label: "Đối tượng", type: "text" },
-  { key: "docType", label: "Loại chứng từ", type: "select", options: STOCK_OUT_DOC_TYPES },
-  { key: "total", label: "Tổng", type: "currency" },
-  { key: "note", label: "Diễn giải", type: "text" },
+const ROOM_VIEW_FIELDS = [
+  { key: "target", label: "Đối tượng", type: "text", editable: false },
+  { key: "docType", label: "Loại chứng từ", type: "text", editable: false },
+  { key: "date", label: "Ngày xuất", type: "date", editable: false },
+  { key: "note", label: "Diễn giải", type: "text", editable: false },
+  { key: "total", label: "Tổng", type: "currency", editable: false },
 ];
 
 function StockOutPanel({ onToast }) {
+  const navigate = useNavigate();
+  const materials = useActiveMaterials();
+  const [roomView, setRoomView] = useState(null);
+  const roomLineColumns = useMemo(
+    () => [
+      {
+        key: "materialId",
+        label: "Nguyên vật liệu",
+        format: (id) => materials.find((m) => m.id === id)?.name || id,
+      },
+      { key: "warehouse", label: "Kho" },
+      { key: "qty", label: "Số lượng", numeric: true },
+      { key: "price", label: "Đơn giá", numeric: true, format: formatCurrency },
+    ],
+    [materials]
+  );
+
   const {
     preset,
     setPreset,
@@ -171,12 +188,24 @@ function StockOutPanel({ onToast }) {
                     </td>
                     <td>
                       {row.bookingCode && (
-                        <button type="button" className={styles.rowLink}>
+                        <button type="button" className={styles.rowLink} onClick={() => setRoomView(row)}>
                           {row.bookingCode}
                         </button>
                       )}
                     </td>
-                    <td>{row.invoiceCode}</td>
+                    <td>
+                      {row.invoiceCode ? (
+                        <button
+                          type="button"
+                          className={styles.rowLink}
+                          onClick={() => navigate(`/hoa-don/${row.invoiceCode}`)}
+                        >
+                          {row.invoiceCode}
+                        </button>
+                      ) : (
+                        row.invoiceCode
+                      )}
+                    </td>
                     <td className={styles.numCell}>{formatCurrency(row.total)}</td>
                     <td>{row.note}</td>
                     <td>{row.target}</td>
@@ -254,12 +283,23 @@ function StockOutPanel({ onToast }) {
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu xuất kho"
+        <AddStockOutModal
           row={detailRow}
-          fields={STOCK_OUT_FIELDS}
           onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
+          onToast={onToast}
+        />
+      )}
+
+      {roomView && (
+        <TicketDetailModal
+          title={`Phòng ${roomView.bookingCode}`}
+          row={roomView}
+          fields={ROOM_VIEW_FIELDS}
+          lineColumns={roomLineColumns}
+          readOnly
+          onClose={() => setRoomView(null)}
+          onSave={() => setRoomView(null)}
         />
       )}
 

@@ -3,6 +3,7 @@ import RoomMap from "./pages/RoomMap/RoomMap";
 import CreateBooking from "./pages/CreateBooking/CreateBooking";
 import GuestsHub from "./pages/Guests/GuestsHub";
 import CreateInvoice from "./pages/CreateInvoice/CreateInvoice";
+import InvoiceDetail from "./pages/InvoiceDetail/InvoiceDetail";
 import Warehouse from "./pages/Warehouse/Warehouse";
 import Purchasing from "./pages/Purchasing/Purchasing";
 import FnB from "./pages/FnB/FnB";
@@ -62,6 +63,11 @@ export const ROUTES = [
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",
     path: "/ban-hang/tao-hoa-don",
     Component: CreateInvoice,
+  },
+  {
+    key: "VẬN HÀNH::Quản lý bán hàng::Chi tiết hóa đơn",
+    path: "/hoa-don/:invoiceCode",
+    Component: InvoiceDetail,
   },
   {
     key: "VẬN HÀNH::Buồng phòng",

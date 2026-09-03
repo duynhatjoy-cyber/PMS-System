@@ -6,10 +6,14 @@ export function lineAmount(line) {
 
 // Shared add/update/remove-row state for the material-line tables across the
 // stock in/out/transfer/check modals. `makeLine(id)` builds a blank row —
-// its shape differs per modal, so that stays with the caller.
-export default function useLineItems(makeLine) {
-  const [lines, setLines] = useState([makeLine(1)]);
-  const [nextId, setNextId] = useState(2);
+// its shape differs per modal, so that stays with the caller. `initialLines`
+// (a saved ticket's lines, when editing one) seeds the table instead of a
+// single blank row.
+export default function useLineItems(makeLine, initialLines) {
+  const [lines, setLines] = useState(() =>
+    initialLines?.length ? initialLines.map((line, i) => ({ ...line, id: i + 1 })) : [makeLine(1)]
+  );
+  const [nextId, setNextId] = useState(() => (initialLines?.length ? initialLines.length + 1 : 2));
 
   function updateLine(id, patch) {
     setLines((prev) => prev.map((line) => (line.id === id ? { ...line, ...patch } : line)));
