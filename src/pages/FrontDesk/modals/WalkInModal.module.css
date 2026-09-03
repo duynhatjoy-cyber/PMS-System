@@ -80,6 +80,12 @@
   gap: 18px;
 }
 
+.row3 {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1fr;
+  gap: 14px;
+}
+
 .segmented {
   display: flex;
   border: 1px solid var(--fd-border-strong);
@@ -160,6 +166,51 @@
   font-weight: 600;
 }
 
+.counterInput {
+  width: 46px;
+  height: 28px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  color: var(--fd-text);
+}
+
+.counterInput:focus {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
+.segmentGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.segmentChip {
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fd-text-secondary);
+  background: #fff;
+  cursor: pointer;
+}
+
+.segmentChip:hover {
+  border-color: var(--fd-primary);
+  color: var(--fd-primary);
+}
+
+.segmentChipActive {
+  background: var(--fd-primary-soft);
+  border-color: var(--fd-primary);
+  color: var(--fd-primary-hover);
+}
+
 .summaryLine {
   font-size: 13.5px;
   color: var(--fd-text-secondary);
@@ -175,6 +226,15 @@
 
 .durationLine strong {
   color: var(--fd-primary-hover);
+}
+
+.durationLineWarning {
+  background: var(--fd-danger-soft);
+  color: var(--fd-danger);
+}
+
+.durationLineWarning strong {
+  color: var(--fd-danger);
 }
 
 .guestSearchBox {
@@ -313,6 +373,11 @@
   background: var(--fd-primary-soft);
 }
 
+.roomOptionDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .roomName {
   font-size: 14.5px;
   font-weight: 700;
@@ -339,6 +404,40 @@
   font-size: 12px;
   color: var(--fd-success);
   margin-top: 2px;
+}
+
+.roomAvailZero {
+  color: var(--fd-danger);
+}
+
+.roomRepresentativeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-sm);
+  padding: 10px 12px;
+  background: var(--fd-bg);
+  margin-top: 8px;
+}
+
+.roomRepresentativeTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--fd-text);
+}
+
+.roomRatePlanRow {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.roomRatePlanLabel {
+  font-size: 13px;
+  color: var(--fd-text);
 }
 
 .reviewList {

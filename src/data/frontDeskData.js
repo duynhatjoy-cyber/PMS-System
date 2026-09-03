@@ -6,21 +6,21 @@ export const roomTypes = [
     name: "Phòng Đôi",
     tag: "double · Tối đa 4 người",
     price: 700000,
-    available: 10,
+    maxOccupancy: 4,
   },
   {
     id: "twin",
     name: "Phòng Twin",
     tag: "Tối đa 2 người",
     price: 700000,
-    available: 2,
+    maxOccupancy: 2,
   },
   {
     id: "family",
     name: "Phòng Gia Đình",
     tag: "family · Tối đa 6 người",
     price: 1250000,
-    available: 4,
+    maxOccupancy: 6,
   },
 ];
 
@@ -40,6 +40,26 @@ export const AVAILABLE_ROOMS = {
   twin: ["305", "306"],
   family: ["106", "108", "109", "110", "507"],
 };
+
+// Real-time available room numbers for a room type over a date range: every
+// room of that type minus the ones already booked (any stage but checked-out)
+// with overlapping dates.
+export function getAvailableRoomNumbers(typeId, bookings, checkInDate, checkOutDate) {
+  const roomNumbers = AVAILABLE_ROOMS[typeId] || [];
+  if (!checkInDate || !checkOutDate) return roomNumbers;
+  const occupied = new Set(
+    (bookings || [])
+      .filter(
+        (b) =>
+          b.room &&
+          b.stage !== "checkedout" &&
+          b.checkIn < checkOutDate &&
+          b.checkOut > checkInDate
+      )
+      .map((b) => b.room)
+  );
+  return roomNumbers.filter((num) => !occupied.has(num));
+}
 
 // Flat nightly room rate used across the mock dataset (no per-room-type
 // pricing model exists yet — every booking bills at this rate).

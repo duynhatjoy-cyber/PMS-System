@@ -159,7 +159,7 @@ export const SOURCES_BY_GROUP = {
 export const CUSTOMER_SEGMENTS = [
   { id: "seg-family", code: "FAM", name: "Gia đình", description: "Khách đi cùng gia đình, có thể có trẻ em" },
   { id: "seg-corporate", code: "CORP", name: "Công tác", description: "Khách đi công tác, thường lưu trú ngắn ngày" },
-  { id: "seg-group", code: "GRP", name: "Nhóm", description: "Khách đi theo nhóm đông người" },
+  { id: "seg-group", code: "GRP", name: "Đoàn", description: "Khách đi theo nhóm đông người" },
   { id: "seg-solo", code: "SOLO", name: "Solo", description: "Khách đi một mình" },
   { id: "seg-couple", code: "CPL", name: "Couple", description: "Khách đi theo cặp đôi" },
   { id: "seg-event", code: "EVT", name: "Sự kiện", description: "Khách tham dự sự kiện, hội nghị tại khách sạn" },
