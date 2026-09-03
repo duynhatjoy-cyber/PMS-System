@@ -302,32 +302,51 @@ function FrontDesk() {
   }
 
   function handleWalkInConfirm(payload) {
-    const code = Math.floor(45000 + Math.random() * 4999);
-    const newBooking = {
-      id: `WI-${code}`,
-      stage: "arrival",
-      room: null,
-      roomType: payload.roomType.name,
-      bookingCode: code,
-      guest: { name: payload.guestName || "Khách Walk-in", flag: "VN" },
-      guests: [{ id: `WI-${code}-g1`, name: payload.guestName || "Khách Walk-in", flag: "VN" }],
-      checkIn: payload.checkIn,
-      checkOut: payload.checkOut,
-      stayCount: 0,
-      adults: payload.adults,
-      children: payload.children,
-      assigned: false,
-      confirmed: true,
-      paid: false,
-      source: "Walk-in",
-      notes: payload.note,
-      services: [],
-      paymentRecords: [],
-    };
-    addBooking(newBooking);
+    const rooms = payload.isGroup ? payload.rooms : [{ roomType: payload.roomType, representative: null }];
+    const groupCode = payload.isGroup ? Math.floor(45000 + Math.random() * 4999) : null;
+    const groupRepresentative = payload.representative?.name ? payload.representative : null;
+
+    const newBookings = rooms.map((r, index) => {
+      const code = Math.floor(45000 + Math.random() * 4999) + index;
+      const guestName = payload.isGroup
+        ? r.representative?.name || groupRepresentative?.name || `${payload.guestName || "Khách Walk-in"} (Trưởng đoàn)`
+        : payload.guestName || "Khách Walk-in";
+      return {
+        id: `WI-${code}`,
+        stage: "arrival",
+        room: null,
+        roomType: r.roomType.name,
+        bookingCode: code,
+        guest: { name: guestName, flag: "VN" },
+        guests: [{ id: `WI-${code}-g1`, name: guestName, flag: "VN" }],
+        checkIn: payload.checkIn,
+        checkOut: payload.checkOut,
+        stayCount: 0,
+        adults: payload.adults,
+        children: payload.children,
+        assigned: false,
+        confirmed: true,
+        paid: false,
+        source: "Walk-in",
+        segment: payload.segment,
+        notes: payload.note,
+        services: [],
+        paymentRecords: [],
+        ...(payload.isGroup && {
+          groupCode,
+          groupLeader: { name: payload.guestName, phone: payload.phone },
+          groupRepresentative,
+          roomRepresentative: r.representative || groupRepresentative,
+        }),
+      };
+    });
+
+    newBookings.forEach(addBooking);
     setModal(null);
     setActiveTab("arrivals");
-    toast("Đã tạo đặt phòng Walk-in mới");
+    toast(
+      payload.isGroup ? `Đã tạo ${newBookings.length} đặt phòng cho đoàn` : "Đã tạo đặt phòng Walk-in mới"
+    );
   }
 
   function handlePrimaryAction(booking, tab) {
@@ -518,6 +537,7 @@ function FrontDesk() {
       {modal?.type === "walkin" && (
         <WalkInModal
           defaultCheckIn={selectedDate}
+          bookings={bookings}
           onClose={closeModal}
           onConfirm={handleWalkInConfirm}
         />

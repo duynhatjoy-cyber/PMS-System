@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { Check, Minus, Plus, Search } from "lucide-react";
 import SlidePanelShell from "./SlidePanelShell";
-import { roomTypes, ratePlans, bookingSources, guestDirectory } from "../../../data/frontDeskData";
-import { formatCurrency, formatDMY, formatDateTimeDMY, toLocalInputValue } from "../../../utils/format";
+import {
+  roomTypes,
+  ratePlans,
+  bookingSources,
+  guestDirectory,
+  getAvailableRoomNumbers,
+} from "../../../data/frontDeskData";
+import { CUSTOMER_SEGMENTS } from "../../../data/bookingConfigData";
+import { formatCurrency, formatDMY, formatDateTimeDMY, formatTime, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
 import styles from "./WalkInModal.module.css";
 
@@ -41,17 +48,29 @@ function StepIndicator({ step }) {
   );
 }
 
-function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
+function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onConfirm }) {
   const [step, setStep] = useState(0);
   const [stayType, setStayType] = useState("night");
-  const [checkIn, setCheckIn] = useState(toDateTimeInputValue(defaultCheckIn, 14, 0));
+  const nowHHMM = formatTime(new Date());
+  const [nowHH, nowMM] = nowHHMM.split(":").map(Number);
+  // Walk-in = khách đang có mặt tại quầy — mặc định giờ check-in là giờ hiện tại
+  // thay vì cố định 14:00, staff chỉnh lại nếu cần.
+  const [checkInTime, setCheckInTime] = useState(nowHHMM);
+  const [checkIn, setCheckIn] = useState(toDateTimeInputValue(defaultCheckIn, nowHH, nowMM));
   const [checkOut, setCheckOut] = useState(
     defaultCheckOut ? toLocalInputValue(defaultCheckOut) : ""
   );
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
 
+  const [segmentId, setSegmentId] = useState(CUSTOMER_SEGMENTS[0].id);
+
   const [roomTypeId, setRoomTypeId] = useState(null);
+  const [roomQuantities, setRoomQuantities] = useState({});
+  const [roomRepresentatives, setRoomRepresentatives] = useState({});
+  const [representative, setRepresentative] = useState({ name: "", phone: "", idNumber: "" });
+  const [representativeTouched, setRepresentativeTouched] = useState(false);
+  const [roomRatePlans, setRoomRatePlans] = useState({});
   const [ratePlan, setRatePlan] = useState(ratePlans[0]);
   const [source, setSource] = useState(bookingSources[0]);
 
@@ -75,11 +94,42 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
         : nights
       : null;
 
-  const selectedRoomType = roomTypes.find((rt) => rt.id === roomTypeId);
-  const total = selectedRoomType ? selectedRoomType.price * nights : 0;
+  const selectedSegment = CUSTOMER_SEGMENTS.find((s) => s.id === segmentId);
+  const isGroup = selectedSegment?.code === "GRP";
+
+  const roomTypesWithAvail = roomTypes.map((rt) => ({
+    ...rt,
+    availableNumbers: getAvailableRoomNumbers(rt.id, bookings, checkInDate, checkOutDate),
+  }));
+
+  const selectedRoomType = roomTypesWithAvail.find((rt) => rt.id === roomTypeId);
+
+  const roomInstances = isGroup
+    ? roomTypesWithAvail.flatMap((rt) => {
+        const qty = roomQuantities[rt.id] || 0;
+        return Array.from({ length: qty }, (_, i) => ({ key: `${rt.id}-${i + 1}`, typeId: rt.id, index: i + 1, roomType: rt }));
+      })
+    : [];
+  const totalRoomsSelected = roomInstances.length;
+
+  const total = isGroup
+    ? roomTypesWithAvail.reduce((sum, rt) => sum + (roomQuantities[rt.id] || 0) * rt.price, 0) * nights
+    : selectedRoomType
+    ? selectedRoomType.price * nights
+    : 0;
+
+  const totalGuests = adults + children;
+  const groupCapacity = roomTypesWithAvail.reduce(
+    (sum, rt) => sum + (roomQuantities[rt.id] || 0) * rt.maxOccupancy,
+    0
+  );
+  const groupCapacityOk = groupCapacity >= totalGuests;
+  const singleCapacityOk = !selectedRoomType || selectedRoomType.maxOccupancy >= totalGuests;
 
   const canGoStep1 = Boolean(checkIn && checkOut && checkOutDate > checkInDate);
-  const canGoStep2 = Boolean(roomTypeId);
+  const canGoStep2 = isGroup
+    ? totalRoomsSelected > 0 && groupCapacityOk
+    : Boolean(roomTypeId) && singleCapacityOk;
   const canGoStep3 = Boolean(selectedGuest) || (creatingNew && firstName.trim().length > 0 && lastName.trim().length > 0);
 
   const guestMatches = guestQuery.trim()
@@ -91,20 +141,85 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
 
   const finalGuestName = selectedGuest ? selectedGuest.name : `${lastName} ${firstName}`.trim();
   const finalGuestPhone = selectedGuest ? selectedGuest.phone : phone;
+  const guestLabel = isGroup ? "Trưởng đoàn" : "Khách";
 
-  function handleDateOnlyChange(rawValue, setter) {
-    const timePart = setter === setCheckIn ? "14:00" : "12:00";
-    setter(rawValue ? `${rawValue}T${timePart}` : "");
+  function handleCheckInDateChange(rawValue) {
+    setCheckIn(rawValue ? `${rawValue}T${checkInTime}` : "");
+  }
+
+  function handleCheckInTimeChange(rawTime) {
+    setCheckInTime(rawTime);
+    const datePart = toDateOnly(checkIn);
+    if (datePart) setCheckIn(`${datePart}T${rawTime}`);
+  }
+
+  function handleCheckOutDateChange(rawValue) {
+    setCheckOut(rawValue ? `${rawValue}T12:00` : "");
   }
 
   function pickExistingGuest(guest) {
     setSelectedGuest(guest);
     setGuestQuery("");
+    syncRepresentativeFromLeader(guest.name, guest.phone);
   }
 
   function resetGuestSelection() {
     setSelectedGuest(null);
     setCreatingNew(false);
+  }
+
+  // Khi khách đoàn: tự mapping Người đại diện theo dữ liệu Trưởng đoàn đang gõ/chọn,
+  // cho tới khi staff tự sửa Người đại diện (representativeTouched) — lúc đó ngừng
+  // đồng bộ hẳn để không ghi đè lựa chọn thủ công.
+  function syncRepresentativeFromLeader(name, phone) {
+    if (!isGroup || representativeTouched) return;
+    setRepresentative((prev) => ({ ...prev, name, phone }));
+  }
+
+  function handleLeaderNameChange(part, value) {
+    if (part === "lastName") setLastName(value);
+    else setFirstName(value);
+    const nextLastName = part === "lastName" ? value : lastName;
+    const nextFirstName = part === "firstName" ? value : firstName;
+    syncRepresentativeFromLeader(`${nextLastName} ${nextFirstName}`.trim(), phone);
+  }
+
+  function handleLeaderPhoneChange(value) {
+    setPhone(value);
+    syncRepresentativeFromLeader(`${lastName} ${firstName}`.trim(), value);
+  }
+
+  function selectSegment(seg) {
+    const nextIsGroup = seg.code === "GRP";
+    if (nextIsGroup !== isGroup) {
+      setRoomTypeId(null);
+      setRoomQuantities({});
+      setRoomRepresentatives({});
+      setRepresentative({ name: "", phone: "", idNumber: "" });
+      setRepresentativeTouched(false);
+      setRoomRatePlans({});
+    }
+    setSegmentId(seg.id);
+  }
+
+  function changeRoomQty(typeId, delta, max) {
+    setRoomQuantities((prev) => {
+      const next = Math.max(0, Math.min(max, (prev[typeId] || 0) + delta));
+      return { ...prev, [typeId]: next };
+    });
+  }
+
+  function updateRoomRepresentative(key, field, value) {
+    setRoomRepresentatives((prev) => ({ ...prev, [key]: { ...prev[key], [field]: value } }));
+  }
+
+  function updateRepresentative(field, value) {
+    setRepresentativeTouched(true);
+    setRepresentative((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function updateRoomRatePlan(key, value) {
+    setRoomRatePlans((prev) => ({ ...prev, [key]: value }));
   }
 
   function goNext() {
@@ -116,7 +231,17 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
 
   function handleConfirm() {
     onConfirm({
-      roomType: selectedRoomType,
+      isGroup,
+      segment: selectedSegment?.name,
+      roomType: !isGroup ? selectedRoomType : null,
+      rooms: isGroup
+        ? roomInstances.map((inst) => ({
+            ...inst,
+            representative: roomRepresentatives[inst.key] || null,
+            ratePlan: roomRatePlans[inst.key] || ratePlans[0],
+          }))
+        : null,
+      representative: isGroup ? representative : null,
       checkIn: checkInDate,
       checkOut: checkOutDate,
       nights,
@@ -204,11 +329,28 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
         </div>
       }
       onClose={onClose}
-      width={560}
+      width={1080}
       footer={footer}
     >
       {step === 0 && (
         <div className={styles.stepBody}>
+          <div className={shared.field}>
+            <span className={shared.label}>Loại khách *</span>
+            <div className={styles.segmentGrid}>
+              {CUSTOMER_SEGMENTS.map((seg) => (
+                <button
+                  key={seg.id}
+                  type="button"
+                  title={seg.description}
+                  className={`${styles.segmentChip} ${segmentId === seg.id ? styles.segmentChipActive : ""}`}
+                  onClick={() => selectSegment(seg)}
+                >
+                  {seg.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className={shared.field}>
             <span className={shared.label}>Hình thức lưu trú</span>
             <div className={styles.segmented}>
@@ -247,14 +389,23 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
               </div>
             </div>
           ) : (
-            <div className={shared.row}>
+            <div className={styles.row3}>
               <div className={shared.field}>
                 <span className={shared.label}>Check-in *</span>
                 <input
                   type="date"
                   className={shared.input}
                   value={toDateOnly(checkIn)}
-                  onChange={(e) => handleDateOnlyChange(e.target.value, setCheckIn)}
+                  onChange={(e) => handleCheckInDateChange(e.target.value)}
+                />
+              </div>
+              <div className={shared.field}>
+                <span className={shared.label}>Giờ check-in *</span>
+                <input
+                  type="time"
+                  className={shared.input}
+                  value={checkInTime}
+                  onChange={(e) => handleCheckInTimeChange(e.target.value)}
                 />
               </div>
               <div className={shared.field}>
@@ -263,7 +414,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                   type="date"
                   className={shared.input}
                   value={toDateOnly(checkOut)}
-                  onChange={(e) => handleDateOnlyChange(e.target.value, setCheckOut)}
+                  onChange={(e) => handleCheckOutDateChange(e.target.value)}
                 />
               </div>
             </div>
@@ -283,7 +434,13 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                 <button type="button" onClick={() => setAdults((v) => Math.max(1, v - 1))}>
                   <Minus size={14} />
                 </button>
-                <span>{adults}</span>
+                <input
+                  type="number"
+                  className={styles.counterInput}
+                  min={1}
+                  value={adults}
+                  onChange={(e) => setAdults(Math.max(1, Number(e.target.value) || 1))}
+                />
                 <button type="button" onClick={() => setAdults((v) => v + 1)}>
                   <Plus size={14} />
                 </button>
@@ -295,7 +452,13 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                 <button type="button" onClick={() => setChildren((v) => Math.max(0, v - 1))}>
                   <Minus size={14} />
                 </button>
-                <span>{children}</span>
+                <input
+                  type="number"
+                  className={styles.counterInput}
+                  min={0}
+                  value={children}
+                  onChange={(e) => setChildren(Math.max(0, Number(e.target.value) || 0))}
+                />
                 <button type="button" onClick={() => setChildren((v) => v + 1)}>
                   <Plus size={14} />
                 </button>
@@ -315,7 +478,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
               </>
             ) : (
               <>
-                Check-in: <strong>{checkInDate && formatDMY(checkInDate)}</strong> → Check-out:{" "}
+                Check-in: <strong>{checkInDate && formatDateTimeDMY(checkInDate)}</strong> → Check-out:{" "}
                 <strong>{checkOutDate && formatDMY(checkOutDate)}</strong>
               </>
             )}{" "}
@@ -323,38 +486,126 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
             {children > 0 ? `, ${children} trẻ em` : ""}
           </div>
 
+          {isGroup && totalRoomsSelected > 0 && (
+            <div className={`${styles.durationLine} ${!groupCapacityOk ? styles.durationLineWarning : ""}`}>
+              Đã chọn <strong>{totalRoomsSelected}</strong> phòng · sức chứa tối đa{" "}
+              <strong>{groupCapacity}</strong> khách cho <strong>{totalGuests}</strong> khách
+              {!groupCapacityOk && (
+                <>
+                  {" "}
+                  — còn thiếu <strong>{totalGuests - groupCapacity}</strong> chỗ, vui lòng chọn thêm phòng
+                </>
+              )}
+            </div>
+          )}
+
+          {!isGroup && selectedRoomType && !singleCapacityOk && (
+            <div className={`${styles.durationLine} ${styles.durationLineWarning}`}>
+              {selectedRoomType.name} chỉ chứa tối đa <strong>{selectedRoomType.maxOccupancy}</strong> khách,
+              không đủ cho <strong>{totalGuests}</strong> khách đã nhập. Vui lòng chọn loại phòng khác hoặc giảm
+              số khách ở bước trước.
+            </div>
+          )}
+
           <div className={styles.roomList}>
-            {roomTypes.map((rt) => (
-              <button
-                key={rt.id}
-                type="button"
-                className={`${styles.roomOption} ${roomTypeId === rt.id ? styles.roomOptionActive : ""}`}
-                onClick={() => setRoomTypeId(rt.id)}
-              >
-                <div>
-                  <div className={styles.roomName}>{rt.name}</div>
-                  <div className={styles.roomTag}>{rt.tag}</div>
-                </div>
-                <div className={styles.roomPriceCol}>
-                  <div className={styles.roomPrice}>{formatCurrency(rt.price)}/đêm</div>
-                  <div className={styles.roomAvail}>{rt.available} phòng trống</div>
-                </div>
-              </button>
-            ))}
+            {roomTypesWithAvail.map((rt) => {
+              const availCount = rt.availableNumbers.length;
+              const soldOut = availCount === 0;
+
+              if (isGroup) {
+                const qty = roomQuantities[rt.id] || 0;
+                return (
+                  <div key={rt.id} className={styles.roomOption}>
+                    <div>
+                      <div className={styles.roomName}>{rt.name}</div>
+                      <div className={styles.roomTag}>{rt.tag}</div>
+                      <div className={`${styles.roomAvail} ${soldOut ? styles.roomAvailZero : ""}`}>
+                        {availCount} phòng trống
+                      </div>
+                    </div>
+                    <div className={styles.roomPriceCol}>
+                      <div className={styles.roomPrice}>{formatCurrency(rt.price)}/đêm</div>
+                      <div className={styles.counterControl}>
+                        <button type="button" onClick={() => changeRoomQty(rt.id, -1, availCount)} disabled={qty === 0}>
+                          <Minus size={14} />
+                        </button>
+                        <span>{qty}</span>
+                        <button
+                          type="button"
+                          onClick={() => changeRoomQty(rt.id, 1, availCount)}
+                          disabled={qty >= availCount}
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={rt.id}
+                  type="button"
+                  disabled={soldOut}
+                  className={`${styles.roomOption} ${roomTypeId === rt.id ? styles.roomOptionActive : ""} ${
+                    soldOut ? styles.roomOptionDisabled : ""
+                  }`}
+                  onClick={() => setRoomTypeId(rt.id)}
+                >
+                  <div>
+                    <div className={styles.roomName}>{rt.name}</div>
+                    <div className={styles.roomTag}>{rt.tag}</div>
+                  </div>
+                  <div className={styles.roomPriceCol}>
+                    <div className={styles.roomPrice}>{formatCurrency(rt.price)}/đêm</div>
+                    <div className={`${styles.roomAvail} ${soldOut ? styles.roomAvailZero : ""}`}>
+                      {availCount} phòng trống
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          {roomTypeId && (
+          {isGroup && totalRoomsSelected > 0 && (
+            <div className={shared.field}>
+              <span className={shared.label}>Gói giá theo từng phòng</span>
+              {roomInstances.map((inst) => (
+                <div key={inst.key} className={styles.roomRatePlanRow}>
+                  <span className={styles.roomRatePlanLabel}>
+                    {inst.roomType.name} #{inst.index}
+                  </span>
+                  <select
+                    className={shared.select}
+                    value={roomRatePlans[inst.key] || ratePlans[0]}
+                    onChange={(e) => updateRoomRatePlan(inst.key, e.target.value)}
+                  >
+                    {ratePlans.map((plan) => (
+                      <option key={plan} value={plan}>
+                        {plan}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {(isGroup ? totalRoomsSelected > 0 : roomTypeId) && (
             <>
-              <div className={shared.field}>
-                <span className={shared.label}>Gói giá</span>
-                <select className={shared.select} value={ratePlan} onChange={(e) => setRatePlan(e.target.value)}>
-                  {ratePlans.map((plan) => (
-                    <option key={plan} value={plan}>
-                      {plan}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {!isGroup && (
+                <div className={shared.field}>
+                  <span className={shared.label}>Gói giá</span>
+                  <select className={shared.select} value={ratePlan} onChange={(e) => setRatePlan(e.target.value)}>
+                    {ratePlans.map((plan) => (
+                      <option key={plan} value={plan}>
+                        {plan}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className={shared.field}>
                 <span className={shared.label}>Nguồn đặt phòng</span>
@@ -375,7 +626,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
         <div className={styles.stepBody}>
           {!selectedGuest && !creatingNew && (
             <div className={shared.field}>
-              <span className={shared.label}>Khách *</span>
+              <span className={shared.label}>{guestLabel} *</span>
               <div className={styles.guestSearchBox}>
                 <Search size={15} />
                 <input
@@ -410,7 +661,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
 
           {(selectedGuest || creatingNew) && (
             <div className={shared.field}>
-              <span className={shared.label}>Khách *</span>
+              <span className={shared.label}>{guestLabel} *</span>
               <div className={styles.guestChip}>
                 <div>
                   <div className={styles.guestChipName}>{finalGuestName || "Khách mới"}</div>
@@ -426,7 +677,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
           {creatingNew && !selectedGuest && (
             <div className={styles.newGuestBox}>
               <div className={shared.field}>
-                <span className={shared.label}>Thông tin khách mới</span>
+                <span className={shared.label}>Thông tin {guestLabel.toLowerCase()}</span>
               </div>
               <div className={shared.row}>
                 <div className={shared.field}>
@@ -434,7 +685,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                   <input
                     className={shared.input}
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => handleLeaderNameChange("lastName", e.target.value)}
                     placeholder="Họ"
                   />
                 </div>
@@ -443,7 +694,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                   <input
                     className={shared.input}
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => handleLeaderNameChange("firstName", e.target.value)}
                     placeholder="Tên"
                   />
                 </div>
@@ -453,10 +704,77 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
                 <input
                   className={shared.input}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => handleLeaderPhoneChange(e.target.value)}
                   placeholder="Số điện thoại"
                 />
               </div>
+            </div>
+          )}
+
+          {isGroup && (
+            <div className={shared.field}>
+              <span className={shared.label}>Người đại diện</span>
+              <span className={shared.hint}>
+                Tự lấy theo Trưởng đoàn nếu để trống — có thể sửa lại. Có thể chỉ nhập người đại diện
+                chung và bỏ qua đại diện từng phòng bên dưới.
+              </span>
+              <div className={shared.row}>
+                <input
+                  className={shared.input}
+                  placeholder="Tên người đại diện"
+                  value={representative.name}
+                  onChange={(e) => updateRepresentative("name", e.target.value)}
+                />
+                <input
+                  className={shared.input}
+                  placeholder="Số điện thoại"
+                  value={representative.phone}
+                  onChange={(e) => updateRepresentative("phone", e.target.value)}
+                />
+              </div>
+              <input
+                className={shared.input}
+                placeholder="Số CCCD/Hộ chiếu"
+                value={representative.idNumber}
+                onChange={(e) => updateRepresentative("idNumber", e.target.value)}
+              />
+            </div>
+          )}
+
+          {isGroup && roomInstances.length > 0 && (
+            <div className={shared.field}>
+              <span className={shared.label}>Đại diện phòng (kiểm soát khách & giấy tờ tuỳ thân)</span>
+              <span className={shared.hint}>Không bắt buộc — có thể bỏ qua nếu đã nhập Người đại diện ở trên.</span>
+              {roomInstances.map((inst) => {
+                const rep = roomRepresentatives[inst.key] || {};
+                return (
+                  <div key={inst.key} className={styles.roomRepresentativeCard}>
+                    <div className={styles.roomRepresentativeTitle}>
+                      {inst.roomType.name} #{inst.index}
+                    </div>
+                    <div className={shared.row}>
+                      <input
+                        className={shared.input}
+                        placeholder="Tên đại diện phòng"
+                        value={rep.name || ""}
+                        onChange={(e) => updateRoomRepresentative(inst.key, "name", e.target.value)}
+                      />
+                      <input
+                        className={shared.input}
+                        placeholder="Số điện thoại"
+                        value={rep.phone || ""}
+                        onChange={(e) => updateRoomRepresentative(inst.key, "phone", e.target.value)}
+                      />
+                    </div>
+                    <input
+                      className={shared.input}
+                      placeholder="Số CCCD/Hộ chiếu"
+                      value={rep.idNumber || ""}
+                      onChange={(e) => updateRoomRepresentative(inst.key, "idNumber", e.target.value)}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -476,12 +794,29 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
         <div className={styles.stepBody}>
           <div className={styles.reviewList}>
             <div className={styles.reviewRow}>
-              <span>Loại phòng</span>
-              <strong>{selectedRoomType?.name}</strong>
+              <span>Loại khách</span>
+              <strong>{selectedSegment?.name}</strong>
             </div>
+
+            {isGroup ? (
+              roomTypesWithAvail
+                .filter((rt) => (roomQuantities[rt.id] || 0) > 0)
+                .map((rt) => (
+                  <div key={rt.id} className={styles.reviewRow}>
+                    <span>{rt.name}</span>
+                    <strong>{roomQuantities[rt.id]} phòng</strong>
+                  </div>
+                ))
+            ) : (
+              <div className={styles.reviewRow}>
+                <span>Loại phòng</span>
+                <strong>{selectedRoomType?.name}</strong>
+              </div>
+            )}
+
             <div className={styles.reviewRow}>
               <span>Check-in</span>
-              <strong>{checkInDate && (stayType === "hour" ? formatDateTimeDMY(checkInDate) : formatDMY(checkInDate))}</strong>
+              <strong>{checkInDate && formatDateTimeDMY(checkInDate)}</strong>
             </div>
             <div className={styles.reviewRow}>
               <span>Check-out</span>
@@ -500,21 +835,41 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, onClose, onConfirm }) {
               </strong>
             </div>
             <div className={styles.reviewRow}>
-              <span>Giá/đêm</span>
-              <strong>{formatCurrency(selectedRoomType?.price || 0)}</strong>
-            </div>
-            <div className={styles.reviewRow}>
               <span>Nguồn</span>
               <strong>{source}</strong>
             </div>
             <div className={styles.reviewRow}>
-              <span>Khách</span>
+              <span>{guestLabel}</span>
               <strong>{finalGuestName || "—"}</strong>
             </div>
             <div className={styles.reviewRow}>
               <span>Điện thoại</span>
               <strong>{finalGuestPhone || "—"}</strong>
             </div>
+            {isGroup && (
+              <div className={styles.reviewRow}>
+                <span>Người đại diện</span>
+                <strong>{representative.name || "—"}</strong>
+              </div>
+            )}
+            {isGroup &&
+              roomInstances.map((inst) => (
+                <div key={inst.key} className={styles.reviewRow}>
+                  <span>
+                    Gói giá · {inst.roomType.name} #{inst.index}
+                  </span>
+                  <strong>{roomRatePlans[inst.key] || ratePlans[0]}</strong>
+                </div>
+              ))}
+            {isGroup &&
+              roomInstances.map((inst) => (
+                <div key={inst.key} className={styles.reviewRow}>
+                  <span>
+                    Đại diện phòng · {inst.roomType.name} #{inst.index}
+                  </span>
+                  <strong>{roomRepresentatives[inst.key]?.name || "—"}</strong>
+                </div>
+              ))}
             <div className={styles.reviewRow}>
               <span>Ghi chú</span>
               <strong>{note || "—"}</strong>
