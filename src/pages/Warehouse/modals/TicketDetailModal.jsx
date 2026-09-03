@@ -15,7 +15,7 @@ function fieldViewValue(field, value) {
 // Generic view/edit panel for a ticket row (any Kho or Mua hàng tab) — the
 // caller describes which fields to show via `fields`/`lineColumns` instead of
 // each panel needing its own bespoke detail modal.
-function TicketDetailModal({ title, row, fields, lineColumns, onClose, onSave, actions = [] }) {
+function TicketDetailModal({ title, row, fields, lineColumns, onClose, onSave, actions = [], readOnly = false }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(row);
 
@@ -137,9 +137,11 @@ function TicketDetailModal({ title, row, fields, lineColumns, onClose, onSave, a
                 {action.label}
               </button>
             ))}
-            <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={() => setEditing(true)}>
-              CHỈNH SỬA
-            </button>
+            {!readOnly && (
+              <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={() => setEditing(true)}>
+                CHỈNH SỬA
+              </button>
+            )}
             <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>
               ĐÓNG
             </button>

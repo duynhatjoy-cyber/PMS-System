@@ -4,7 +4,6 @@ import FilterBar from "./FilterBar";
 import WarehousePagination from "./WarehousePagination";
 import AddStockInModal from "../modals/AddStockInModal";
 import PrintPreviewModal from "../modals/PrintPreviewModal";
-import TicketDetailModal from "../modals/TicketDetailModal";
 import useStockPanel from "../hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -12,14 +11,6 @@ import { STOCK_IN_ROWS } from "../../../data/warehouseData";
 import { formatDMY, formatCurrency } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../Warehouse.module.css";
-
-const STOCK_IN_FIELDS = [
-  { key: "date", label: "Ngày nhập", type: "date" },
-  { key: "supplier", label: "Nhà cung cấp", type: "text" },
-  { key: "docType", label: "Loại chứng từ", type: "text", editable: false },
-  { key: "total", label: "Tổng", type: "currency" },
-  { key: "note", label: "Diễn giải", type: "text" },
-];
 
 function StockInPanel({ onToast }) {
   const {
@@ -168,16 +159,19 @@ function StockInPanel({ onToast }) {
       </div>
 
       {showAddModal && (
-        <AddStockInModal onClose={() => setShowAddModal(false)} onSave={handleSaveTicket} />
+        <AddStockInModal
+          onClose={() => setShowAddModal(false)}
+          onSave={handleSaveTicket}
+          onToast={onToast}
+        />
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu nhập kho"
+        <AddStockInModal
           row={detailRow}
-          fields={STOCK_IN_FIELDS}
           onClose={() => setDetailRow(null)}
           onSave={handleUpdateTicket}
+          onToast={onToast}
         />
       )}
 
