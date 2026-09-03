@@ -4,7 +4,6 @@ import FilterBar from "../../Warehouse/components/FilterBar";
 import WarehousePagination from "../../Warehouse/components/WarehousePagination";
 import AddReportModal from "../modals/AddReportModal";
 import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
-import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -14,23 +13,6 @@ import { REPORT_ROWS, PURCHASE_STATUS_OPTIONS } from "../../../data/purchasingDa
 import { formatDMY } from "../../../utils/format";
 import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
-
-const REPORT_FIELDS = [
-  { key: "date", label: "Ngày", type: "date" },
-  { key: "status", label: "Trạng thái", type: "select", options: PURCHASE_STATUS_OPTIONS.slice(1) },
-  { key: "reporter", label: "Người báo hàng", type: "text" },
-  { key: "address", label: "Địa chỉ", type: "text" },
-  { key: "reference", label: "Tham chiếu", type: "text" },
-  { key: "note", label: "Mô tả", type: "text" },
-];
-
-const REPORT_LINE_COLUMNS = [
-  { key: "name", label: "Nguyên vật liệu" },
-  { key: "unit", label: "Đơn vị" },
-  { key: "neededQty", label: "Số lượng cần", numeric: true },
-  { key: "stockQty", label: "Số lượng tồn", numeric: true },
-  { key: "requestedQty", label: "Số lượng đề nghị", numeric: true },
-];
 
 function ReportPanel({ onToast, onCreateOrder }) {
   const { reportRows, setReportRows } = usePurchaseReport();
@@ -222,17 +204,17 @@ function ReportPanel({ onToast, onCreateOrder }) {
           statusOptions={PURCHASE_STATUS_OPTIONS.slice(1)}
           onSave={handleSaveTicket}
           onClose={() => setShowAddModal(false)}
+          onToast={onToast}
         />
       )}
 
       {detailRow && (
-        <TicketDetailModal
-          title="Phiếu báo hàng"
+        <AddReportModal
           row={detailRow}
-          fields={REPORT_FIELDS}
-          lineColumns={REPORT_LINE_COLUMNS}
-          onClose={() => setDetailRow(null)}
+          statusOptions={PURCHASE_STATUS_OPTIONS.slice(1)}
           onSave={handleUpdateTicket}
+          onClose={() => setDetailRow(null)}
+          onToast={onToast}
         />
       )}
 

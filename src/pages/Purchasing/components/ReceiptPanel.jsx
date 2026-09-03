@@ -18,7 +18,6 @@ import WarehousePagination from "../../Warehouse/components/WarehousePagination"
 import AddReceiptModal from "../modals/AddReceiptModal";
 import ReceiptInspectionModal from "../modals/ReceiptInspectionModal";
 import PrintPreviewModal from "../../Warehouse/modals/PrintPreviewModal";
-import TicketDetailModal from "../../Warehouse/modals/TicketDetailModal";
 import useStockPanel from "../../Warehouse/hooks/useStockPanel";
 import EmptyState from "../../../components/EmptyState";
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -27,30 +26,6 @@ import { paginate } from "../../../utils/pagination";
 import styles from "../../Warehouse/Warehouse.module.css";
 
 const INSPECTION_STATUS_OPTIONS = ["Tất cả", "Chưa kiểm kê hàng hóa", "Đã kiểm kê hàng hóa"];
-
-const RECEIPT_FIELDS = [
-  { key: "date", label: "Ngày nhập hàng", type: "date" },
-  { key: "reference", label: "Tham chiếu", type: "text" },
-  { key: "supplier", label: "Nhà cung cấp", type: "text" },
-  { key: "deliveryPerson", label: "Người giao hàng", type: "text" },
-  { key: "orderRef", label: "Từ đơn đặt hàng", type: "text", editable: false },
-  {
-    key: "inspectionStatus",
-    label: "Trạng thái kiểm kê",
-    type: "select",
-    options: INSPECTION_STATUS_OPTIONS.slice(1),
-  },
-  { key: "total", label: "Tổng", type: "currency", editable: false },
-  { key: "note", label: "Mô tả", type: "text" },
-];
-
-const RECEIPT_LINE_COLUMNS = [
-  { key: "name", label: "Nguyên vật liệu" },
-  { key: "unit", label: "Đơn vị" },
-  { key: "warehouse", label: "Kho" },
-  { key: "qty", label: "Số lượng", numeric: true },
-  { key: "price", label: "Đơn giá", numeric: true, format: (v) => formatCurrency(v) },
-];
 
 // Nhập hàng có thể gắn với 1 đơn Đặt hàng và so sánh số lượng/đơn giá đã đặt
 // với hàng thực nhận (AddReceiptModal) — khác với Trả lại hàng mua (dòng hàng
@@ -306,13 +281,11 @@ function ReceiptPanel({
         />
       ) : (
         detailRow && (
-          <TicketDetailModal
-            title="Phiếu nhập hàng"
+          <AddReceiptModal
             row={detailRow}
-            fields={RECEIPT_FIELDS}
-            lineColumns={RECEIPT_LINE_COLUMNS}
-            onClose={() => setDetailRow(null)}
             onSave={handleUpdateTicket}
+            onClose={() => setDetailRow(null)}
+            onToast={onToast}
           />
         )
       )}

@@ -72,7 +72,7 @@ function AddStockInModal({ row, onClose, onSave, onToast }) {
         title={row ? "Chi tiết phiếu nhập kho" : "Thêm phiếu nhập kho"}
         onClose={onClose}
         tone="brand"
-        width={900}
+        width={1080}
       >
         <div className={styles.formGrid}>
           <div>
