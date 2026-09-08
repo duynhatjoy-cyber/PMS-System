@@ -16,8 +16,22 @@ function emptyForm() {
   };
 }
 
-function ServiceFormModal({ onClose, onSave }) {
-  const [form, setForm] = useState(emptyForm);
+function formFromService(service) {
+  return {
+    name: service.name ?? "",
+    price: String(service.price ?? ""),
+    unit: service.unit ?? "",
+    code: service.code ?? "",
+    editablePrice: service.editablePrice ?? true,
+    stockManaged: service.stockManaged ?? false,
+    minQty: String(service.minQty ?? "0"),
+    excludeFromInvoice: service.excludeFromInvoice ?? false,
+  };
+}
+
+function ServiceFormModal({ service, onClose, onSave }) {
+  const [form, setForm] = useState(() => (service ? formFromService(service) : emptyForm()));
+  const isEdit = Boolean(service);
 
   const canSave = form.name.trim() && Number(form.price) > 0;
 
@@ -41,7 +55,7 @@ function ServiceFormModal({ onClose, onSave }) {
 
   return (
     <SlidePanelShell
-      title="Thêm dịch vụ"
+      title={isEdit ? "Sửa dịch vụ" : "Thêm dịch vụ"}
       onClose={onClose}
       width={640}
       footer={
