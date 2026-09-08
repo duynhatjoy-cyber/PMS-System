@@ -20,6 +20,7 @@ function ServiceTreePanel({ onToast }) {
 
   const [addGroupModal, setAddGroupModal] = useState(null); // { value }
   const [addServiceModal, setAddServiceModal] = useState(false);
+  const [editServiceTarget, setEditServiceTarget] = useState(null);
   const [moveGroupTarget, setMoveGroupTarget] = useState(null); // { group, destTypeKey }
   const [moveServiceTarget, setMoveServiceTarget] = useState(null); // { service, fromGroupId, destGroupId }
   const [deleteGroupTarget, setDeleteGroupTarget] = useState(null);
@@ -115,6 +116,20 @@ function ServiceTreePanel({ onToast }) {
     onToast(`Đã thêm dịch vụ "${newService.name}"`);
   }
 
+  function handleEditService(fields) {
+    const svcId = editServiceTarget.id;
+    setGroupsByType((prev) => ({
+      ...prev,
+      [typeKey]: prev[typeKey].map((g) =>
+        g.id !== groupId
+          ? g
+          : { ...g, services: g.services.map((s) => (s.id === svcId ? { ...s, ...fields } : s)) }
+      ),
+    }));
+    setEditServiceTarget(null);
+    onToast(`Đã lưu dịch vụ "${fields.name}"`);
+  }
+
   function handleToggleServiceActive(svc) {
     if (svc.active) {
       setDeactivateServiceTarget(svc);
@@ -176,6 +191,7 @@ function ServiceTreePanel({ onToast }) {
 
   function serviceMenuItems(svc) {
     return [
+      { key: "edit", label: "Sửa dịch vụ", onClick: () => setEditServiceTarget(svc) },
       {
         key: "move",
         label: "Chuyển nhóm",
@@ -245,7 +261,11 @@ function ServiceTreePanel({ onToast }) {
         <div className={styles.colHead}>Dịch vụ</div>
         {services.map((svc) => (
           <div key={svc.id} className={`${styles.itemCard} ${!svc.active ? styles.itemInactive : ""}`}>
-            <div className={styles.itemCardBtn} style={{ cursor: "default" }}>
+            <button
+              type="button"
+              className={styles.itemCardBtn}
+              onClick={() => setEditServiceTarget(svc)}
+            >
               <span className={styles.itemName}>
                 {svc.name}
                 {!svc.active && <span className={styles.inactiveTag}>Ngừng dùng</span>}
@@ -255,7 +275,7 @@ function ServiceTreePanel({ onToast }) {
                 {svc.unit ? ` / ${svc.unit}` : ""}
                 {svc.code ? ` · ${svc.code}` : ""}
               </span>
-            </div>
+            </button>
             <RowActionMenu items={serviceMenuItems(svc)} />
           </div>
         ))}
@@ -306,6 +326,14 @@ function ServiceTreePanel({ onToast }) {
       )}
 
       {addServiceModal && <ServiceFormModal onClose={() => setAddServiceModal(false)} onSave={handleAddService} />}
+
+      {editServiceTarget && (
+        <ServiceFormModal
+          service={editServiceTarget}
+          onClose={() => setEditServiceTarget(null)}
+          onSave={handleEditService}
+        />
+      )}
 
       {moveGroupTarget && (
         <SlidePanelShell
