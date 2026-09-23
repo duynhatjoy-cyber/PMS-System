@@ -46,6 +46,30 @@
   color: var(--fd-primary);
 }
 
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.groupSelect {
+  height: 38px;
+  padding: 0 10px;
+  min-width: 140px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: var(--fd-radius-sm);
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.groupSelect:focus-visible {
+  outline: none;
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px var(--fd-primary-soft);
+}
+
 .searchBox {
   display: flex;
   align-items: center;
@@ -399,7 +423,13 @@
     align-items: stretch;
   }
 
-  .searchBox {
+  .headerControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchBox,
+  .groupSelect {
     width: 100%;
   }
 

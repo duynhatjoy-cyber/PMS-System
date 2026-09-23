@@ -11,6 +11,7 @@ const TONE_CLASS = {
 
 function ServiceCard({ item, onSelect }) {
   const badge = CATEGORY_BADGES[item.category];
+  const hasStock = typeof item.stock === "number";
 
   return (
     <button type="button" className={styles.card} onClick={() => onSelect(item)}>
@@ -20,6 +21,14 @@ function ServiceCard({ item, onSelect }) {
           title={item.category}
         >
           {badge.label}
+        </span>
+      )}
+      {hasStock && (
+        <span
+          className={`${styles.stockBadge} ${item.stock <= 0 ? styles.stockBadgeEmpty : ""}`}
+          title="Tồn kho"
+        >
+          Tồn: {item.stock}
         </span>
       )}
       <span className={styles.name}>{item.name}</span>
