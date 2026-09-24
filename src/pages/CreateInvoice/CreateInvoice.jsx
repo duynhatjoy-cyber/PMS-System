@@ -2,10 +2,12 @@ import { useMemo, useState } from "react";
 import { Minus, Plus, RefreshCw, Save, Search, Trash2 } from "lucide-react";
 import {
   SERVICE_TABS,
+  SERVICE_GROUPS,
   SERVICE_CATALOG,
   PAYMENT_METHODS,
   CURRENCIES,
   COUNTER_OPTIONS,
+  getServiceStock,
 } from "../../data/invoiceServiceData";
 import { formatCurrency } from "../../utils/format";
 import EmptyState from "../../components/EmptyState";
@@ -17,6 +19,7 @@ import styles from "./CreateInvoice.module.css";
 
 function CreateInvoice() {
   const [activeTab, setActiveTab] = useState(SERVICE_TABS[0]);
+  const [activeGroup, setActiveGroup] = useState(SERVICE_GROUPS[0]);
   const [query, setQuery] = useState("");
   const [cart, setCart] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
@@ -36,10 +39,11 @@ function CreateInvoice() {
     const q = query.trim().toLowerCase();
     return SERVICE_CATALOG.filter((item) => {
       const matchesTab = activeTab === "Tất cả" || item.category === activeTab;
+      const matchesGroup = activeGroup === "Tất cả" || item.group === activeGroup;
       const matchesQuery = !q || item.name.toLowerCase().includes(q);
-      return matchesTab && matchesQuery;
-    });
-  }, [activeTab, query]);
+      return matchesTab && matchesGroup && matchesQuery;
+    }).map((item) => ({ ...item, stock: getServiceStock(item.name) }));
+  }, [activeTab, activeGroup, query]);
 
   const total = useMemo(() => cart.reduce((sum, line) => sum + line.price * line.qty, 0), [cart]);
   const paidTotal = useMemo(() => payments.reduce((sum, p) => sum + p.amount, 0), [payments]);
@@ -127,14 +131,28 @@ function CreateInvoice() {
         <section className={styles.catalogCard}>
           <div className={styles.catalogHeader}>
             <h2 className={styles.catalogTitle}>Danh sách dịch vụ</h2>
-            <div className={styles.searchBox}>
-              <Search size={15} />
-              <input
-                type="text"
-                placeholder="Tìm kiếm"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
+            <div className={styles.headerControls}>
+              <select
+                className={styles.groupSelect}
+                value={activeGroup}
+                onChange={(e) => setActiveGroup(e.target.value)}
+                title="Lọc theo nhóm"
+              >
+                {SERVICE_GROUPS.map((group) => (
+                  <option key={group} value={group}>
+                    {group === "Tất cả" ? "Tất cả nhóm" : group}
+                  </option>
+                ))}
+              </select>
+              <div className={styles.searchBox}>
+                <Search size={15} />
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
