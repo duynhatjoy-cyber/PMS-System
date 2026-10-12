@@ -10,12 +10,18 @@ import { paginate } from "../../utils/pagination";
 import { createIdSequence } from "../../utils/id";
 import { formatDMY } from "../../utils/format";
 import { GROUPS } from "../../data/groupData";
+import { useBookings } from "../../context/BookingsContext";
+import LodgingGroupDetail from "../FrontDesk/modals/LodgingGroupDetail";
+import { toRoomMapDetailBooking } from "../../utils/roomMapBookingAdapter";
 import { GUESTS } from "../../data/guestData";
 import styles from "./Groups.module.css";
 
 const nextNewId = createIdSequence();
 
 function Groups() {
+  const { bookings, roomMapBookings, lodgingGroups } = useBookings();
+  const allLodgingBookings = useMemo(() => [...bookings, ...roomMapBookings.map(toRoomMapDetailBooking)], [bookings, roomMapBookings]);
+  const [openLodgingGroupId, setOpenLodgingGroupId] = useState(null);
   const [groups, setGroups] = useState(GROUPS);
   const [nameQuery, setNameQuery] = useState("");
   const [leaderQuery, setLeaderQuery] = useState("");
@@ -94,6 +100,17 @@ function Groups() {
           <StatCard label="Đoàn đông nhất" value={stats.largest} hint="thành viên" />
         </div>
       </div>
+
+      {lodgingGroups.length > 0 && <div className={styles.tableCard}>
+        <h2 className={styles.title}>Đoàn lưu trú</h2>
+        <div className={styles.tableWrap}><table className={styles.table}><thead><tr>
+          <th>Tên đoàn</th><th>Người đại diện</th><th>Số phòng</th><th>Ngày tạo</th>
+        </tr></thead><tbody>{lodgingGroups.map((group) => <tr key={group.id} onClick={() => setOpenLodgingGroupId(group.id)}>
+          <td className={styles.groupNameCell}>{group.name}</td><td>{group.leaderName}</td>
+          <td>{allLodgingBookings.filter((booking) => booking.groupId === group.id).length}</td>
+          <td>{formatDMY(group.createdDate)}</td>
+        </tr>)}</tbody></table></div>
+      </div>}
 
       <div className={styles.filterBar}>
         <div className={styles.filterHeadRow}>
@@ -214,6 +231,10 @@ function Groups() {
           onClose={() => setDeleteTarget(null)}
         />
       )}
+
+      {openLodgingGroupId && <LodgingGroupDetail
+        group={lodgingGroups.find((group) => group.id === openLodgingGroupId)}
+        bookings={allLodgingBookings} onClose={() => setOpenLodgingGroupId(null)} />}
 
       <Toast message={toastMsg} onDismiss={() => setToastMsg("")} />
     </div>

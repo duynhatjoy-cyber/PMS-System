@@ -1,0 +1,9 @@
+.content { display: flex; flex-direction: column; gap: 16px; color: var(--fd-text); }
+.content h3 { font-size: 16px; margin: 8px 0 0; }
+.summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.summary div { display: flex; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--fd-border-strong); border-radius: var(--fd-radius-sm); font-size: 13px; }
+.summary span, .room small { color: var(--fd-text-muted); }
+.room { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 14px; background: #fff; border: 1px solid var(--fd-border-strong); border-radius: var(--fd-radius-sm); text-align: left; color: var(--fd-text); cursor: pointer; font: inherit; }
+.room:hover, .room:focus-visible { border-color: var(--fd-primary); outline: none; }
+.room small { font-size: 12px; }
+@media (max-width: 540px) { .summary { grid-template-columns: 1fr; } }

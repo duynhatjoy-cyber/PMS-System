@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { BedDouble, Building2, ChevronUp, CircleHelp, Layers, PauseCircle, Pencil, Plane, PlayCircle, Plus, Trash2, Utensils, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROOMS, ROOM_TYPES } from "../../data/roomMapData";
 import styles from "./RoomPriceConfig.module.css";
+import RoomCatalog from "./RoomCatalog";
 
 const typeId = (key) => key.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 const initialRoomTypes = ROOM_TYPES.map((type) => {
@@ -28,6 +29,7 @@ function RoomPriceConfig() {
   const navigate = useNavigate();
   const [roomTypes, setRoomTypes] = useState(initialRoomTypes);
   const [selectedId, setSelectedId] = useState(initialRoomTypes[0]?.id || null);
+  const [roomView, setRoomView] = useState("catalog");
   const [modal, setModal] = useState(null);
   const [floorDraft, setFloorDraft] = useState("");
   const [typeDraft, setTypeDraft] = useState({ kind: "room", code: "", name: "", adults: 1, children: 0 });
@@ -36,7 +38,7 @@ function RoomPriceConfig() {
     roomTypeId: initialRoomTypes[0]?.id || "",
     floorId: initialRoomTypes[0]?.floors[0]?.id || "",
   });
-  const activeTab = location.pathname.endsWith("/don-gia") ? "prices" : "rooms";
+  const activeTab = location.pathname.endsWith("/don-gia") ? "prices" : roomView;
   const [pricePolicies, setPricePolicies] = useState(() =>
     Object.fromEntries(initialRoomTypes.map((type) => [type.id, [{ id: "default", name: "DEFAULT" }]]))
   );
@@ -153,15 +155,15 @@ function RoomPriceConfig() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.topbar}>
+      {activeTab === "prices" && <div className={styles.topbar}>
         <div>
           <h1>Cấu hình Phòng &amp; Giá</h1>
           <p>Thiết lập loại phòng, tầng và danh sách phòng của khách sạn.</p>
         </div>
-      </div>
+      </div>}
 
       <div className={styles.tabs} role="tablist">
-        <button className={activeTab === "rooms" ? styles.tabActive : styles.tab} onClick={() => navigate("/config/phong-va-gia")}>Phòng/giường</button>
+        <button className={activeTab !== "prices" ? styles.tabActive : styles.tab} onClick={() => { setRoomView("catalog"); navigate("/config/phong-va-gia"); }}>Phòng/giường</button>
         <button
           className={activeTab === "prices" ? styles.tabActive : styles.tab}
           onClick={() => {
@@ -177,14 +179,13 @@ function RoomPriceConfig() {
 
       {activeTab === "prices" ? (
         <PriceBoard roomTypes={roomTypes} roomCount={roomCount} selectedId={selectedId} onSelectRoom={selectPriceRoom} policies={pricePolicies[selectedId] || []} selectedPolicyId={selectedPolicyId} onSelectPolicy={(id) => { setSelectedPolicyId(id); setSelectedPriceType(null); }} onAddPolicy={() => setModal("pricePolicy")} selectedPriceType={selectedPriceType} enabledTypes={enabledPriceTypes[activePolicyKey] || []} onTogglePriceType={togglePriceType} value={currentPrice} onChange={updatePrice} earlyRates={supplementRates[`${activePolicyKey}:${selectedPriceType}:early`] || []} lateRates={supplementRates[`${activePolicyKey}:${selectedPriceType}:late`] || []} onAddSupplement={addSupplement} onUpdateSupplement={updateSupplement} onRemoveSupplement={removeSupplement} />
-      ) : (
-        <div className={styles.workspace}>
+      ) : activeTab === "floors" ? (
+        <><button className={styles.backToCatalog} onClick={() => setRoomView("catalog")}>← Quay lại danh sách hạng phòng</button><div className={styles.workspace}>
           <aside className={styles.typePanel} aria-label="Danh sách loại phòng">
             <button className={`${styles.typeCard} ${!selectedId ? styles.typeCardActive : ""}`} onClick={() => setSelectedId(null)}><span>Tất cả</span><small>{roomTypes.reduce((sum, type) => sum + roomCount(type), 0)} phòng</small></button>
             {roomTypes.map((type) => <button key={type.id} className={`${styles.typeCard} ${selectedId === type.id ? styles.typeCardActive : ""} ${type.paused ? styles.typeCardPaused : ""}`} onClick={() => setSelectedId(type.id)}><span><b>{type.code}</b>{type.name}{type.paused && <em>Tạm dừng</em>}</span><small>{roomCount(type)} phòng</small></button>)}
             <button className={styles.addType} onClick={() => { setTypeDraft({ kind: "room", code: "", name: "", adults: 1, children: 0 }); setModal("type"); }}><Plus size={16} /> Thêm loại phòng</button>
           </aside>
-
           <section className={styles.roomPanel}>
             {selected ? <>
               <header className={styles.roomHeader}><div><span className={styles.typeKind}>{selected.kind === "dorm" ? "Giường Dorm" : "Phòng"}</span><h2>{selected.code} <span>{selected.name}</span></h2></div><div className={styles.headerActions}><button title="Sửa loại phòng" onClick={openEditType}><Pencil size={17} /></button><button title={selected.paused ? "Tiếp tục sử dụng" : "Tạm dừng"} onClick={togglePauseType}>{selected.paused ? <PlayCircle size={18} /> : <PauseCircle size={18} />}</button><button className={styles.deleteTypeBtn} title="Xóa loại phòng" onClick={() => setModal("deleteType")}><Trash2 size={17} /></button></div></header>
@@ -193,30 +194,11 @@ function RoomPriceConfig() {
                 {selected.floors.map((floor) => <article className={styles.floorRow} key={floor.id}><div className={styles.floorName}><Layers size={16} /> {floor.name}</div><div className={styles.roomChips}>{floor.rooms.map((room) => <span key={room} className={styles.roomChip}>{room}</span>)}<button className={styles.addRoom} onClick={() => { setRoomAssignment({ roomTypeId: selected.id, floorId: floor.id }); setModal({ name: "room" }); }}><Plus size={18} /></button></div></article>)}
                 {selected.floors.length === 0 && <div className={styles.emptyState}><BedDouble size={28} /><p>Chưa có tầng nào. Hãy thêm tầng đầu tiên cho loại phòng này.</p></div>}
               </div>
-            </> : (
-              <>
-                <header className={styles.roomHeader}>
-                  <div><span className={styles.typeKind}>Toàn bộ khách sạn</span><h2>Tất cả tầng và phòng</h2></div>
-                </header>
-                <div className={styles.allRoomTypes}>
-                  {roomTypes.map((type) => (
-                    <section key={type.id} className={styles.allTypeSection}>
-                      <h3>{type.code} <span>{type.name}</span></h3>
-                      {type.floors.map((floor) => (
-                        <article className={styles.floorRow} key={floor.id}>
-                          <div className={styles.floorName}><Layers size={16} /> {floor.name}</div>
-                          <div className={styles.roomChips}>
-                            {floor.rooms.map((room) => <span key={room} className={styles.roomChip}>{room}</span>)}
-                          </div>
-                        </article>
-                      ))}
-                    </section>
-                  ))}
-                </div>
-              </>
-            )}
+            </> : <><header className={styles.roomHeader}><div><span className={styles.typeKind}>Toàn bộ khách sạn</span><h2>Tất cả tầng và phòng</h2></div></header><div className={styles.allRoomTypes}>{roomTypes.map((type) => <section key={type.id} className={styles.allTypeSection}><h3>{type.code} <span>{type.name}</span></h3>{type.floors.map((floor) => <article className={styles.floorRow} key={floor.id}><div className={styles.floorName}><Layers size={16} /> {floor.name}</div><div className={styles.roomChips}>{floor.rooms.map((room) => <span key={room} className={styles.roomChip}>{room}</span>)}</div></article>)}</section>)}</div></>}
           </section>
-        </div>
+        </div></>
+      ) : (
+        <RoomCatalog roomTypes={roomTypes} setRoomTypes={setRoomTypes} selectedId={selectedId} setSelectedId={setSelectedId} onFloors={() => { setSelectedId(null); setRoomView("floors"); }} />
       )}
 
       {modal === "type" && <Modal title="Thêm loại phòng" onClose={() => setModal(null)}><form onSubmit={saveType}><div className={styles.kindChoices}><label><input type="radio" checked={typeDraft.kind === "room"} onChange={() => setTypeDraft({ ...typeDraft, kind: "room" })} /> Phòng</label><label><input type="radio" checked={typeDraft.kind === "dorm"} onChange={() => setTypeDraft({ ...typeDraft, kind: "dorm" })} /> Giường Dorm</label></div><Field label="Mã loại phòng *" value={typeDraft.code} onChange={(code) => setTypeDraft({ ...typeDraft, code })} placeholder="Ví dụ: STD" /><Field label="Tên loại phòng *" value={typeDraft.name} onChange={(name) => setTypeDraft({ ...typeDraft, name })} placeholder="Ví dụ: Standard Double" /><div className={styles.guestFields}><Field label="Người lớn" type="number" value={typeDraft.adults} onChange={(adults) => setTypeDraft({ ...typeDraft, adults: Number(adults) })} /><Field label="Trẻ em" type="number" value={typeDraft.children} onChange={(children) => setTypeDraft({ ...typeDraft, children: Number(children) })} /></div><ModalActions onCancel={() => setModal(null)} /></form></Modal>}
@@ -418,3 +400,4 @@ function Modal({ title, children, onClose }) { return <div className={styles.ove
 function ModalActions({ onCancel }) { return <div className={styles.modalActions}><button type="button" className={styles.cancelBtn} onClick={onCancel}>Bỏ qua</button><button type="submit" className={styles.saveBtn}>Lưu</button></div>; }
 
 export default RoomPriceConfig;
+

@@ -137,8 +137,8 @@ export function computeRoomSnapshots(rooms, bookings, day) {
 export function computeRoomSnapshotsWithOverrides(rooms, bookings, overrides, day) {
   return computeRoomSnapshots(rooms, bookings, day).map((snapshot) => {
     const override = overrides[snapshot.room.number];
-    if (override === "dirty") return { ...snapshot, status: "vacant", housekeeping: "dirty", booking: null };
-    if (override === "clean") return { ...snapshot, status: "vacant", housekeeping: "clean", booking: null };
+    if (override === "dirty") return { ...snapshot, housekeeping: "dirty" };
+    if (override === "clean") return { ...snapshot, housekeeping: "clean" };
     return override ? { ...snapshot, status: override, booking: null } : snapshot;
   });
 }

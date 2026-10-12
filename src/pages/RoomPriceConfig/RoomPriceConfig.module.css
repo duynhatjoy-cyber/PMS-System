@@ -2,6 +2,7 @@
 .topbar h1 { font-size: 25px; font-weight: 650; color: var(--fd-text); }
 .topbar p { margin-top: 5px; color: var(--fd-text-secondary); font-size: 14px; }
 .tabs { display: flex; gap: 4px; margin-top: 24px; border-bottom: 1px solid var(--fd-border-strong); }
+.backToCatalog { margin-top: 16px; border: 0; background: transparent; color: var(--fd-primary); font: inherit; font-size: 13px; cursor: pointer; }
 .tab, .tabActive { border: 0; background: transparent; padding: 11px 18px; font: inherit; font-size: 14px; cursor: pointer; color: var(--fd-text-secondary); border-bottom: 2px solid transparent; }
 .tabActive { color: var(--fd-primary); font-weight: 700; border-bottom-color: var(--fd-primary); }
 .workspace { display: grid; grid-template-columns: 245px minmax(0, 1fr); gap: 22px; margin-top: 20px; min-height: 490px; }

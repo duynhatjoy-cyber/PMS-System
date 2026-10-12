@@ -196,9 +196,10 @@ function GanttBoard({
     }
     const rect = e.currentTarget.getBoundingClientRect();
     setPopover({
-      booking,
+      booking: booking.status === "checked_out" ? null : booking,
       room,
       status: booking.status,
+      housekeeping: booking.status === "checked_out" ? "dirty" : computeRoomSnapshotsWithOverrides(ROOMS, bookings, roomStatusOverrides, selectedDate).find((item) => item.room.number === room.number)?.housekeeping,
       x: Math.max(8, Math.min(rect.left, window.innerWidth - 224)),
       y: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 500)),
     });
@@ -209,6 +210,7 @@ function GanttBoard({
       booking: null,
       room,
       status: "vacant",
+      housekeeping: computeRoomSnapshotsWithOverrides(ROOMS, bookings, roomStatusOverrides, selectedDate).find((item) => item.room.number === room.number)?.housekeeping,
       range: selectedRange,
       x: Math.max(8, Math.min(event.clientX, window.innerWidth - 224)),
       y: Math.max(8, Math.min(event.clientY + 8, window.innerHeight - 370)),

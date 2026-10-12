@@ -6,7 +6,6 @@ import {
   ClipboardCheck,
   Copy,
   Info,
-  List,
   LogIn,
   LogOut,
   ShoppingBag,
@@ -16,21 +15,22 @@ import {
 } from "lucide-react";
 import styles from "../RoomMap.module.css";
 
-const VACANT_ACTIONS = [
+const VACANT_CLEAN_ACTIONS = [
+  ["detail", "Chi tiết", Info],
   ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
-  ["dirty", "Phòng bẩn", Brush, true],
+  ["reserve", "Đặt phòng", CalendarClock],
+  ["dirty", "Làm bẩn phòng", Brush, true],
   ["maintenance", "Sửa phòng", Wrench],
-  ["list", "Danh sách đặt phòng", List, true],
 ];
 
-const DIRTY_ACTIONS = [
+const VACANT_DIRTY_ACTIONS = [
+  ["detail", "Chi tiết", Info],
   ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
   ["clean", "Làm sạch phòng", Brush, true],
   ["maintenance", "Sửa phòng", Wrench],
-  ["list", "Danh sách đặt phòng", List, true],
 ];
 
-const BOOKED_ACTIONS = [
+const BOOKED_FUTURE_ACTIONS = [
   ["detail", "Chi tiết", Info],
   ["checkin", "Nhận phòng", LogIn],
   ["unassign", "Bỏ gán phòng", Unlink],
@@ -39,11 +39,31 @@ const BOOKED_ACTIONS = [
   ["transfer", "Chuyển phòng", BedDouble],
   ["cancel", "Hủy đặt phòng", CalendarX, true],
   ["copy", "Sao chép", Copy],
-  ["clean", "Làm sạch phòng", Brush, true],
-  ["list", "Danh sách đặt phòng", List],
 ];
 
-const INHOUSE_ACTIONS = [
+const ARRIVING_TODAY_ACTIONS = [
+  ["detail", "Chi tiết", Info],
+  ["checkin", "Nhận phòng", LogIn],
+  ["unassign", "Bỏ gán phòng", Unlink],
+  ["service", "Thêm dịch vụ", ShoppingBag, true],
+  ["change", "Đổi ngày ở", CalendarClock],
+  ["transfer", "Chuyển phòng", BedDouble],
+  ["cancel", "Hủy đặt phòng", CalendarX, true],
+  ["copy", "Sao chép", Copy],
+];
+
+const IN_HOUSE_CLEAN_ACTIONS = [
+  ["detail", "Chi tiết", Info],
+  ["checkout", "Trả phòng", LogOut],
+  ["service", "Thêm dịch vụ", ShoppingBag, true],
+  ["change", "Đổi ngày ở", CalendarClock],
+  ["transfer", "Chuyển phòng", BedDouble],
+  ["undo", "Undo check-in", Undo2, true],
+  ["copy", "Sao chép", Copy],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true],
+];
+
+const IN_HOUSE_DIRTY_ACTIONS = [
   ["detail", "Chi tiết", Info],
   ["checkout", "Trả phòng", LogOut],
   ["service", "Thêm dịch vụ", ShoppingBag, true],
@@ -52,20 +72,45 @@ const INHOUSE_ACTIONS = [
   ["undo", "Undo check-in", Undo2, true],
   ["copy", "Sao chép", Copy],
   ["clean", "Làm sạch phòng", Brush, true],
-  ["list", "Danh sách đặt phòng", List],
 ];
+
+const OVERDUE_CLEAN_ACTIONS = [
+  ["detail", "Chi tiết", Info],
+  ["checkout", "Trả phòng", LogOut],
+  ["service", "Thêm dịch vụ", ShoppingBag, true],
+  ["change", "Đổi ngày ở", CalendarClock],
+  ["transfer", "Chuyển phòng", BedDouble],
+  ["undo", "Undo check-in", Undo2, true],
+  ["copy", "Sao chép", Copy],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true],
+];
+
+const OVERDUE_DIRTY_ACTIONS = [
+  ["detail", "Chi tiết", Info],
+  ["checkout", "Trả phòng", LogOut],
+  ["service", "Thêm dịch vụ", ShoppingBag, true],
+  ["change", "Đổi ngày ở", CalendarClock],
+  ["transfer", "Chuyển phòng", BedDouble],
+  ["undo", "Undo check-in", Undo2, true],
+  ["copy", "Sao chép", Copy],
+  ["clean", "Làm sạch phòng", Brush, true],
+];
+
+const ACTIONS_BY_STATUS = {
+  vacant: { clean: VACANT_CLEAN_ACTIONS, dirty: VACANT_DIRTY_ACTIONS },
+  booked_future: { clean: BOOKED_FUTURE_ACTIONS, dirty: BOOKED_FUTURE_ACTIONS },
+  arriving_today: { clean: ARRIVING_TODAY_ACTIONS, dirty: ARRIVING_TODAY_ACTIONS },
+  in_house: { clean: IN_HOUSE_CLEAN_ACTIONS, dirty: IN_HOUSE_DIRTY_ACTIONS },
+  overdue: { clean: OVERDUE_CLEAN_ACTIONS, dirty: OVERDUE_DIRTY_ACTIONS },
+  checked_out: { clean: VACANT_CLEAN_ACTIONS, dirty: VACANT_DIRTY_ACTIONS },
+};
 
 function BookingActionMenu({ menu, menuRef, onClose, onDetail, onAction, onToast }) {
   if (!menu) return null;
-  const { booking, room, status } = menu;
-  const actions =
-    status === "dirty"
-      ? DIRTY_ACTIONS
-      : !booking
-      ? VACANT_ACTIONS
-      : ["in_house", "overdue"].includes(status)
-      ? INHOUSE_ACTIONS
-      : BOOKED_ACTIONS;
+  const { booking, room, status, housekeeping } = menu;
+  const roomStatus = !booking || status === "checked_out" ? "vacant" : status;
+  const cleanliness = housekeeping === "dirty" ? "dirty" : "clean";
+  const actions = ACTIONS_BY_STATUS[roomStatus]?.[cleanliness] ?? VACANT_CLEAN_ACTIONS;
 
   function choose(key, label) {
     onClose();
