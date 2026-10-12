@@ -47,6 +47,12 @@ function BookingDetailPanel({
   onOpenEditGuest,
   onRemoveGuest,
   onRecordPayment,
+  onOpenAddRoom,
+  onOpenMergeRoom,
+  onOpenGroupDetail,
+  group,
+  groupBookings = [],
+  onSelectGroupBooking,
   onToast,
   initialTab = "room",
 }) {
@@ -76,6 +82,7 @@ function BookingDetailPanel({
   }
 
   const headBill = computeBill(booking, { asOf: "checkout" });
+  const groupRemaining = groupBookings.reduce((total, item) => total + computeBill(item).remaining, 0);
 
   const primaryLabel =
     tab === "arrivals" && !booking.assigned
@@ -182,12 +189,34 @@ function BookingDetailPanel({
               title="Thêm phòng / Gộp phòng"
               filled
               items={[
-                { key: "add", label: "Thêm phòng", onClick: () => onToast("Tính năng thêm phòng sẽ sớm ra mắt") },
-                { key: "merge", label: "Gộp phòng", onClick: () => onToast("Tính năng gộp phòng sẽ sớm ra mắt") },
+                { key: "add", label: "Thêm phòng", onClick: () => onOpenAddRoom(booking) },
+                { key: "merge", label: "Gộp phòng", onClick: () => onOpenMergeRoom(booking) },
+                ...(booking.groupId ? [{ key: "group", label: "Chi tiết đoàn", onClick: () => onOpenGroupDetail(booking.groupId) }] : []),
               ]}
             />
           </div>
         </div>
+
+        <section className={styles.groupSection} aria-label={group ? "Phòng trong đoàn" : "Đặt phòng lẻ"}>
+            <div className={styles.groupHeading}>
+              <div><strong>{group ? group.name : "Đặt phòng lẻ"}</strong>
+                <span>{group ? `${groupBookings.length} phòng · Còn lại ${formatCurrency(groupRemaining)}` : "Thêm hoặc gộp phòng để tạo đoàn"}</span></div>
+              {group ? <button type="button" onClick={() => onOpenGroupDetail(group.id)}>Chi tiết đoàn <ChevronRight size={14} /></button>
+                : <div className={styles.groupActions}>
+                  <button type="button" onClick={() => onOpenAddRoom(booking)}>Thêm phòng</button>
+                  <button type="button" onClick={() => onOpenMergeRoom(booking)}>Gộp phòng</button>
+                </div>}
+            </div>
+            <div className={styles.groupRooms}>
+              {(group ? groupBookings : [booking]).map((item) => <button key={item.id} type="button"
+                className={`${styles.groupRoom} ${item.id === booking.id ? styles.groupRoomActive : ""}`}
+                onClick={() => onSelectGroupBooking(item)}
+                aria-current={item.id === booking.id ? "true" : undefined}>
+                <BedDouble size={14} />
+                <span><strong>{item.room || "Chưa gán"}</strong><small>{item.guest.name}</small></span>
+              </button>)}
+            </div>
+          </section>
 
         {activeTab === "room" ? (
           <div className={styles.body}>

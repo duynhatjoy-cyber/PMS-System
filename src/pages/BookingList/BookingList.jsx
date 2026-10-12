@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import styles from "./BookingList.module.css";
 import { useBookings } from "../../context/BookingsContext";
+import LodgingGroupDetail from "../FrontDesk/modals/LodgingGroupDetail";
 
 const BOOKING_VIEW_FILTERS = [
   "Tất cả đặt phòng",
@@ -38,7 +39,7 @@ const COLUMN_GROUPS = [
 ];
 
 const DEFAULT_FILTERS = ["Tên khách", "Mã đặt phòng", "Ngày đến", "Trạng thái"];
-const DEFAULT_COLUMNS = ["Mã đặt phòng", "Phòng", "Tên khách", "Ngày đến", "Ngày đi", "Loại giá", "SL người lớn", "SL trẻ em", "Công ty", "Ghi chú"];
+const DEFAULT_COLUMNS = ["Mã đặt phòng", "Đoàn", "Phòng", "Tên khách", "Ngày đến", "Ngày đi", "Loại giá", "SL người lớn", "SL trẻ em", "Công ty", "Ghi chú"];
 const CURRENT_USER = "Nha Cua My Admin";
 const OTA_FILTERS = ["Mã đặt phòng", "Mã OTA", "Ngày đến", "Loại giá hoa hồng", "Công ty"];
 const OTA_COLUMNS = ["Mã đặt phòng", "Mã OTA", "Công ty", "Tên khách", "Ngày đến", "Ngày đi", "NL/TE", "Giá chưa hoa hồng", "Hoa hồng", "Giá bao gồm hoa hồng"];
@@ -49,6 +50,7 @@ const COMPACT_DATE_FILTERS = new Set(["Ngày sinh", "Ngày đi", "Đêm chiếm 
 
 const COLUMN_DEFS = [
   { key: "Mã đặt phòng", label: "#", width: 105, render: (row) => row.bookingCode },
+  { key: "Đoàn", width: 115, render: (row) => row.groupId ? "Xem đoàn" : "—" },
   { key: "Mã OTA", width: 120, render: (row) => row.source === "OTA" ? `OTA-${row.bookingCode}` : "—" },
   { key: "Phòng", width: 125, align: "center", render: (row) => <span className={styles.room}>{row.room || "N/A"}<small>({row.roomType})</small></span> },
   { key: "Tên khách", width: 210, render: (row) => <><span className={styles.flag}>★</span> {row.guest.name}</> },
@@ -101,7 +103,8 @@ function SelectionPanel({ title, groups, selected, onToggle, onDefault, onCancel
 }
 
 function BookingList() {
-  const { bookings, today } = useBookings();
+  const { bookings, today, lodgingGroups } = useBookings();
+  const [openGroupId, setOpenGroupId] = useState(null);
   const [activeNav, setActiveNav] = useState("Danh sách đặt phòng");
   const [bookingViewFilter, setBookingViewFilter] = useState("Tất cả đặt phòng");
   const [guest, setGuest] = useState("");
@@ -282,13 +285,17 @@ function BookingList() {
             <thead><tr>{columns.map((column) => <th key={column.key}>{column.label}{column.key === "Mã đặt phòng" && <span> ↓</span>}</th>)}</tr></thead>
             <tbody>
               {rows.map((booking) => (
-                <tr key={booking.id}>{columns.map((column) => <td key={column.key} className={column.key === "Ghi chú" ? styles.note : ""} style={{ textAlign: column.align || "left" }}>{column.render(booking)}</td>)}</tr>
+                <tr key={booking.id}>{columns.map((column) => <td key={column.key} className={column.key === "Ghi chú" ? styles.note : ""} style={{ textAlign: column.align || "left" }}>
+                  {column.key === "Đoàn" && booking.groupId ? <button type="button" onClick={() => setOpenGroupId(booking.groupId)}>Chi tiết đoàn</button> : column.render(booking)}
+                </td>)}</tr>
               ))}
               {!rows.length && <tr><td className={styles.empty} colSpan={Math.max(columns.length, 1)}>Không tìm thấy đặt phòng phù hợp</td></tr>}
             </tbody>
           </table>
         </div>
       </section>
+      {openGroupId && <LodgingGroupDetail group={lodgingGroups.find((group) => group.id === openGroupId)}
+        bookings={bookings} onClose={() => setOpenGroupId(null)} />}
     </div>
   );
 }

@@ -56,6 +56,61 @@
   gap: 14px;
 }
 
+.groupCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  box-shadow: var(--fd-shadow-card);
+}
+
+.groupFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.groupField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--fd-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.groupActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--fd-text-secondary);
+  font-size: 12px;
+}
+
+.groupActionButtons { display: flex; gap: 8px; }
+.groupsBody { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
+.groupList { display: flex; flex-direction: column; gap: 8px; }
+.groupListItem { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px; border: 1px solid var(--fd-border); border-radius: var(--fd-radius-sm); background: var(--fd-surface); color: var(--fd-text); text-align: left; cursor: pointer; }
+.groupListItem:hover, .groupListItemActive { border-color: var(--fd-primary); background: var(--fd-primary-soft); }
+.groupListItem span, .groupEmpty, .groupDetailGrid span, .groupRoomList span { color: var(--fd-text-secondary); font-size: 12px; }
+.groupDetailTitle { margin: 0; font-size: 20px; color: var(--fd-text); }
+.groupDetailGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.groupDetailGrid > div { display: flex; flex-direction: column; gap: 5px; }
+.groupDetailGrid strong { font-size: 13px; color: var(--fd-text); }
+.groupRoomList { display: flex; flex-direction: column; border-top: 1px solid var(--fd-border); }
+.groupRoomList > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--fd-border); font-size: 13px; }
+
+@media (max-width: 700px) {
+  .groupsBody, .groupDetailGrid { grid-template-columns: 1fr; }
+  .groupActionButtons { flex-wrap: wrap; }
+  .groupFields { grid-template-columns: 1fr; }
+  .groupActions { align-items: flex-start; flex-direction: column; }
+}
+
 /* Tỷ lệ 6/4 giữa bảng chính và panel giỏ hàng ở màn "Phòng trống" — chỉ ở
    đây, vì .cartPanel còn dùng lại ở màn "Thông tin" (giữ nguyên 340px cố định). */
 .body > .mainCol {

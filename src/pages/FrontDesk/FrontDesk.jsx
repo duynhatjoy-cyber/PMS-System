@@ -38,6 +38,11 @@ import AddServiceModal from "./modals/AddServiceModal";
 import EditGuestModal from "./modals/EditGuestModal";
 import InvoiceModal from "./modals/InvoiceModal";
 import BookingDetailPanel from "./panels/BookingDetailPanel";
+import AddRoomToGroupModal from "./modals/AddRoomToGroupModal";
+import MergeRoomGroupModal from "./modals/MergeRoomGroupModal";
+import LodgingGroupDetail from "./modals/LodgingGroupDetail";
+import { isRoomAvailable } from "../../utils/bookingGroups";
+import { roomTypes } from "../../data/frontDeskData";
 import styles from "./FrontDesk.module.css";
 import { useBookings } from "../../context/BookingsContext";
 
@@ -48,7 +53,7 @@ const TABS = [
 ];
 
 function FrontDesk() {
-  const { today, bookings, setBookings } = useBookings();
+  const { today, bookings, setBookings, lodgingGroups, setLodgingGroups } = useBookings();
   const [selectedDate, setSelectedDate] = useState(today);
   const [view, setView] = useState("today");
   const [activeTab, setActiveTab] = useState("inhouse");
@@ -60,6 +65,7 @@ function FrontDesk() {
   const [modal, setModal] = useState(null); // { type, booking }
   const [detailBooking, setDetailBooking] = useState(null); // { id, tab }
   const [invoiceView, setInvoiceView] = useState(null); // { booking, asOf }
+  const [openGroupId, setOpenGroupId] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
 
   const filterKey = `${activeTab}|${search}|${guestFilter}`;
@@ -228,9 +234,71 @@ function FrontDesk() {
   }
 
   function handleAssignRoomSave({ room, roomType }) {
+    if (!isRoomAvailable(bookings, room, modal.booking.checkIn, modal.booking.checkOut, [modal.booking.id])) {
+      toast(`Phòng ${room} đã có đặt phòng trong khoảng ngày này`);
+      return;
+    }
     updateBooking(modal.booking.id, { room, roomType, assigned: true });
     closeModal();
     toast(`Đã gán phòng ${room}`);
+  }
+
+  function ensureGroup(booking, groups) {
+    if (booking.groupId) return booking.groupId;
+    const id = `LG-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    groups.push({ id, name: `Đoàn ${booking.guest.name}`, leaderName: booking.guest.name, createdDate: new Date() });
+    return id;
+  }
+
+  function handleAddRoomConfirm(payload) {
+    const source = bookings.find((item) => item.id === modal.booking.id);
+    if (!source || !isRoomAvailable(bookings, payload.room, payload.checkIn, payload.checkOut)) {
+      toast("Phòng vừa được đặt trong khoảng ngày này. Vui lòng tìm kiếm lại.");
+      return;
+    }
+    const groups = [...lodgingGroups];
+    const groupId = ensureGroup(source, groups);
+    const id = `GR-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const newBooking = {
+      ...source, id, groupId, bookingCode: Math.max(46000, ...bookings.map((item) => Number(item.bookingCode) || 0)) + 1,
+      room: payload.room, roomType: roomTypes.find((type) => type.id === payload.typeId)?.name || source.roomType,
+      checkIn: payload.checkIn, checkOut: payload.checkOut, stage: "arrival", assigned: true,
+      guests: [], adults: 0, children: 0, services: [], paymentRecords: [], notes: "", paid: false,
+    };
+    setBookings((prev) => [newBooking, ...prev.map((item) => item.id === source.id ? { ...item, groupId } : item)]);
+    setLodgingGroups(groups);
+    setModal(null);
+    setOpenGroupId(groupId);
+    toast(`Đã thêm phòng ${payload.room} vào đoàn`);
+  }
+
+  function handleMergeRoomConfirm(target) {
+    const source = bookings.find((item) => item.id === modal.booking.id);
+    const latestTarget = bookings.find((item) => item.id === target.id);
+    if (!source || !latestTarget || source.id === latestTarget.id || source.stage === "checkedout" || latestTarget.stage === "checkedout") {
+      toast("Không thể gộp đặt phòng đã chọn");
+      return;
+    }
+    const sourceMembers = bookings.filter((item) => item.id === source.id || (source.groupId && item.groupId === source.groupId));
+    const targetMembers = bookings.filter((item) => item.id === latestTarget.id || (latestTarget.groupId && item.groupId === latestTarget.groupId));
+    const hasConflict = sourceMembers.some((left) => targetMembers.some((right) =>
+      left.room && left.room === right.room && left.checkIn < right.checkOut && right.checkIn < left.checkOut
+    ));
+    if (hasConflict) {
+      toast("Các đoàn có phòng trùng nhau trong thời gian lưu trú");
+      return;
+    }
+    const groups = [...lodgingGroups];
+    const groupId = ensureGroup(source, groups);
+    const targetGroupId = latestTarget.groupId;
+    setBookings((prev) => prev.map((item) =>
+      item.id === source.id || item.id === latestTarget.id || (targetGroupId && item.groupId === targetGroupId)
+        ? { ...item, groupId } : item
+    ));
+    setLodgingGroups(groups.filter((group) => group.id !== targetGroupId || group.id === groupId));
+    setModal(null);
+    setOpenGroupId(groupId);
+    toast("Đã gộp phòng vào đoàn");
   }
 
   function handleCopyConfirm(payload) {
@@ -571,6 +639,15 @@ function FrontDesk() {
       {modal?.type === "assignRoom" && (
         <AssignRoomModal booking={modal.booking} onClose={closeModal} onSave={handleAssignRoomSave} />
       )}
+      {modal?.type === "addRoomToGroup" && (
+        <AddRoomToGroupModal booking={modal.booking} bookings={bookings} onClose={closeModal} onConfirm={handleAddRoomConfirm} />
+      )}
+      {modal?.type === "mergeRoomGroup" && (
+        <MergeRoomGroupModal booking={modal.booking}
+          candidates={bookings.filter((item) => item.id !== modal.booking.id && item.stage !== "checkedout" &&
+            (!modal.booking.groupId || item.groupId !== modal.booking.groupId) && item.room)}
+          onClose={closeModal} onConfirm={handleMergeRoomConfirm} />
+      )}
 
       {modal?.type === "copy" && (
         <CopyBookingModal booking={modal.booking} onClose={closeModal} onConfirm={handleCopyConfirm} />
@@ -591,7 +668,11 @@ function FrontDesk() {
 
       {detailFullBooking && (
         <BookingDetailPanel
+          key={detailFullBooking.id}
           booking={detailFullBooking}
+          group={lodgingGroups.find((group) => group.id === detailFullBooking.groupId)}
+          groupBookings={detailFullBooking.groupId ? bookings.filter((item) => item.groupId === detailFullBooking.groupId) : []}
+          onSelectGroupBooking={(booking) => openDetail(booking, booking.stage === "arrival" ? "arrivals" : "inhouse")}
           tab={detailBooking.tab}
           onClose={() => setDetailBooking(null)}
           onPrimaryAction={() => handlePrimaryAction(detailFullBooking, detailBooking.tab)}
@@ -604,8 +685,17 @@ function FrontDesk() {
           onOpenEditGuest={(booking, guestId) => setModal({ type: "editGuest", booking, tab: detailBooking.tab, guestId })}
           onRemoveGuest={handleRemoveGuest}
           onRecordPayment={handleRecordPayment}
+          onOpenAddRoom={(booking) => setModal({ type: "addRoomToGroup", booking })}
+          onOpenMergeRoom={(booking) => setModal({ type: "mergeRoomGroup", booking })}
+          onOpenGroupDetail={setOpenGroupId}
           onToast={toast}
         />
+      )}
+
+      {openGroupId && (
+        <LodgingGroupDetail group={lodgingGroups.find((group) => group.id === openGroupId)} bookings={bookings}
+          onClose={() => setOpenGroupId(null)}
+          onOpenBooking={(booking) => { setOpenGroupId(null); openDetail(booking, booking.stage === "arrival" ? "arrivals" : "inhouse"); }} />
       )}
 
       {invoiceView && (

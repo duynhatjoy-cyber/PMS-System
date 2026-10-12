@@ -1,0 +1,7 @@
+.list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+.choice { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 12px; border: 1px solid var(--fd-border-strong); border-radius: var(--fd-radius-sm); background: var(--fd-surface); color: var(--fd-text); text-align: left; font: inherit; cursor: pointer; }
+.choice:hover, .choice:focus-visible { border-color: var(--fd-primary); outline: none; }
+.selected { border-color: var(--fd-primary); background: var(--fd-primary-soft); }
+.choice span { display: flex; flex-direction: column; gap: 3px; }
+.choice small { color: var(--fd-text-secondary); font-size: 12px; }
+.choice strong { white-space: nowrap; }

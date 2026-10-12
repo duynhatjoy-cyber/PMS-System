@@ -89,7 +89,8 @@ function RoomStatusGrid({
       snapshot,
       booking: snapshot.booking,
       room: snapshot.room,
-      status: snapshot.housekeeping === "dirty" ? "dirty" : snapshot.status,
+      status: snapshot.status,
+      housekeeping: snapshot.housekeeping,
       x: Math.max(8, Math.min(rect.left, window.innerWidth - 224)),
       y: Math.max(8, Math.min(rect.bottom + 6, window.innerHeight - 500)),
     });
@@ -144,9 +145,10 @@ function RoomStatusGrid({
                       onClick={(e) => handleCardClick(e, snapshot)}
                     >
                       <span className={styles.roomTileNumber}>{snapshot.room.number}</span>
-                      {isVacant && <Check size={13} />}
+                      {isDirty && <Brush size={13} />}
+                      {isVacant && !isDirty && <Check size={13} />}
                       {isMaintenance && <Wrench size={13} />}
-                      {!isVacant && !isMaintenance && <ClipboardList size={13} />}
+                      {!isVacant && !isMaintenance && !isDirty && <ClipboardList size={13} />}
                     </button>
                   );
                 }
@@ -166,8 +168,7 @@ function RoomStatusGrid({
                           <span>{snapshot.room.typeKey}</span>
                           <strong>{snapshot.room.number}</strong>
                           <div className={styles.roomStateIcons}>
-                            <Check size={17} />
-                            {isDirty && <Brush size={16} className={styles.dirtyBroom} />}
+                            {isDirty ? <Brush size={16} className={styles.dirtyBroom} /> : <Check size={17} />}
                           </div>
                         </div>
                         <div className={styles.vacantCardBody} style={{ color: statusColor }}>
@@ -190,7 +191,7 @@ function RoomStatusGrid({
                         <div className={styles.bookingCardCode} style={{ background: statusColor }}>
                           <span>{snapshot.room.typeKey}</span>
                           <strong>{snapshot.room.number}</strong>
-                          <BedDouble size={16} />
+                          {isDirty ? <Brush size={16} className={styles.dirtyBroom} /> : <BedDouble size={16} />}
                         </div>
                         <div className={styles.bookingCardBody}>
                           <div className={styles.bookingCardTop}>

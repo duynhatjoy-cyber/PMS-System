@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Baby, CalendarRange, Minus, Plus, User, X } from "lucide-react";
+import { Baby, CalendarRange, Minus, Plus, User, Users, X } from "lucide-react";
 import Toast from "../FrontDesk/components/Toast";
 import DateNavPopover from "../RoomMap/components/DateNavPopover";
 import BookingCartPanel from "./components/BookingCartPanel";
@@ -44,6 +44,17 @@ const EMPTY_GUEST_FORM = {
   address: "",
 };
 
+const GROUP_STORAGE_KEY = "bellhop-booking-groups";
+
+function readSavedGroups() {
+  try {
+    const groups = JSON.parse(localStorage.getItem(GROUP_STORAGE_KEY) || "[]");
+    return Array.isArray(groups) ? groups : [];
+  } catch {
+    return [];
+  }
+}
+
 function availabilityClass(avail, styles) {
   if (avail <= 0) return styles.availZero;
   if (avail <= 2) return styles.availLow;
@@ -73,6 +84,11 @@ function CreateBooking() {
   const cartSeq = useRef(0);
   const [toastMsg, setToastMsg] = useState("");
   const [activeTab, setActiveTab] = useState("rooms"); // "rooms" | "info"
+  const [savedGroups, setSavedGroups] = useState(readSavedGroups);
+  const [selectedGroupId, setSelectedGroupId] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [groupLeader, setGroupLeader] = useState("");
+  const selectedGroup = savedGroups.find((group) => group.id === selectedGroupId);
 
   const [taxEnabled, setTaxEnabled] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
@@ -157,6 +173,57 @@ function CreateBooking() {
     setCartLines([]);
   }
 
+  function saveGroup() {
+    const name = groupName.trim();
+    const leaderName = groupLeader.trim();
+    if (!name || !leaderName || cartLines.length === 0) {
+      setToastMsg("Nhập tên đoàn, người đại diện và chọn ít nhất một phòng");
+      return;
+    }
+    const id = selectedGroupId || `group-${Date.now()}`;
+    const group = {
+      id, name, leaderName, checkIn: checkIn.toISOString(), checkOut: checkOut.toISOString(),
+      rooms: cartLines.map(({ typeKey, roomNumber, adults, children }) => ({ typeKey, roomNumber, adults, children })),
+      ratePlanByType,
+    };
+    const next = [...savedGroups.filter((item) => item.id !== id), group];
+    setSavedGroups(next);
+    localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(next));
+    setSelectedGroupId(id);
+    setGuestForm((prev) => ({ ...prev, name: leaderName }));
+    setToastMsg("Đã lưu thông tin đoàn");
+  }
+
+  function selectGroup(id) {
+    setSelectedGroupId(id);
+    const group = savedGroups.find((item) => item.id === id);
+    if (!group) {
+      setGroupName("");
+      setGroupLeader("");
+      return;
+    }
+    setGroupName(group.name);
+    setGroupLeader(group.leaderName);
+    setGuestForm((prev) => ({ ...prev, name: group.leaderName }));
+    const arrival = new Date(group.checkIn);
+    const departure = new Date(group.checkOut);
+    if (!Number.isNaN(arrival.getTime()) && !Number.isNaN(departure.getTime())) {
+      setCheckInDate(startOfDay(arrival));
+      setCheckInTime(`${String(arrival.getHours()).padStart(2, "0")}:${String(arrival.getMinutes()).padStart(2, "0")}`);
+      setCheckOutDate(startOfDay(departure));
+      setCheckOutTime(`${String(departure.getHours()).padStart(2, "0")}:${String(departure.getMinutes()).padStart(2, "0")}`);
+    }
+    setRatePlanByType((prev) => ({ ...prev, ...group.ratePlanByType }));
+    const used = new Set();
+    setCartLines((group.rooms || []).filter((room) => ROOM_TYPES.some((type) => type.key === room.typeKey)).map((room) => {
+      cartSeq.current += 1;
+      const roomNumber = room.roomNumber && !used.has(room.roomNumber) ? room.roomNumber : null;
+      if (roomNumber) used.add(roomNumber);
+      return { ...room, roomNumber, id: `cart-${cartSeq.current}` };
+    }));
+    setToastMsg("Đã chọn đoàn. Chọn Chỉnh sửa phòng để thay đổi.");
+  }
+
   function goToTab(tab) {
     if (tab === "info" && cartLines.length === 0) {
       setToastMsg("Vui lòng chọn phòng ở tab Phòng trống trước");
@@ -191,12 +258,22 @@ function CreateBooking() {
     setCompany("");
     setSource("");
     setMarket("");
+    setSelectedGroupId("");
+    setGroupName("");
+    setGroupLeader("");
     setActiveTab("rooms");
   }
 
   return (
     <div className={styles.page}>
       <div className={styles.topTabs}>
+        <button
+          type="button"
+          className={`${styles.topTab} ${activeTab === "groups" ? styles.topTabActive : ""}`}
+          onClick={() => goToTab("groups")}
+        >
+          <Users size={15} /> Thông tin đoàn
+        </button>
         <button
           type="button"
           className={`${styles.topTab} ${activeTab === "rooms" ? styles.topTabActive : ""}`}
@@ -213,9 +290,72 @@ function CreateBooking() {
         </button>
       </div>
 
-      {activeTab === "rooms" ? (
+      {activeTab === "groups" ? (
+        <div className={styles.groupsBody}>
+          <div className={styles.groupCard}>
+            <div className={styles.infoCardTitle}>Đoàn đã lưu</div>
+            {savedGroups.length === 0 ? (
+              <p className={styles.groupEmpty}>Chưa có đoàn nào được lưu. Tạo đoàn trong tab Phòng trống.</p>
+            ) : (
+              <div className={styles.groupList}>
+                {savedGroups.map((group) => (
+                  <button key={group.id} type="button" className={`${styles.groupListItem} ${selectedGroupId === group.id ? styles.groupListItemActive : ""}`} onClick={() => selectGroup(group.id)}>
+                    <strong>{group.name}</strong>
+                    <span>{group.leaderName} · {(group.rooms || []).length} phòng</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className={styles.groupCard}>
+            {selectedGroup ? (
+              <>
+                <div className={styles.infoCardTitle}>Thông tin đoàn</div>
+                <h2 className={styles.groupDetailTitle}>{selectedGroup.name}</h2>
+                <div className={styles.groupDetailGrid}>
+                  <div><span>Người đại diện</span><strong>{selectedGroup.leaderName}</strong></div>
+                  <div><span>Nhận phòng</span><strong>{new Date(selectedGroup.checkIn).toLocaleString("vi-VN")}</strong></div>
+                  <div><span>Trả phòng</span><strong>{new Date(selectedGroup.checkOut).toLocaleString("vi-VN")}</strong></div>
+                  <div><span>Số phòng</span><strong>{(selectedGroup.rooms || []).length}</strong></div>
+                </div>
+                <div className={styles.groupRoomList}>
+                  {(selectedGroup.rooms || []).map((room, index) => (
+                    <div key={index}>
+                      <strong>{ROOM_TYPES.find((type) => type.key === room.typeKey)?.label || room.typeKey}</strong>
+                      <span>{room.roomNumber || "Chưa gán phòng"} · {room.adults || 0} người lớn · {room.children || 0} trẻ em</span>
+                    </div>
+                  ))}
+                </div>
+                <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={() => setActiveTab("rooms")}>Chỉnh sửa phòng</button>
+              </>
+            ) : (
+              <p className={styles.groupEmpty}>Chọn một đoàn trong danh sách để xem thông tin.</p>
+            )}
+          </div>
+        </div>
+      ) : activeTab === "rooms" ? (
         <div className={styles.body}>
           <div className={styles.mainCol}>
+            {(
+              <div className={styles.groupCard}>
+                <div className={styles.infoCardTitle}>Thông tin đoàn</div>
+                <div className={styles.groupFields}>
+                  <label className={styles.groupField}>Tên đoàn
+                    <input className={shared.input} value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Tên đoàn" />
+                  </label>
+                  <label className={styles.groupField}>Người đại diện
+                    <input className={shared.input} value={groupLeader} onChange={(e) => setGroupLeader(e.target.value)} placeholder="Tên người đại diện" />
+                  </label>
+                </div>
+                <div className={styles.groupActions}>
+                  <span>{cartLines.length} phòng đang chọn{selectedGroup ? ` · Đang sửa ${selectedGroup.name}` : ""}</span>
+                  <div className={styles.groupActionButtons}>
+                    {selectedGroup && <button type="button" className={shared.btn} onClick={() => { setSelectedGroupId(""); setGroupName(""); setGroupLeader(""); setCartLines([]); }}>Tạo đoàn mới</button>}
+                    <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={saveGroup}>Lưu thông tin đoàn</button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className={styles.dateRow}>
               <div className={styles.dateField}>
                 <DateNavPopover selectedDate={checkInDate} onSelect={setCheckInDate} />
