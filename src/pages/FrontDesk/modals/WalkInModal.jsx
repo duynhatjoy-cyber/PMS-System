@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Check, Minus, Plus, Search } from "lucide-react";
 import SlidePanelShell from "./SlidePanelShell";
 import {
-  roomTypes,
   ratePlans,
   bookingSources,
   guestDirectory,
-  getAvailableRoomNumbers,
 } from "../../../data/frontDeskData";
+import { getConfiguredRoomTypes } from "../../../utils/configuredRooms";
 import { CUSTOMER_SEGMENTS } from "../../../data/bookingConfigData";
 import { formatCurrency, formatDMY, formatDateTimeDMY, formatTime, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
@@ -48,7 +47,7 @@ function StepIndicator({ step }) {
   );
 }
 
-function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onConfirm }) {
+function WalkInModal({ defaultCheckIn, defaultCheckOut, defaultRoomNumber, bookings, onClose, onConfirm }) {
   const [step, setStep] = useState(0);
   const [stayType, setStayType] = useState("night");
   const nowHHMM = formatTime(new Date());
@@ -65,7 +64,12 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
 
   const [segmentId, setSegmentId] = useState(CUSTOMER_SEGMENTS[0].id);
 
-  const [roomTypeId, setRoomTypeId] = useState(null);
+  const [roomTypeId, setRoomTypeId] = useState(() => getConfiguredRoomTypes().find((type) => type.numbers.includes(defaultRoomNumber))?.id || null);
+  const [roomNumber, setRoomNumber] = useState(defaultRoomNumber || "");
+  const [selectedRoomNumbers, setSelectedRoomNumbers] = useState({});
+  const [identity, setIdentity] = useState({ nationality: "VN", documentType: "CCCD", documentNumber: "", birthDate: "" });
+  const [deposit, setDeposit] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   const [roomQuantities, setRoomQuantities] = useState({});
   const [roomRepresentatives, setRoomRepresentatives] = useState({});
   const [representative, setRepresentative] = useState({ name: "", phone: "", idNumber: "" });
@@ -97,9 +101,12 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
   const selectedSegment = CUSTOMER_SEGMENTS.find((s) => s.id === segmentId);
   const isGroup = selectedSegment?.code === "GRP";
 
-  const roomTypesWithAvail = roomTypes.map((rt) => ({
+  const roomTypesWithAvail = getConfiguredRoomTypes().map((rt) => ({
     ...rt,
-    availableNumbers: getAvailableRoomNumbers(rt.id, bookings, checkInDate, checkOutDate),
+    tag: `Tối đa ${rt.maxOccupancy} người`,
+    availableNumbers: rt.numbers.filter((number) => !(bookings || []).some((booking) =>
+      booking.room === number && booking.stage !== "checkedout" &&
+      booking.status !== "checked_out" && booking.checkIn < checkOutDate && booking.checkOut > checkInDate)),
   }));
 
   const selectedRoomType = roomTypesWithAvail.find((rt) => rt.id === roomTypeId);
@@ -107,7 +114,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
   const roomInstances = isGroup
     ? roomTypesWithAvail.flatMap((rt) => {
         const qty = roomQuantities[rt.id] || 0;
-        return Array.from({ length: qty }, (_, i) => ({ key: `${rt.id}-${i + 1}`, typeId: rt.id, index: i + 1, roomType: rt }));
+        return Array.from({ length: qty }, (_, i) => ({ key: `${rt.id}-${i + 1}`, typeId: rt.id, index: i + 1, roomType: rt, roomNumber: selectedRoomNumbers[rt.id]?.[i] || "" }));
       })
     : [];
   const totalRoomsSelected = roomInstances.length;
@@ -128,8 +135,8 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
 
   const canGoStep1 = Boolean(checkIn && checkOut && checkOutDate > checkInDate);
   const canGoStep2 = isGroup
-    ? totalRoomsSelected > 0 && groupCapacityOk
-    : Boolean(roomTypeId) && singleCapacityOk;
+    ? totalRoomsSelected > 0 && groupCapacityOk && roomInstances.every((room) => room.roomNumber)
+    : Boolean(roomTypeId && roomNumber) && singleCapacityOk;
   const canGoStep3 = Boolean(selectedGuest) || (creatingNew && firstName.trim().length > 0 && lastName.trim().length > 0);
 
   const guestMatches = guestQuery.trim()
@@ -193,6 +200,8 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
     const nextIsGroup = seg.code === "GRP";
     if (nextIsGroup !== isGroup) {
       setRoomTypeId(null);
+      setRoomNumber("");
+      setSelectedRoomNumbers({});
       setRoomQuantities({});
       setRoomRepresentatives({});
       setRepresentative({ name: "", phone: "", idNumber: "" });
@@ -202,11 +211,11 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
     setSegmentId(seg.id);
   }
 
-  function changeRoomQty(typeId, delta, max) {
-    setRoomQuantities((prev) => {
-      const next = Math.max(0, Math.min(max, (prev[typeId] || 0) + delta));
-      return { ...prev, [typeId]: next };
-    });
+  function toggleGroupRoom(typeId, number) {
+    const current = selectedRoomNumbers[typeId] || [];
+    const next = current.includes(number) ? current.filter((item) => item !== number) : [...current, number];
+    setSelectedRoomNumbers((prev) => ({ ...prev, [typeId]: next }));
+    setRoomQuantities((prev) => ({ ...prev, [typeId]: next.length }));
   }
 
   function updateRoomRepresentative(key, field, value) {
@@ -234,6 +243,7 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
       isGroup,
       segment: selectedSegment?.name,
       roomType: !isGroup ? selectedRoomType : null,
+      roomNumber: !isGroup ? roomNumber : null,
       rooms: isGroup
         ? roomInstances.map((inst) => ({
             ...inst,
@@ -252,6 +262,9 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
       guestName: finalGuestName,
       phone: finalGuestPhone,
       note,
+      identity,
+      deposit: Number(deposit) || 0,
+      paymentMethod,
       total,
     });
   }
@@ -513,49 +526,38 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
               const soldOut = availCount === 0;
 
               if (isGroup) {
-                const qty = roomQuantities[rt.id] || 0;
                 return (
                   <div key={rt.id} className={styles.roomOption}>
                     <div>
                       <div className={styles.roomName}>{rt.name}</div>
                       <div className={styles.roomTag}>{rt.tag}</div>
-                      <div className={`${styles.roomAvail} ${soldOut ? styles.roomAvailZero : ""}`}>
-                        {availCount} phòng trống
+                      <div className={styles.roomNumbers} aria-label={`Phòng trống của ${rt.name}`}>
+                        {rt.availableNumbers.map((number) => <button key={number} type="button" className={`${styles.roomNumber} ${(selectedRoomNumbers[rt.id] || []).includes(number) ? styles.roomNumberActive : ""}`} aria-pressed={(selectedRoomNumbers[rt.id] || []).includes(number)} onClick={() => toggleGroupRoom(rt.id, number)}>{number}</button>)}
+                        {soldOut && <span className={styles.roomAvailZero}>Hết phòng</span>}
                       </div>
                     </div>
                     <div className={styles.roomPriceCol}>
                       <div className={styles.roomPrice}>{formatCurrency(rt.price)}/đêm</div>
-                      <div className={styles.counterControl}>
-                        <button type="button" onClick={() => changeRoomQty(rt.id, -1, availCount)} disabled={qty === 0}>
-                          <Minus size={14} />
-                        </button>
-                        <span>{qty}</span>
-                        <button
-                          type="button"
-                          onClick={() => changeRoomQty(rt.id, 1, availCount)}
-                          disabled={qty >= availCount}
-                        >
-                          <Plus size={14} />
-                        </button>
-                      </div>
+                      <div className={`${styles.roomAvail} ${soldOut ? styles.roomAvailZero : ""}`}>{availCount} phòng trống</div>
                     </div>
                   </div>
                 );
               }
 
               return (
-                <button
+                <div
                   key={rt.id}
-                  type="button"
-                  disabled={soldOut}
                   className={`${styles.roomOption} ${roomTypeId === rt.id ? styles.roomOptionActive : ""} ${
                     soldOut ? styles.roomOptionDisabled : ""
                   }`}
-                  onClick={() => setRoomTypeId(rt.id)}
                 >
                   <div>
                     <div className={styles.roomName}>{rt.name}</div>
                     <div className={styles.roomTag}>{rt.tag}</div>
+                    <div className={styles.roomNumbers} aria-label={`Phòng trống của ${rt.name}`}>
+                      {rt.availableNumbers.map((number) => <button key={number} type="button" className={`${styles.roomNumber} ${roomNumber === number && roomTypeId === rt.id ? styles.roomNumberActive : ""}`} aria-pressed={roomNumber === number && roomTypeId === rt.id} onClick={() => { setRoomTypeId(rt.id); setRoomNumber(number); }}>{number}</button>)}
+                      {soldOut && <span className={styles.roomAvailZero}>Hết phòng</span>}
+                    </div>
                   </div>
                   <div className={styles.roomPriceCol}>
                     <div className={styles.roomPrice}>{formatCurrency(rt.price)}/đêm</div>
@@ -563,10 +565,11 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
                       {availCount} phòng trống
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>
+
 
           {isGroup && totalRoomsSelected > 0 && (
             <div className={shared.field}>
@@ -787,6 +790,18 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
               placeholder="Không có"
             />
           </div>
+          <div className={styles.extraSection}>
+            <strong>Giấy tờ tùy thân</strong>
+            <label className={shared.field}><span className={shared.label}>Quốc tịch</span><select className={shared.select} value={identity.nationality} onChange={(e) => setIdentity({ ...identity, nationality: e.target.value })}><option value="VN">Việt Nam</option><option value="OTHER">Khác</option></select></label>
+            <label className={shared.field}><span className={shared.label}>Loại giấy tờ</span><select className={shared.select} value={identity.documentType} onChange={(e) => setIdentity({ ...identity, documentType: e.target.value })}><option>CCCD</option><option>Hộ chiếu</option><option>CMND</option></select></label>
+            <label className={shared.field}><span className={shared.label}>Số giấy tờ</span><input className={shared.input} value={identity.documentNumber} onChange={(e) => setIdentity({ ...identity, documentNumber: e.target.value })} placeholder="012345678901" /></label>
+            <label className={shared.field}><span className={shared.label}>Ngày sinh (tùy chọn)</span><input type="date" className={shared.input} value={identity.birthDate} onChange={(e) => setIdentity({ ...identity, birthDate: e.target.value })} /></label>
+          </div>
+          <div className={styles.extraSection}>
+            <strong>Đặt cọc</strong>
+            <label className={shared.field}><span className={shared.label}>Số tiền cọc (VND)</span><input type="number" min="0" className={shared.input} value={deposit} onChange={(e) => setDeposit(e.target.value)} placeholder="0 (bỏ qua nếu không cọc)" /></label>
+            <label className={shared.field}><span className={shared.label}>Hình thức thanh toán</span><select className={shared.select} value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}><option>Tiền mặt</option><option>Chuyển khoản</option><option>Thẻ</option></select></label>
+          </div>
         </div>
       )}
 
@@ -813,6 +828,9 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, bookings, onClose, onCon
                 <strong>{selectedRoomType?.name}</strong>
               </div>
             )}
+            <div className={styles.reviewRow}><span>Số phòng</span><strong>{isGroup ? roomInstances.map((room) => room.roomNumber).join(", ") : roomNumber}</strong></div>
+            <div className={styles.reviewRow}><span>Giấy tờ</span><strong>{identity.documentType} {identity.documentNumber || "—"}</strong></div>
+            <div className={styles.reviewRow}><span>Đặt cọc</span><strong>{formatCurrency(Number(deposit) || 0)} · {paymentMethod}</strong></div>
 
             <div className={styles.reviewRow}>
               <span>Check-in</span>

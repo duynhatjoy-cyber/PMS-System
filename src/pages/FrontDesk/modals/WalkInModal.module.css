@@ -364,8 +364,33 @@
   border-radius: var(--fd-radius-md);
   padding: 14px 16px;
   background: #fff;
-  cursor: pointer;
+  cursor: default;
   text-align: left;
+}
+
+.roomNumbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.roomNumber {
+  min-width: 42px;
+  padding: 5px 9px;
+  border: 1px solid var(--fd-border-strong);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--fd-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.roomNumber:hover, .roomNumberActive {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-soft);
+  color: var(--fd-primary-hover);
 }
 
 .roomOptionActive {
@@ -443,6 +468,15 @@
 .reviewList {
   display: flex;
   flex-direction: column;
+}
+
+.extraSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--fd-border);
+  border-radius: var(--fd-radius-md);
+  padding: 16px;
 }
 
 .reviewRow {

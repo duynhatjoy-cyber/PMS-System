@@ -20,6 +20,7 @@ import {
 import IconPopup from "../components/IconPopup";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import RoomTaskModal from "../modals/RoomTaskModal";
+import ChangePriceModal from "../modals/ChangePriceModal";
 import UserActivityModal from "../modals/UserActivityModal";
 import { computeBill } from "../../../utils/billing";
 import { formatCurrency, formatDateTimeDMY } from "../../../utils/format";
@@ -41,6 +42,7 @@ function BookingDetailPanel({
   onAddServiceClick,
   onPrintOption,
   onOpenChangeDate,
+  onSavePrice,
   onOpenAssignRoom,
   onUndoCheckIn,
   onCheckout,
@@ -62,6 +64,7 @@ function BookingDetailPanel({
   const [removeGuestTarget, setRemoveGuestTarget] = useState(null);
   const [showActivity, setShowActivity] = useState(false);
   const [showTask, setShowTask] = useState(false);
+  const [showPrice, setShowPrice] = useState(false);
 
   const [payAsOf, setPayAsOf] = useState("now");
   const [discount, setDiscount] = useState(0);
@@ -253,12 +256,12 @@ function BookingDetailPanel({
                 </span>
               </button>
 
-              <div className={styles.metaRow}>
+              <button type="button" className={styles.metaRowBtn} onClick={() => setShowPrice(true)} title="Đổi giá">
                 <DollarSign size={15} />
                 <span>
-                  OFF (CN-T6) (Tổng: {formatCurrency(headBill.roomTotal)})
+                  {booking.ratePlan || "OFF (CN-T6)"} (Tổng: {formatCurrency(headBill.roomTotal)})
                 </span>
-              </div>
+              </button>
 
               <div className={styles.guestCountRow}>
                 <Users size={15} />
@@ -567,6 +570,7 @@ function BookingDetailPanel({
         />
       )}
       {showActivity && <UserActivityModal booking={booking} onClose={() => setShowActivity(false)} />}
+      {showPrice && <ChangePriceModal booking={booking} onClose={() => setShowPrice(false)} onSave={(price) => { onSavePrice(booking, price); setShowPrice(false); }} />}
       {showTask && (
         <RoomTaskModal
           booking={booking}

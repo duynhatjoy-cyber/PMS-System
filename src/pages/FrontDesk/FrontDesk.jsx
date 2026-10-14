@@ -30,6 +30,7 @@ import ReservationTable from "./components/ReservationTable";
 import Pagination from "./components/Pagination";
 import Toast from "./components/Toast";
 import WalkInModal from "./modals/WalkInModal";
+import CheckInModal from "./modals/CheckInModal";
 import ConfirmActionModal from "./modals/ConfirmActionModal";
 import ChangeDateModal from "./modals/ChangeDateModal";
 import AssignRoomModal from "./modals/AssignRoomModal";
@@ -370,7 +371,7 @@ function FrontDesk() {
   }
 
   function handleWalkInConfirm(payload) {
-    const rooms = payload.isGroup ? payload.rooms : [{ roomType: payload.roomType, representative: null }];
+    const rooms = payload.isGroup ? payload.rooms : [{ roomType: payload.roomType, roomNumber: payload.roomNumber, representative: null }];
     const groupCode = payload.isGroup ? Math.floor(45000 + Math.random() * 4999) : null;
     const groupRepresentative = payload.representative?.name ? payload.representative : null;
 
@@ -382,7 +383,7 @@ function FrontDesk() {
       return {
         id: `WI-${code}`,
         stage: "arrival",
-        room: null,
+        room: r.roomNumber,
         roomType: r.roomType.name,
         bookingCode: code,
         guest: { name: guestName, flag: "VN" },
@@ -392,12 +393,15 @@ function FrontDesk() {
         stayCount: 0,
         adults: payload.adults,
         children: payload.children,
-        assigned: false,
+        assigned: true,
         confirmed: true,
         paid: false,
-        source: "Walk-in",
+        source: payload.source,
         segment: payload.segment,
         notes: payload.note,
+        identity: payload.identity,
+        deposit: payload.deposit,
+        paymentMethod: payload.paymentMethod,
         services: [],
         paymentRecords: [],
         ...(payload.isGroup && {
@@ -422,9 +426,8 @@ function FrontDesk() {
       setModal({ type: "assignRoom", booking, tab });
       return;
     }
-    updateBooking(booking.id, { stage: "inhouse", confirmed: true });
     setDetailBooking(null);
-    toast(`Đã nhận phòng cho ${booking.guest.name}`);
+    setModal({ type: "checkin", booking });
   }
 
   return (
@@ -610,6 +613,15 @@ function FrontDesk() {
           onConfirm={handleWalkInConfirm}
         />
       )}
+      {modal?.type === "checkin" && <CheckInModal booking={modal.booking} onClose={closeModal} onConfirm={(details) => {
+        updateBooking(modal.booking.id, {
+          stage: "inhouse", confirmed: true, identity: details.identity,
+          deposit: details.deposit, paymentMethod: details.paymentMethod,
+          paymentRecords: details.deposit > 0 ? [...(modal.booking.paymentRecords || []), { id: `DEP-${Date.now()}`, date: new Date(), method: details.paymentMethod, amount: details.deposit, note: "Đặt cọc khi check-in" }] : modal.booking.paymentRecords || [],
+        });
+        closeModal();
+        toast(`Đã nhận phòng cho ${modal.booking.guest.name}`);
+      }} />}
 
       {(modal?.type === "cancel" ||
         modal?.type === "unassign" ||
@@ -679,6 +691,7 @@ function FrontDesk() {
           onAddServiceClick={() => setModal({ type: "addService", booking: detailFullBooking, tab: detailBooking.tab })}
           onPrintOption={handlePrintOption}
           onOpenChangeDate={(booking) => setModal({ type: "changeDate", booking, tab: detailBooking.tab })}
+          onSavePrice={(booking, price) => { updateBooking(booking.id, price); toast("Đã lưu giá phòng"); }}
           onOpenAssignRoom={(booking) => setModal({ type: "assignRoom", booking, tab: detailBooking.tab })}
           onUndoCheckIn={handleUndoCheckIn}
           onCheckout={(booking) => setModal({ type: "checkout", booking, tab: detailBooking.tab })}
