@@ -1,5 +1,5 @@
 import { NIGHTLY_RATE } from "../data/frontDeskData";
-import { startOfDay, formatDMYShort, formatTime } from "./format";
+import { addDays, startOfDay, formatDMYShort, formatTime } from "./format";
 
 // Effective end of the stay for billing purposes: the full checkout date,
 // or "now" if that falls earlier (mid-stay bill / partial-stay invoice).
@@ -14,17 +14,32 @@ function countNights(checkIn, effectiveEnd) {
   return Math.max(1, nights);
 }
 
-function formatRange(from, to) {
-  return `${formatDMYShort(from)} ${formatTime(from)} - ${formatDMYShort(to)} ${formatTime(to)}`;
-}
-
-// Room charges bill at one flat nightly rate, so consecutive nights collapse
-// into a single "Giá ngày (from - to)" line.
 function buildRoomLines(booking, asOf) {
   const effectiveEnd = effectiveEndDate(booking, asOf);
   const nights = countNights(booking.checkIn, effectiveEnd);
-  const amount = nights * NIGHTLY_RATE;
-  return { nights, lines: [{ label: `Giá ngày (${formatRange(booking.checkIn, effectiveEnd)})`, amount }] };
+  const rates = booking.nightlyRates || [];
+  const nightlyAmounts = Array.from({ length: nights }, (_, index) =>
+    rates[index] !== undefined && Number(rates[index]) >= 0 ? Number(rates[index]) : NIGHTLY_RATE
+  );
+  const base = nightlyAmounts.reduce((sum, rate) => sum + rate, 0);
+  const percent = Math.min(100, Math.max(0, Number(booking.roomDiscountPercent) || 0));
+  const amount = booking.roomFeeWaived ? 0 : Math.max(0, Math.round(base * (1 - percent / 100) - (Number(booking.roomDiscountAmount) || 0)));
+  let allocated = 0;
+  let cumulativeRate = 0;
+  const lines = nightlyAmounts.map((rate, index) => {
+    const from = addDays(booking.checkIn, index);
+    const to = addDays(from, 1);
+    to.setHours(booking.checkOut.getHours(), booking.checkOut.getMinutes(), 0, 0);
+    cumulativeRate += rate;
+    const cumulativeAmount = index === nights - 1 ? amount : Math.round(amount * cumulativeRate / base) || 0;
+    const line = {
+      label: `Giá ngày (${formatDMYShort(from)} ${formatTime(from)} - ${formatDMYShort(to)} ${formatTime(to)})`,
+      amount: cumulativeAmount - allocated,
+    };
+    allocated = cumulativeAmount;
+    return line;
+  });
+  return { nights, lines };
 }
 
 function buildServiceLines(booking) {

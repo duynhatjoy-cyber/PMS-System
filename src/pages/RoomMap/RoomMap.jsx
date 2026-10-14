@@ -14,6 +14,7 @@ import CopyBookingModal from "../FrontDesk/modals/CopyBookingModal";
 import EditGuestModal from "../FrontDesk/modals/EditGuestModal";
 import InvoiceModal from "../FrontDesk/modals/InvoiceModal";
 import WalkInModal from "../FrontDesk/modals/WalkInModal";
+import CheckInModal from "../FrontDesk/modals/CheckInModal";
 import AddRoomToGroupModal from "../FrontDesk/modals/AddRoomToGroupModal";
 import MergeRoomGroupModal from "../FrontDesk/modals/MergeRoomGroupModal";
 import LodgingGroupDetail from "../FrontDesk/modals/LodgingGroupDetail";
@@ -215,8 +216,7 @@ function RoomMap() {
     }
     const frontDeskBooking = toFrontDeskBooking(booking);
     if (action === "checkin") {
-      updateBooking(booking.id, { status: "in_house" });
-      setToastMsg(`Đã nhận phòng cho ${booking.guest}`);
+      setModal({ type: "checkin", booking: frontDeskBooking });
       return;
     }
     if (action === "undo") {
@@ -404,8 +404,8 @@ function RoomMap() {
           tab={detailBooking.stage === "inhouse" ? "inhouse" : "arrivals"}
           onClose={() => setDetailId(null)}
           onPrimaryAction={() => {
-            updateBooking(detailBooking.id, { status: "in_house" });
-            setToastMsg(`Đã nhận phòng cho ${detailBooking.guest.name}`);
+            setDetailId(null);
+            setModal({ type: "checkin", booking: detailBooking });
           }}
           onAddServiceClick={() => setModal({ type: "addService", booking: detailBooking })}
           onPrintOption={(booking, asOf) => setInvoiceView({ booking, asOf: asOf === "invoice" ? "checkout" : asOf })}
@@ -447,9 +447,19 @@ function RoomMap() {
       {openGroupId && <LodgingGroupDetail group={lodgingGroups.find((group) => group.id === openGroupId)}
         bookings={bookings.map(toFrontDeskBooking)} onClose={() => setOpenGroupId(null)}
         onOpenBooking={(booking) => { setOpenGroupId(null); setDetailId(booking.id); }} />}
+      {modal?.type === "checkin" && <CheckInModal booking={modal.booking} onClose={closeModal} onConfirm={(details) => {
+        updateBooking(modal.booking.id, {
+          status: "in_house", identity: details.identity,
+          deposit: details.deposit, paymentMethod: details.paymentMethod,
+          paymentRecords: details.deposit > 0 ? [...(modal.booking.paymentRecords || []), { id: `DEP-${Date.now()}`, date: new Date(), method: details.paymentMethod, amount: details.deposit, note: "Đặt cọc khi check-in" }] : modal.booking.paymentRecords || [],
+        });
+        closeModal();
+        setToastMsg(`Đã nhận phòng cho ${modal.booking.guest.name}`);
+      }} />}
 
       {["walkin", "reserve"].includes(modal?.type) && (
         <WalkInModal
+          defaultRoomNumber={modal.room.number}
           defaultCheckIn={modal.defaultCheckIn || selectedDate}
           defaultCheckOut={modal.defaultCheckOut}
           onClose={closeModal}
@@ -461,7 +471,7 @@ function RoomMap() {
               {
                 id: `WI-${code}`,
                 code,
-                room: modal.room.number,
+                room: payload.roomNumber || modal.room.number,
                 roomType: modal.room.typeKey,
                 status: modal.type === "reserve" ? (payload.checkIn > today ? "booked_future" : "arriving_today") : "in_house",
                 checkIn: payload.checkIn,
@@ -476,6 +486,9 @@ function RoomMap() {
                 adults: payload.adults,
                 children: payload.children,
                 notes: payload.note,
+                identity: payload.identity,
+                deposit: payload.deposit,
+                paymentMethod: payload.paymentMethod,
                 services: [],
                 paymentRecords: [],
               },
@@ -486,7 +499,7 @@ function RoomMap() {
               return next;
             });
             closeModal();
-            setToastMsg(modal.type === "reserve" ? `Đã đặt phòng ${modal.room.number}` : `Đã nhận phòng nhanh vào phòng ${modal.room.number}`);
+            setToastMsg(modal.type === "reserve" ? `Đã đặt phòng ${payload.roomNumber || modal.room.number}` : `Đã nhận phòng nhanh vào phòng ${payload.roomNumber || modal.room.number}`);
           }}
         />
       )}
