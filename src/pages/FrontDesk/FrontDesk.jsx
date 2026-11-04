@@ -382,7 +382,7 @@ function FrontDesk() {
         : payload.guestName || "Khách Walk-in";
       return {
         id: `WI-${code}`,
-        stage: "arrival",
+        stage: payload.mode === "checkin" ? "inhouse" : "arrival",
         room: r.roomNumber,
         roomType: r.roomType.name,
         bookingCode: code,
@@ -415,9 +415,11 @@ function FrontDesk() {
 
     newBookings.forEach(addBooking);
     setModal(null);
-    setActiveTab("arrivals");
+    setActiveTab(payload.mode === "checkin" ? "inhouse" : "arrivals");
     toast(
-      payload.isGroup ? `Đã tạo ${newBookings.length} đặt phòng cho đoàn` : "Đã tạo đặt phòng Walk-in mới"
+      payload.mode === "checkin"
+        ? (payload.isGroup ? `Đã nhận ${newBookings.length} phòng cho đoàn` : "Đã nhận phòng thành công")
+        : (payload.isGroup ? `Đã tạo ${newBookings.length} đặt phòng cho đoàn` : "Đã tạo đặt phòng Walk-in mới")
     );
   }
 

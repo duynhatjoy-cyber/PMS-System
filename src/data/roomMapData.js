@@ -126,7 +126,7 @@ export function computeRoomSnapshots(rooms, bookings, day) {
       room,
       status: booking?.status ?? "vacant",
       booking: booking ?? null,
-      housekeeping: !booking && hasCheckedOut ? "dirty" : null,
+      housekeeping: hasCheckedOut || ["105", "202", "303"].includes(room.number) ? "dirty" : null,
     };
   });
 }

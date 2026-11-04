@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { Users, UserRound } from "lucide-react";
+import { Users, Award } from "lucide-react";
 import Guests from "./Guests";
-import Groups from "../Groups/Groups";
+import GuestClassification from "./GuestClassification";
 import styles from "./GuestsHub.module.css";
 
 const TABS = [
   { key: "guests", label: "Danh sách khách", icon: Users },
-  { key: "groups", label: "Danh sách đoàn", icon: UserRound },
+  { key: "classification", label: "Phân loại khách hàng", icon: Award },
 ];
 
-// "Khách" và "Nhóm" (khách lẻ ↔ khách đoàn quan hệ nhiều-nhiều, xem
-// groupData.js) gộp vào 1 trang, 2 tab thay vì 2 sidebar item/route riêng.
 function GuestsHub() {
   const [tabKey, setTabKey] = useState("guests");
 
@@ -33,7 +31,7 @@ function GuestsHub() {
         })}
       </div>
 
-      {tabKey === "guests" ? <Guests /> : <Groups />}
+      {tabKey === "guests" ? <Guests /> : <GuestClassification />}
     </div>
   );
 }

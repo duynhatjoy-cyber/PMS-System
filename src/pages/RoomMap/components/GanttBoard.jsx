@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Brush, ChevronDown, ChevronRight, Wrench } from "lucide-react";
+import { SprayCan, ChevronDown, ChevronRight, Wrench } from "lucide-react";
 import useOutsideClick from "../../../utils/useOutsideClick";
 import { useBookingCardFields } from "../../../utils/bookingCardConfig";
 import { extraLabels, guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
@@ -365,7 +365,7 @@ function GanttBoard({
                       onBookingAction("clean", null, row.room);
                     }}
                   >
-                    <Brush size={13} />
+                    <SprayCan size={12} strokeWidth={2} />
                   </button>
                 )}
               </div>

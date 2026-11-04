@@ -700,7 +700,7 @@
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(184px, 200px));
   gap: 8px;
 }
 
@@ -709,74 +709,477 @@
   gap: 8px;
 }
 
-.roomCard {
+.gridTopToolbar {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border: none;
-  border-left: 4px solid transparent;
-  border-radius: var(--fd-radius-sm);
-  padding: 10px 12px;
-  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dirtyIconPicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.dirtyPickerLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-right: 4px;
+}
+
+.dirtyPickerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 10.5px;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
+  transition: all 0.12s ease;
+}
+
+.dirtyPickerBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.dirtyPickerBtnActive {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.dirtyPickerPreview {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #10b981;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roomCard {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  cursor: pointer;
+  height: 76px;
+  min-height: 76px;
+  max-width: 200px;
+  text-align: left;
+  user-select: none;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.bookingCardTall {
+  height: 108px;
+  min-height: 108px;
 }
 
 .roomCard:hover {
-  box-shadow: 0 3px 8px rgba(16, 24, 40, 0.12);
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(16, 24, 40, 0.08);
+  border-color: #cbd5e1;
 }
 
-.roomCardHead {
+.cardBadge {
+  width: 48px;
+  flex: none;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px;
+  color: #ffffff;
+  border-radius: 0;
+  transition: opacity 0.15s ease;
 }
 
-.roomCardNumber {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--fd-text);
+.badgeIconsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 16px;
 }
 
-.roomCardType {
-  font-size: 10.5px;
+.badgeCheckCircle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dirtyIconWrap,
+.dirtyIconDark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  filter: drop-shadow(0 0 1.2px rgba(255, 255, 255, 0.85));
+}
+
+.dirtyYellowCircle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fde047;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.dirtyRedCircle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #b91c1c;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dirtyCornerTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  font-size: 8.5px;
   font-weight: 600;
-  color: var(--fd-text-muted);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
-.roomCardVacant {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
+.badgeRoomType {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.1;
+  margin-top: 1px;
+}
+
+.badgeRoomNumber {
+  font-size: 14.5px;
   font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: 0;
 }
 
-.roomCardGuest {
+.cardBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px 8px;
+  gap: 2px;
+}
+
+.cardHeaderRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  min-height: 16px;
+}
+
+.cardMiddleRow {
+  display: flex;
+  align-items: center;
+  min-height: 14px;
   min-width: 0;
 }
 
-.roomCardGuestName {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--fd-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.cardBottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-height: 18px;
+  margin-top: auto;
 }
 
-.roomCardMeta {
-  font-size: 11px;
+.sourcePill,
+.statusPill {
+  max-width: 55%;
+  padding: 1.5px 4px;
+  border-radius: 3px;
+  font-size: 8.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sourcePill {
+  color: #ffffff;
+}
+
+.guestLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.bookingFlag {
+  min-width: 18px;
+  height: 13px;
+  padding: 0 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: #b23a2e;
+  color: #ffffff;
+  font-size: 7.5px;
   font-weight: 700;
+  flex-shrink: 0;
+}
+
+.metaInfoLine {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusWithDot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.dotGreen {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+}
+
+.dotOrange {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #f59e0b;
+  flex-shrink: 0;
+}
+
+.dotGrey {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #64748b;
+  flex-shrink: 0;
+}
+
+.vacantStatusText {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dirtyStatusText {
+  color: #d97706;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.maintenanceStatusText {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vacantHeading {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.staffText {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.maintenanceReason {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.maintenanceCompletion {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.guestName {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.dateRangeLine {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 400;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendarIcon {
+  color: #94a3b8;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+}
+
+.etaText {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.depositLabel {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.priceAmount {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+
+.vacantActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1.5px 7px;
+  border-radius: 4px;
+  border: 1px solid #34d399;
+  background: #ffffff;
+  color: #059669;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vacantActionBtn:hover {
+  background: #ecfdf5;
+  border-color: #10b981;
+}
+
+.depositPillBlue {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 4px;
+  background: #eff6ff;
+  border-radius: 3px;
+  color: #2563eb;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.cleaningPill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #fef3c7;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+}
+
+.cleaningStart {
+  color: #92400e;
+  font-weight: 500;
+}
+
+.cleaningDuration {
+  color: #b45309;
+  font-weight: 600;
 }
 
 .rangeSelection {
@@ -789,191 +1192,6 @@
   border-radius: 6px;
   background: color-mix(in srgb, var(--fd-primary) 20%, transparent);
   pointer-events: none;
-}
-
-.bookingRoomCard {
-  min-height: 86px;
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid var(--fd-border);
-  border-left: 0;
-  background: #fff;
-}
-
-.reservationCard {
-  min-height: 162px;
-}
-
-.reservationCard .bookingCardCode {
-  width: 72px;
-  gap: 9px;
-  padding: 12px 5px;
-}
-
-.reservationCard .bookingCardCode span {
-  max-width: 62px;
-}
-
-.reservationCard .bookingCardCode strong {
-  font-size: 18px;
-}
-
-.reservationCard .bookingCardBody {
-  gap: 6px;
-  padding: 10px 12px;
-}
-
-.reservationCard .bookingGuestLine {
-  font-size: 13px;
-}
-
-.reservationCard .bookingMetaLine {
-  font-size: 11.5px;
-}
-
-.reservationCard .bookingPrice {
-  font-size: 13px;
-}
-
-.bookingCardCode {
-  width: 64px;
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 4px;
-  background: var(--fd-navy);
-  color: #fff;
-  font-weight: 700;
-}
-
-.bookingCardCode span {
-  max-width: 56px;
-  overflow: hidden;
-  font-size: 11px;
-  letter-spacing: 0.3px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bookingCardCode strong {
-  font-size: 14px;
-}
-
-.bookingCardBody {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 5px 8px;
-}
-
-.bookingCardTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.bookingSourceBadge,
-.bookingStatusBadge {
-  max-width: 60%;
-  padding: 2px 5px;
-  overflow: hidden;
-  border-radius: 4px;
-  font-size: 10.5px;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bookingSourceBadge {
-  color: #fff;
-}
-
-.bookingGuestLine {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--fd-text);
-  font-size: 11.5px;
-}
-
-.bookingGuestLine strong {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bookingFlag {
-  min-width: 22px;
-  height: 15px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 3px;
-  background: var(--fd-danger);
-  color: #fff;
-  font-size: 8px;
-  font-weight: 800;
-}
-
-.bookingMetaLine {
-  overflow: hidden;
-  color: var(--fd-text-secondary);
-  font-size: 10.5px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bookingPrice {
-  margin-top: auto;
-  color: var(--fd-text);
-  font-size: 11.5px;
-  font-weight: 800;
-}
-
-.vacantCardBody {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.roomStateIcons {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.dirtyBroom {
-  color: #111827;
-}
-
-.roomCardExtras {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.roomCardExtras span {
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--fd-text-secondary);
-  font-size: 10px;
-  font-weight: 700;
 }
 
 .roomTile {
