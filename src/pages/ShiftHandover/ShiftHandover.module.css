@@ -1,0 +1,1112 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px);
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* TOP TAB BAR */
+.topNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 20px;
+  height: 48px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.tabsGroup {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 8px;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 16px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.tabBtn:hover {
+  color: #0f172a;
+}
+
+.tabBtnActive {
+  color: #0284c7;
+  font-weight: 600;
+  background: #f0f9ff;
+}
+
+.tabBtnActive::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #0284c7;
+}
+
+.topRightInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #64748b;
+  font-size: 12.5px;
+}
+
+.openTimeText {
+  color: #475569;
+}
+
+.headerIconBtns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* CONTENT CONTAINER */
+.contentArea {
+  flex: 1;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   TAB 1: BÀN GIAO TIỀN MẶT & CÔNG VIỆC
+========================================= */
+.handoverGrid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  min-height: 540px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+@media (max-width: 1024px) {
+  .handoverGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftCashSection {
+  padding: 20px 24px;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sectionTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.currencyLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.cashTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cashRow {
+  height: 48px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.cashRow:last-child {
+  border-bottom: none;
+}
+
+.cashLabelCol {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #334155;
+}
+
+.rowNumber {
+  color: #64748b;
+  width: 14px;
+  font-weight: 500;
+}
+
+.cashValueCol {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+}
+
+.currentMoneyRow {
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 0 10px;
+}
+
+.currentMoneyRow .cashLabelCol {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.currentMoneyRow .cashValueCol {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.blueLink {
+  color: #0284c7;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.blueLink:hover {
+  text-decoration: underline;
+}
+
+.discrepancyBad {
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #fecaca;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cashInputBox {
+  width: 130px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: right;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #0f172a;
+  outline: none;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cashInputBox:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+/* RIGHT SECTION: TASKS & RECEIVER */
+.rightTaskSection {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+}
+
+.taskTopArea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.taskTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.addTaskBtn {
+  border: none;
+  background: #f1f5f9;
+  color: #0284c7;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.addTaskBtn:hover {
+  background: #e2e8f0;
+}
+
+.emptyTaskState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  color: #94a3b8;
+  gap: 10px;
+}
+
+.emptyTaskIcon {
+  width: 44px;
+  height: 44px;
+  opacity: 0.45;
+}
+
+.emptyTaskText {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.taskCheck {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.taskContent {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.taskContentDone {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.taskUrgentBadge {
+  display: inline-block;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 6px;
+}
+
+.taskDeleteBtn {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.taskDeleteBtn:hover {
+  color: #ef4444;
+}
+
+.handoverFormBottom {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fieldLabel {
+  width: 80px;
+  font-size: 13px;
+  color: #334155;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.receiverInput {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  background: #ffffff;
+}
+
+.receiverInput:focus {
+  border-color: #0284c7;
+}
+
+.noteTextarea {
+  flex: 1;
+  height: 64px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  background: #ffffff;
+}
+
+.noteTextarea:focus {
+  border-color: #0284c7;
+}
+
+/* FOOTER BAR */
+.footerBar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.footerNotes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.noteHeading {
+  font-size: 12.5px;
+  color: #64748b;
+  font-style: italic;
+  margin-right: 4px;
+}
+
+.formulaPill {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  font-weight: 600;
+  color: #475569;
+}
+
+.handoverActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+}
+
+.handoverActionBtn:hover {
+  background: #0369a1;
+}
+
+/* =========================================
+   TAB 2: THANH TOÁN TRONG CA
+========================================= */
+.shiftPayContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.shiftBadge {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  padding-right: 12px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.filterDropdownGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdownLabel {
+  font-size: 13px;
+  color: #475569;
+}
+
+.selectDropdown {
+  height: 30px;
+  padding: 0 24px 0 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  font-size: 12.5px;
+  background: #ffffff url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 8px center;
+  appearance: none;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.selectDropdown:focus {
+  outline: none;
+  border-color: #0284c7;
+}
+
+/* QUICK STATUS TAGS */
+.quickStatusRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12.5px;
+}
+
+.statusIndicatorItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  cursor: pointer;
+}
+
+.redTagDot {
+  color: #ef4444;
+}
+
+.greenTagDot {
+  color: #10b981;
+}
+
+.yellowTagDot {
+  color: #f59e0b;
+}
+
+/* SUMMARY TABLES GRID (3 MINI TABLES) */
+.summaryTablesGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 900px) {
+  .summaryTablesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.miniTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.miniTable th {
+  padding: 6px 8px;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  background: #f8fafc;
+}
+
+.miniTable th.numCol,
+.miniTable td.numCol {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.miniTable td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.miniTable tr:last-child td {
+  border-bottom: none;
+}
+
+.miniTable .totalRow td {
+  font-weight: 700;
+  color: #0f172a;
+  border-top: 1px solid #cbd5e1;
+  background: #fafafa;
+}
+
+.greenMoney {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.zeroMoney {
+  color: #94a3b8;
+}
+
+/* DETAILED TRANSACTIONS TABLE */
+.txTableCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.txGroupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.txGroupTotal {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.dataTable th {
+  padding: 8px 12px;
+  font-weight: 600;
+  color: #475569;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.dataTable th.numCol,
+.dataTable td.numCol {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dataTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+
+.dataTable tr:hover td {
+  background: #f8fafc;
+}
+
+.codeCell {
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.roomCellBadge {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.guestCell {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.methodBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.methodDebt {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.methodBank {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.methodCash {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.timeCell {
+  color: #64748b;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+
+
+/* =========================================
+   MODALS (Confirm Handover & Print) - CLEAN & MINIMALIST
+========================================= */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modalBoxClean {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 720px;
+  max-width: 96vw;
+  max-height: 90vh;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.modalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modalTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modalTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.modalSubTitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.modalCloseBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.modalCloseBtn:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.modalBody {
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #ffffff;
+}
+
+/* 1. SIMPLE CASH TABLE */
+.cashSummaryTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cashSummaryTable td {
+  padding: 8px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.cashSummaryTable tr:last-child td {
+  border-bottom: none;
+}
+
+.cashSummaryTable td:last-child {
+  text-align: right;
+  font-weight: 600;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.cashSummaryTable .highlightRow td {
+  background: #fafafa;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* 2. TWO CONFIRMATION PANELS */
+.panelsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .panelsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.confirmPanel {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirmPanelDone {
+  background: #fcfcfc;
+  border-color: #cbd5e1;
+}
+
+.panelTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.panelTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.panelStatus {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.panelStatusSuccess {
+  font-size: 11.5px;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-size: 12px;
+  color: #475569;
+}
+
+.inputControl {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+}
+
+.inputControl:focus {
+  border-color: #0284c7;
+}
+
+.amountBox {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+  outline: none;
+  background: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.amountBox:focus {
+  border-color: #0284c7;
+}
+
+.panelActionArea {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btnConfirm {
+  width: 100%;
+  height: 32px;
+  border: 1px solid #0284c7;
+  background: #0284c7;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnConfirm:hover {
+  background: #0369a1;
+  border-color: #0369a1;
+}
+
+.confirmedText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.reEditLink {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 11.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.reEditLink:hover {
+  color: #dc2626;
+}
+
+/* 3. FOOTER */
+.modalFooterClean {
+  padding: 12px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerLeftText {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.footerRightBtns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnSecondary {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnSecondary:hover {
+  background: #f1f5f9;
+}
+
+.btnPrimary {
+  height: 34px;
+  padding: 0 18px;
+  border: none;
+  background: #0284c7;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnPrimary:hover {
+  background: #0369a1;
+}
+
+/* PRINT SHEET STYLES */
+.printContainer {
+  padding: 30px;
+  background: #ffffff;
+  color: #000000;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.printHead {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.printTitle {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.printMeta {
+  font-size: 12px;
+  color: #333333;
+}
+
+.printSignatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.signBox {
+  display: flex;
+  flex-direction: column;
+  height: 90px;
+  justify-content: space-between;
+}

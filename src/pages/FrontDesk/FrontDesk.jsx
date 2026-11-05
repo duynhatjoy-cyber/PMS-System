@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import {
   BedDouble,
@@ -54,6 +55,7 @@ const TABS = [
 ];
 
 function FrontDesk() {
+  const navigate = useNavigate();
   const { today, bookings, setBookings, lodgingGroups, setLodgingGroups } = useBookings();
   const [selectedDate, setSelectedDate] = useState(today);
   const [view, setView] = useState("today");
