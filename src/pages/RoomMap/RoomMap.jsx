@@ -29,7 +29,7 @@ import {
   STATUS_META,
   STATUS_TAB_ORDER,
 } from "../../data/roomMapData";
-import { addDays, addMonths } from "../../utils/format";
+import { addDays, addMonths, startOfDay } from "../../utils/format";
 import { colorForStatus, useRoomStatusColors } from "../../utils/roomColorConfig";
 import styles from "./RoomMap.module.css";
 
@@ -370,6 +370,7 @@ function RoomMap() {
             onOpenDetail={openBookingDetail}
             onBookingAction={handleBookingAction}
             roomStatusOverrides={roomStatusOverrides}
+            maintenanceDetails={maintenanceDetails}
             onOpenMaintenance={(room) => setModal({ type: "maintenance", room, existing: true })}
             onCreateRange={(room, checkIn, checkOut) =>
               setModal({ type: "walkin", room, defaultCheckIn: checkIn, defaultCheckOut: checkOut })
@@ -387,6 +388,7 @@ function RoomMap() {
             onOpenDetail={openBookingDetail}
             onBookingAction={handleBookingAction}
             roomStatusOverrides={roomStatusOverrides}
+            maintenanceDetails={maintenanceDetails}
             onOpenMaintenance={(room) => setModal({ type: "maintenance", room, existing: true })}
           />
         )}
@@ -473,7 +475,7 @@ function RoomMap() {
                 code,
                 room: payload.roomNumber || modal.room.number,
                 roomType: modal.room.typeKey,
-                status: modal.type === "reserve" ? (payload.checkIn > today ? "booked_future" : "arriving_today") : "in_house",
+                status: payload.mode === "checkin" ? "in_house" : startOfDay(payload.checkIn) > today ? "booked_future" : "arriving_today",
                 checkIn: payload.checkIn,
                 checkOut: payload.checkOut,
                 guest: guestName,
@@ -499,7 +501,7 @@ function RoomMap() {
               return next;
             });
             closeModal();
-            setToastMsg(modal.type === "reserve" ? `Đã đặt phòng ${payload.roomNumber || modal.room.number}` : `Đã nhận phòng nhanh vào phòng ${payload.roomNumber || modal.room.number}`);
+            setToastMsg(payload.mode === "checkin" ? `Đã nhận phòng ${payload.roomNumber || modal.room.number}` : `Đã đặt phòng ${payload.roomNumber || modal.room.number}`);
           }}
         />
       )}

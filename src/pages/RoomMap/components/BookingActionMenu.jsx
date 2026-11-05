@@ -1,6 +1,6 @@
 import {
   BedDouble,
-  Brush,
+  SprayCan,
   CalendarClock,
   CalendarX,
   ClipboardCheck,
@@ -19,14 +19,14 @@ const VACANT_CLEAN_ACTIONS = [
   ["detail", "Chi tiết", Info],
   ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
   ["reserve", "Đặt phòng", CalendarClock],
-  ["dirty", "Làm bẩn phòng", Brush, true],
+  ["dirty", "Làm bẩn phòng", SprayCan, true],
   ["maintenance", "Sửa phòng", Wrench],
 ];
 
 const VACANT_DIRTY_ACTIONS = [
   ["detail", "Chi tiết", Info],
   ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
-  ["clean", "Làm sạch phòng", Brush, true],
+  ["clean", "Làm sạch phòng", SprayCan, true],
   ["maintenance", "Sửa phòng", Wrench],
 ];
 
@@ -60,7 +60,7 @@ const IN_HOUSE_CLEAN_ACTIONS = [
   ["transfer", "Chuyển phòng", BedDouble],
   ["undo", "Undo check-in", Undo2, true],
   ["copy", "Sao chép", Copy],
-  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", SprayCan, true],
 ];
 
 const IN_HOUSE_DIRTY_ACTIONS = [
@@ -71,7 +71,7 @@ const IN_HOUSE_DIRTY_ACTIONS = [
   ["transfer", "Chuyển phòng", BedDouble],
   ["undo", "Undo check-in", Undo2, true],
   ["copy", "Sao chép", Copy],
-  ["clean", "Làm sạch phòng", Brush, true],
+  ["clean", "Làm sạch phòng", SprayCan, true],
 ];
 
 const OVERDUE_CLEAN_ACTIONS = [
@@ -82,7 +82,7 @@ const OVERDUE_CLEAN_ACTIONS = [
   ["transfer", "Chuyển phòng", BedDouble],
   ["undo", "Undo check-in", Undo2, true],
   ["copy", "Sao chép", Copy],
-  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", SprayCan, true],
 ];
 
 const OVERDUE_DIRTY_ACTIONS = [
@@ -93,7 +93,7 @@ const OVERDUE_DIRTY_ACTIONS = [
   ["transfer", "Chuyển phòng", BedDouble],
   ["undo", "Undo check-in", Undo2, true],
   ["copy", "Sao chép", Copy],
-  ["clean", "Làm sạch phòng", Brush, true],
+  ["clean", "Làm sạch phòng", SprayCan, true],
 ];
 
 const ACTIONS_BY_STATUS = {

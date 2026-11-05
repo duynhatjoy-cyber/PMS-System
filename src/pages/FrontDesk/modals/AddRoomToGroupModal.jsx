@@ -1,71 +1,56 @@
 import { useState } from "react";
+import { Baby, Minus, Plus, User } from "lucide-react";
 import SlidePanelShell from "./SlidePanelShell";
 import BookingIdentityHeader from "./BookingIdentityHeader";
 import { roomTypes } from "../../../data/frontDeskData";
 import { searchAvailableRooms } from "../../../utils/bookingGroups";
-import { toLocalInputValue } from "../../../utils/format";
+import { formatCurrency, toLocalInputValue } from "../../../utils/format";
 import shared from "./shared.module.css";
-import choiceStyles from "./groupChoice.module.css";
+import styles from "./AddRoomToGroupModal.module.css";
 
 function AddRoomToGroupModal({ booking, bookings, roomOptions, onClose, onConfirm }) {
-  const [from, setFrom] = useState(toLocalInputValue(booking.checkIn));
-  const [to, setTo] = useState(toLocalInputValue(booking.checkOut));
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState(null);
+  const initialFrom = toLocalInputValue(booking.checkIn);
+  const initialTo = toLocalInputValue(booking.checkOut);
+  const [from, setFrom] = useState(initialFrom.slice(0, 10));
+  const [to, setTo] = useState(initialTo.slice(0, 10));
   const [selected, setSelected] = useState("");
-  const [error, setError] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [showDateError, setShowDateError] = useState(false);
+  const checkIn = from ? new Date(`${from}T${initialFrom.slice(11) || "14:00"}`) : null;
+  const checkOut = to ? new Date(`${to}T${initialTo.slice(11) || "12:00"}`) : null;
+  const validRange = checkIn && checkOut && checkOut > checkIn;
+  const results = searched && validRange ? searchAvailableRooms(bookings, checkIn, checkOut, "", roomOptions) : [];
+  const roomsByType = roomTypes.map((type) => ({ ...type, rooms: results.filter((room) => room.typeId === type.id) }));
 
-  function search() {
-    const checkIn = new Date(from);
-    const checkOut = new Date(to);
-    if (!from || !to || !(checkOut > checkIn)) {
-      setError("Ngày đi phải sau ngày đến.");
-      setResults(null);
-      return;
-    }
-    setError("");
-    setSelected("");
-    setResults(searchAvailableRooms(bookings, checkIn, checkOut, query, roomOptions));
-  }
-
-  function invalidate(setter, value) {
-    setter(value);
-    setResults(null);
-    setSelected("");
-    setError("");
-  }
-
-  return (
-    <SlidePanelShell header={<BookingIdentityHeader title="Thêm phòng vào đoàn" booking={booking} />} onClose={onClose} width={540}
-      footer={<><button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>Hủy</button>
-        <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} disabled={!selected} onClick={() => {
-          const room = results?.find((item) => item.room === selected);
-          if (room) onConfirm({ ...room, checkIn: new Date(from), checkOut: new Date(to) });
-        }}>Xác nhận thêm phòng</button></>}>
-      <div className={shared.stack}>
-        <p className={shared.bodyText}>Chọn khoảng ngày, tìm phòng còn trống rồi xác nhận. Phòng mới sẽ thuộc cùng đoàn với đặt phòng hiện tại.</p>
-        <div className={shared.row}>
-          <label className={shared.field}><span className={shared.label}>Ngày đến *</span><input className={shared.input} type="datetime-local" value={from} onChange={(event) => invalidate(setFrom, event.target.value)} /></label>
-          <label className={shared.field}><span className={shared.label}>Ngày đi *</span><input className={shared.input} type="datetime-local" value={to} onChange={(event) => invalidate(setTo, event.target.value)} /></label>
-        </div>
-        <label className={shared.field}><span className={shared.label}>Tìm số phòng</span><input className={shared.input} value={query} placeholder="Ví dụ: 201" onChange={(event) => invalidate(setQuery, event.target.value)} /></label>
-        <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={search}>Tìm kiếm phòng trống</button>
-        {error && <p role="alert" className={shared.hint}>{error}</p>}
-        {results && <div className={shared.field}>
-          <span className={shared.label}>Phòng còn trống ({results.length})</span>
-          {results.length === 0 ? <p className={shared.hint}>Không tìm thấy phòng trống trong khoảng ngày đã chọn.</p> :
-            <div className={choiceStyles.list} role="group" aria-label="Chọn phòng trống">
-              {results.map((item) => <button key={item.room} type="button"
-                className={`${choiceStyles.choice} ${selected === item.room ? choiceStyles.selected : ""}`}
-                aria-pressed={selected === item.room} onClick={() => setSelected(item.room)}>
-                <span><strong>Phòng {item.room}</strong><small>{roomTypes.find((type) => type.id === item.typeId)?.name || item.typeId}</small></span>
-                <small>{selected === item.room ? "Đã chọn" : "Chọn phòng"}</small>
-              </button>)}
-            </div>}
-        </div>}
+  return <SlidePanelShell header={<BookingIdentityHeader title="Thêm phòng vào đoàn" booking={booking} />} onClose={onClose} width={760}
+    footer={<><button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={onClose}>Hủy</button>
+      <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} disabled={!selected || !validRange} onClick={() => {
+        const room = results.find((item) => item.room === selected);
+        if (room) onConfirm({ ...room, checkIn, checkOut });
+      }}>Xác nhận thêm phòng</button></>}>
+    <div className={styles.content}>
+      <div className={styles.dates}>
+        <label className={shared.field}><span className={shared.label}>Ngày đến *</span><input className={shared.input} type="date" value={from} onChange={(event) => { setFrom(event.target.value); setSelected(""); setSearched(false); setShowDateError(false); }} /></label>
+        <label className={shared.field}><span className={shared.label}>Ngày đi *</span><input className={shared.input} type="date" value={to} onChange={(event) => { setTo(event.target.value); setSelected(""); setSearched(false); setShowDateError(false); }} /></label>
       </div>
-    </SlidePanelShell>
-  );
+      <button type="button" className={`${shared.btn} ${shared.btnPrimary} ${styles.searchButton}`} onClick={() => { setShowDateError(!validRange); setSearched(Boolean(validRange)); }}>Tìm phòng trống</button>
+      {showDateError && <p role="alert" className={styles.error}>Ngày đi phải sau ngày đến.</p>}
+      {searched && <div className={styles.table}>
+        <div className={`${styles.row} ${styles.heading}`}><span>Loại phòng</span><span>Loại giá</span><span>Giá mặc định</span><span>Khách</span><span>Số lượng</span></div>
+        {roomsByType.map((type) => {
+          const chosen = type.rooms.find((room) => room.room === selected);
+          return <div className={styles.row} key={type.id}>
+            <div className={styles.roomType}><strong>{type.name}</strong><small>{type.rooms.length ? `${type.rooms.length} còn lại` : "Hết phòng"}</small></div>
+            <select className={styles.rateSelect} aria-label={`Loại giá ${type.name}`} defaultValue="default"><option value="default">Giá niêm yết</option></select>
+            <span className={styles.price}>{formatCurrency(type.price)}</span>
+            <span className={styles.guests}><User size={13} /> {type.maxOccupancy} <Baby size={13} /> 0</span>
+            <div className={styles.stepper}><button type="button" aria-label={`Bỏ chọn ${type.name}`} disabled={!chosen} onClick={() => setSelected("")}><Minus size={13} /></button><span>{chosen ? 1 : 0}</span><button type="button" aria-label={`Chọn ${type.name}`} disabled={!type.rooms.length || Boolean(chosen)} onClick={() => setSelected(type.rooms[0].room)}><Plus size={13} /></button></div>
+            {chosen && <div className={styles.roomPicker}><label>Phòng cụ thể <select value={selected} onChange={(event) => setSelected(event.target.value)}>{type.rooms.map((room) => <option key={room.room} value={room.room}>Phòng {room.room}</option>)}</select></label></div>}
+          </div>;
+        })}
+      </div>}
+    </div>
+  </SlidePanelShell>;
 }
 
 export default AddRoomToGroupModal;

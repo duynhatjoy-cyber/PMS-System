@@ -12,7 +12,7 @@ import WarehousePagination from "../Warehouse/components/WarehousePagination";
 import { paginate } from "../../utils/pagination";
 import { createIdSequence } from "../../utils/id";
 import { addMonths, formatDMY, startOfDay } from "../../utils/format";
-import { GUESTS, GUEST_TIERS, NATIONALITIES } from "../../data/guestData";
+import { GUESTS, getGuestTier, getGuestTiers, NATIONALITIES } from "../../data/guestData";
 import { getGuestGroups, isGroupGuest } from "../../data/groupData";
 import styles from "./Guests.module.css";
 
@@ -124,6 +124,7 @@ function matchesDobRange(dob, start, end) {
 }
 
 function Guests() {
+  const tiers = useMemo(getGuestTiers, []);
   const [guests, setGuests] = useState(GUESTS);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const today = useMemo(() => new Date(), []);
@@ -147,13 +148,13 @@ function Guests() {
   }
 
   const tierCounts = useMemo(() => {
-    const counts = Object.fromEntries(GUEST_TIERS.map((t) => [t.id, 0]));
+    const counts = Object.fromEntries(tiers.map((t) => [t.id, 0]));
     guests.forEach((g) => {
-      const tier = GUEST_TIERS.reduce((acc, t) => (g.stayCount >= t.minStays ? t : acc), GUEST_TIERS[0]);
+      const tier = getGuestTier(g.stayCount);
       counts[tier.id] += 1;
     });
     return counts;
-  }, [guests]);
+  }, [guests, tiers]);
 
   const filteredGuests = useMemo(() => {
     const name = filters.name.trim().toLowerCase();
@@ -170,7 +171,7 @@ function Guests() {
       }
       if (filters.nationality && g.nationality !== filters.nationality) return false;
       if (filters.tierId) {
-        const tier = GUEST_TIERS.reduce((acc, t) => (g.stayCount >= t.minStays ? t : acc), GUEST_TIERS[0]);
+        const tier = getGuestTier(g.stayCount);
         if (tier.id !== filters.tierId) return false;
       }
       if (filters.guestKind) {
@@ -190,7 +191,7 @@ function Guests() {
 
     rows.sort((a, b) => a.name.localeCompare(b.name, "vi") * (sortDir === "asc" ? 1 : -1));
     return rows;
-  }, [guests, filters, dateRange, dobRange, createdAtRange, sortDir]);
+  }, [guests, filters, dateRange, dobRange, createdAtRange, sortDir, tiers]);
 
   const pagedGuests = useMemo(() => paginate(filteredGuests, page, pageSize), [filteredGuests, page, pageSize]);
 
@@ -259,7 +260,7 @@ function Guests() {
       </div>
 
       <div className={styles.statsRow}>
-        {[...GUEST_TIERS].reverse().map((tier) => (
+        {[...tiers].reverse().map((tier) => (
           <div key={tier.id} className={styles.statAccent} style={{ borderTopColor: tier.color }}>
             <StatCard
               label={tier.label}
@@ -372,7 +373,7 @@ function Guests() {
               onChange={(e) => patchFilter({ tierId: e.target.value })}
             >
               <option value="">Tất cả</option>
-              {GUEST_TIERS.map((t) => (
+              {tiers.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.label}
                 </option>

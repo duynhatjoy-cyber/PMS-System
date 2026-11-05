@@ -12,9 +12,29 @@ export const GUEST_TIERS = [
   { id: "diamond", label: "Kim cương", minStays: 10, color: "var(--fd-status-purple)", soft: "var(--fd-status-purple-soft)" },
 ];
 
+const STORAGE_KEY = "bellhop-guest-tier-thresholds";
+
+export function getGuestTiers() {
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    saved = null;
+  }
+  if (!saved || typeof saved !== "object") return GUEST_TIERS;
+  const tiers = GUEST_TIERS.map((tier) => ({ ...tier, minStays: tier.id === "new" ? 0 : saved[tier.id] }));
+  if (tiers.slice(1).some((tier, index) => !Number.isSafeInteger(tier.minStays) || tier.minStays <= tiers[index].minStays)) return GUEST_TIERS;
+  return tiers;
+}
+
+export function saveGuestTiers(tiers) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(tiers.map(({ id, minStays }) => [id, minStays]))));
+}
+
 export function getGuestTier(stayCount) {
-  let tier = GUEST_TIERS[0];
-  for (const t of GUEST_TIERS) {
+  const tiers = getGuestTiers();
+  let tier = tiers[0];
+  for (const t of tiers) {
     if (stayCount >= t.minStays) tier = t;
   }
   return tier;

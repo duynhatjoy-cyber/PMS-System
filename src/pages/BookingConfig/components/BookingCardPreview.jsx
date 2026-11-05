@@ -57,9 +57,9 @@ function BookingCardPreview({ styles, fields }) {
       <div className={styles.previewStage}>
         <div className={styles.bookingCard}>
           <div className={styles.cardCode} style={{ background: "var(--fd-navy)" }}>
+            <BedDouble size={16} strokeWidth={2.2} />
             <span className={styles.cardCodeRoomType}>{b.roomType}</span>
             <span className={styles.cardCodeRoomNum}>{b.room}</span>
-            <BedDouble size={14} />
           </div>
 
           <div className={styles.cardBody}>

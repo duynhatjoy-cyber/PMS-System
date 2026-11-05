@@ -238,8 +238,9 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, defaultRoomNumber, booki
     setStep((s) => Math.max(0, s - 1));
   }
 
-  function handleConfirm() {
+  function handleConfirm(mode) {
     onConfirm({
+      mode,
       isGroup,
       segment: selectedSegment?.name,
       roomType: !isGroup ? selectedRoomType : null,
@@ -326,9 +327,8 @@ function WalkInModal({ defaultCheckIn, defaultCheckOut, defaultRoomNumber, booki
         <button type="button" className={`${shared.btn} ${shared.btnSecondary}`} onClick={goBack}>
           Quay lại
         </button>
-        <button type="button" className={`${shared.btn} ${shared.btnSuccess}`} onClick={handleConfirm}>
-          Xác nhận đặt phòng
-        </button>
+        <button type="button" className={`${shared.btn} ${shared.btnPrimary}`} onClick={() => handleConfirm("booking")}>Đặt phòng</button>
+        <button type="button" className={`${shared.btn} ${shared.btnSuccess}`} disabled={!checkInDate || checkInDate > new Date()} title={checkInDate > new Date() ? "Chưa đến ngày nhận phòng" : undefined} onClick={() => handleConfirm("checkin")}>Nhận phòng</button>
       </>
     );
   })();

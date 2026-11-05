@@ -1,3 +1,4 @@
+import ShiftHandover from "./pages/ShiftHandover/ShiftHandover";
 import FrontDesk from "./pages/FrontDesk/FrontDesk";
 import RoomMap from "./pages/RoomMap/RoomMap";
 import CreateBooking from "./pages/CreateBooking/CreateBooking";
@@ -58,6 +59,11 @@ export const ROUTES = [
     key: "LỄ TÂN::Khách",
     path: "/le-tan/khach",
     Component: GuestsHub,
+  },
+  {
+    key: "LỄ TÂN::Bàn giao ca",
+    path: "/le-tan/ban-giao-ca",
+    Component: ShiftHandover,
   },
   {
     key: "VẬN HÀNH::Quản lý bán hàng::Tạo hóa đơn",
