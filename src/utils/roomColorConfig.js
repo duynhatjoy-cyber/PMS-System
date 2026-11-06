@@ -20,7 +20,13 @@ export function defaultRoomStatusColors() {
 
 export function readRoomStatusColors() {
   try {
-    return { ...defaultRoomStatusColors(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultRoomStatusColors();
+    const parsed = JSON.parse(raw);
+    if (parsed.occupied === "#ef4444" || parsed.notDeparted === "#f97316" || parsed.blocked === "#111827" || parsed.blocked === "#f59e0b") {
+      return defaultRoomStatusColors();
+    }
+    return { ...defaultRoomStatusColors(), ...parsed };
   } catch {
     return defaultRoomStatusColors();
   }
@@ -42,6 +48,8 @@ export function useRoomStatusColors() {
 }
 
 export function colorForStatus(status, colors) {
-  if (status === "checked_out") return "#d6478f";
+  if (status === "checked_out") return "#64748b";
+  if (status === "in_house") return "#122745";
+  if (status === "dirty") return "#b46927";
   return colors[STATUS_COLOR_KEYS[status]] || "#64748b";
 }

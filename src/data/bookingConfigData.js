@@ -32,13 +32,13 @@ export const DEFAULT_CARD_FIELDS = {
 // với 3 tone arrival/departure/inhouse mà StatusBadge dùng cho bảng đặt phòng.
 
 export const ROOM_STATUSES = [
-  { id: "empty", label: "Phòng trống", defaultColor: "#22c55e" },
-  { id: "booked", label: "Đã đặt", defaultColor: "#3b82f6" },
-  { id: "notArrived", label: "Chưa đến", defaultColor: "#a855f7" },
-  { id: "occupied", label: "Có khách", defaultColor: "#ef4444" },
-  { id: "notDeparted", label: "Chưa đi", defaultColor: "#f97316" },
-  { id: "maintenance", label: "Bảo trì", defaultColor: "#6b7280" },
-  { id: "blocked", label: "Bán", defaultColor: "#111827" },
+  { id: "empty", label: "Phòng trống", defaultColor: "#ffffff" },
+  { id: "occupied", label: "Có khách", defaultColor: "#122745" },
+  { id: "booked", label: "Đặt trước", defaultColor: "#5FB9C2" },
+  { id: "notArrived", label: "Chưa đến", defaultColor: "#5FB9C2" },
+  { id: "notDeparted", label: "Chưa đi", defaultColor: "#1E3D58" },
+  { id: "maintenance", label: "Bảo trì", defaultColor: "#64748b" },
+  { id: "blocked", label: "Cần dọn", defaultColor: "#b46927" },
 ];
 
 // ---- Booking mẫu dùng để render preview sống trong 2 panel trên ----

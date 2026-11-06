@@ -1,9 +1,9 @@
 const AVATAR_PALETTE = [
-  "#a8631f",
+  "#122745",
   "#3b5f7a",
   "#0f6e5c",
   "#b23a2e",
-  "#c99a2e",
+  "#5FB9C2",
   "#1e7a4c",
   "#6b4fa0",
   "#1c2430",

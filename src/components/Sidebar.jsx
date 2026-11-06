@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { KEY_BY_PATH, PATH_BY_KEY } from "../routesConfig";
+import { KEY_BY_PATH, PATH_BY_KEY, DEFAULT_ROUTE } from "../routesConfig";
+import bellhopLogo from "../assets/bellhop-logo.png";
 import { usePinnedReports } from "../context/PinnedReportsContext";
 import { REPORTS_BY_ID } from "../pages/Reports/data/reportsData";
 import {
@@ -271,9 +272,8 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="logo">
-        <div className="logo-icon">♟</div>
-        <div className="logo-text">bellhop</div>
+      <div className="logo" onClick={() => goToRoute(DEFAULT_ROUTE.key)} style={{ cursor: "pointer" }}>
+        <img src={bellhopLogo} alt="Bellhop" className="logo-img" />
       </div>
 
       <div className="sidebar-scroll">
