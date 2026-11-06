@@ -18,7 +18,7 @@ export const SOURCE_META = {
   "Booking.com": { code: "BK", color: "#003580" },
   Call: { code: "CL", color: "#6b7280" },
   "Walk-in": { code: "WI", color: "#1e7a4c" },
-  ez_be: { code: "EZ", color: "#a8631f" },
+  ez_be: { code: "EZ", color: "#5FB9C2" },
 };
 
 // Giá cuối tuần (T6-T7) cao hơn ngày thường ~5% — minh hoạ khái niệm giá
@@ -80,14 +80,14 @@ export const ROOMS = [
 ];
 
 export const STATUS_META = {
-  vacant: { key: "vacant", label: "Phòng trống", color: "var(--fd-success)", soft: "var(--fd-success-soft)" },
-  booked_future: { key: "booked_future", label: "Đã đặt", color: "var(--fd-status-blue)", soft: "var(--fd-status-blue-soft)" },
-  arriving_today: { key: "arriving_today", label: "Chưa đến", color: "var(--fd-status-purple)", soft: "var(--fd-status-purple-soft)" },
-  in_house: { key: "in_house", label: "Có khách", color: "var(--fd-danger)", soft: "var(--fd-danger-soft)" },
-  overdue: { key: "overdue", label: "Chưa đi", color: "var(--fd-warning)", soft: "var(--fd-warning-soft)" },
-  checked_out: { key: "checked_out", label: "Đã trả", color: "var(--fd-status-pink)", soft: "var(--fd-status-pink-soft)" },
-  maintenance: { key: "maintenance", label: "Sửa phòng", color: "var(--fd-status-gray)", soft: "var(--fd-status-gray-soft)" },
-  dirty: { key: "dirty", label: "Phòng bẩn", color: "#f59e0b", soft: "#fff7df" },
+  vacant: { key: "vacant", label: "Trống", color: "#64748b", soft: "#ffffff" },
+  booked_future: { key: "booked_future", label: "Đặt trước", color: "#0e4b56", soft: "#d6eff1" },
+  arriving_today: { key: "arriving_today", label: "Chưa đến", color: "#0e4b56", soft: "#d6eff1" },
+  in_house: { key: "in_house", label: "Có khách", color: "#ffffff", soft: "#122745" },
+  overdue: { key: "overdue", label: "Chưa đi", color: "#ffffff", soft: "#1E3D58" },
+  checked_out: { key: "checked_out", label: "Đã trả", color: "#64748b", soft: "#f1f5f9" },
+  maintenance: { key: "maintenance", label: "Sửa phòng", color: "#475569", soft: "#e2e8f0" },
+  dirty: { key: "dirty", label: "Cần dọn", color: "#b46927", soft: "#fdf0d9" },
 };
 
 export const STATUS_TAB_ORDER = ["booked_future", "arriving_today", "in_house", "overdue", "checked_out"];

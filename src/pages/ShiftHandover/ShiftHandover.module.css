@@ -49,9 +49,9 @@
 }
 
 .tabBtnActive {
-  color: #0284c7;
+  color: #0c7480;
   font-weight: 600;
-  background: #f0f9ff;
+  background: #f0fbfb;
 }
 
 .tabBtnActive::after {
@@ -61,7 +61,7 @@
   left: 0;
   right: 0;
   height: 2.5px;
-  background: #0284c7;
+  background: #5FB9C2;
 }
 
 .topRightInfo {
@@ -214,7 +214,7 @@
 }
 
 .blueLink {
-  color: #0284c7;
+  color: #0c7480;
   text-decoration: none;
   cursor: pointer;
 }
@@ -249,7 +249,7 @@
 }
 
 .cashInputBox:focus {
-  border-color: #0284c7;
+  border-color: #5FB9C2;
   box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
 }
 
@@ -284,7 +284,7 @@
 .addTaskBtn {
   border: none;
   background: #f1f5f9;
-  color: #0284c7;
+  color: #0c7480;
   font-size: 12px;
   font-weight: 600;
   padding: 4px 10px;
@@ -415,7 +415,7 @@
 }
 
 .receiverInput:focus {
-  border-color: #0284c7;
+  border-color: #5FB9C2;
 }
 
 .noteTextarea {
@@ -432,7 +432,7 @@
 }
 
 .noteTextarea:focus {
-  border-color: #0284c7;
+  border-color: #5FB9C2;
 }
 
 /* FOOTER BAR */
@@ -479,7 +479,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 24px;
-  background: #0284c7;
+  background: #5FB9C2;
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -547,7 +547,7 @@
 
 .selectDropdown:focus {
   outline: none;
-  border-color: #0284c7;
+  border-color: #5FB9C2;
 }
 
 /* QUICK STATUS TAGS */
@@ -575,7 +575,7 @@
 }
 
 .yellowTagDot {
-  color: #f59e0b;
+  color: #b46927;
 }
 
 /* SUMMARY TABLES GRID (3 MINI TABLES) */
@@ -707,7 +707,7 @@
 }
 
 .codeCell {
-  color: #0284c7;
+  color: #0c7480;
   font-weight: 600;
 }
 
@@ -941,7 +941,7 @@
 }
 
 .inputControl:focus {
-  border-color: #0284c7;
+  border-color: #5FB9C2;
 }
 
 .amountBox {
@@ -959,7 +959,7 @@
 }
 
 .amountBox:focus {
-  border-color: #0284c7;
+  border-color: #5FB9C2;
 }
 
 .panelActionArea {
@@ -975,7 +975,7 @@
   width: 100%;
   height: 32px;
   border: 1px solid #0284c7;
-  background: #0284c7;
+  background: #5FB9C2;
   color: #ffffff;
   border-radius: 4px;
   font-size: 12.5px;
@@ -1056,7 +1056,7 @@
   height: 34px;
   padding: 0 18px;
   border: none;
-  background: #0284c7;
+  background: #5FB9C2;
   color: #ffffff;
   border-radius: 4px;
   font-size: 12.5px;

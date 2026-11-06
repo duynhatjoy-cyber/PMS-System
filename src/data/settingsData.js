@@ -53,7 +53,7 @@ export const INITIAL_CONTACT_CHANNELS = {
 
 export const INITIAL_WIDGET = {
   url: "https://widget.bellhop.biz/lifrooms-boutique",
-  brandColor: "#a8631f",
+  brandColor: "#122745",
   welcomeMessage: "Xin chào! Tôi có thể giúp gì cho bạn?",
 };
 

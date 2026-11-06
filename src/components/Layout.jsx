@@ -1,4 +1,3 @@
-import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 function Layout({ children }) {
@@ -7,8 +6,6 @@ function Layout({ children }) {
       <Sidebar />
 
       <div className="main-layout">
-        <Header />
-
         <main className="main-content">{children}</main>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import SourceLogo from "./SourceLogo";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { SprayCan, ChevronDown, ChevronRight, Wrench } from "lucide-react";
@@ -418,9 +419,9 @@ function GanttBoard({
                         onClick={(e) => handleBarClick(e, b)}
                         onPointerDown={(e) => e.stopPropagation()}
                       >
-                        {source && (
-                          <span className={styles.sourceBadge} style={{ background: source.color }}>
-                            {source.code}
+                        {b.source && !isMaintenance && (
+                          <span className={styles.barSourceLogoWrap} title={b.source}>
+                            <SourceLogo source={b.source} size={17} />
                           </span>
                         )}
                         <span className={styles.barLabel}>

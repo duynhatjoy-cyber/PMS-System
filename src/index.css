@@ -7,7 +7,7 @@
 :root {
   /* "Front Desk Board" content-area theme — arrivals/departures board palette.
      Header/Sidebar keep their own hardcoded colors and are untouched by this. */
-  --fd-bg: #f7f6f2;
+  --fd-bg: #ffffff;
   --fd-surface: #ffffff;
   --fd-border: #ececec;
   --fd-border-strong: #e2e4e9;
@@ -18,10 +18,10 @@
   --fd-navy: #1c2430;
   --fd-navy-hover: #29323f;
 
-  --fd-primary: #a8631f;
-  --fd-primary-hover: #8b4f16;
-  --fd-primary-soft: #f7ead9;
-  --fd-primary-tint: #d9a876;
+  --fd-primary: #122745;
+  --fd-primary-hover: #1E3D58;
+  --fd-primary-soft: #eef4f9;
+  --fd-primary-tint: #5FB9C2;
 
   /* Shared neutral hover/header-band background — consolidates ~30 near-
      identical hardcoded greys (#f3f4f6/#f4f5f7/#f6f7f8/#fafafb) that had
@@ -31,35 +31,35 @@
   /* Chart-only categorical set — more saturated than the muted UI tones above,
      needed so multi-series charts stay distinguishable. Fixed order, validated
      with the dataviz skill's CVD/contrast checks; keep the order when adding series. */
-  --fd-chart-teal: #128a6e;
+  --fd-chart-teal: #5FB9C2;
   --fd-chart-grid: #e9e7e1;
 
   --fd-violet: #3b5f7a;
   --fd-violet-soft: #e6edf2;
 
-  --fd-teal: #0f6e5c;
-  --fd-teal-hover: #0c5a4a;
-  --fd-teal-soft: #e2f0ec;
+  --fd-teal: #122745;
+  --fd-teal-hover: #1E3D58;
+  --fd-teal-soft: #d6eff1;
 
-  --fd-success: #1e7a4c;
-  --fd-success-soft: #e6f4ec;
+  --fd-success: #122745;
+  --fd-success-soft: #eef4f9;
 
-  --fd-danger: #b23a2e;
-  --fd-danger-soft: #f9e9e7;
+  --fd-danger: #122745;
+  --fd-danger-soft: #eef4f9;
 
-  --fd-warning: #c99a2e;
-  --fd-warning-soft: #f8f0da;
+  --fd-warning: #b46927;
+  --fd-warning-soft: #fdf0d9;
 
   /* Room-map booking-status palette (Sơ đồ phòng) — distinct hues per stay
      status, on top of the danger/warning tones already used for in-house/overdue.
      Each has a soft tint for the "pastel fill + accent border/text" bar style —
      calmer next to the cream page background than a solid saturated fill. */
-  --fd-status-blue: #2f6fed;
-  --fd-status-blue-soft: #e9f0fd;
-  --fd-status-purple: #7c3aed;
-  --fd-status-purple-soft: #f1eafd;
-  --fd-status-pink: #c2478a;
-  --fd-status-pink-soft: #fbeaf3;
+  --fd-status-blue: #5FB9C2;
+  --fd-status-blue-soft: #d6eff1;
+  --fd-status-purple: #1E3D58;
+  --fd-status-purple-soft: #e8eef5;
+  --fd-status-pink: #94a3b8;
+  --fd-status-pink-soft: #f1f5f9;
   --fd-status-gray: #64748b;
   --fd-status-gray-soft: #eef1f4;
 
@@ -89,7 +89,7 @@ body {
     Arial,
     sans-serif;
 
-  background: #f7f6f2;
+  background: #ffffff;
   color: #111827;
 }
 
@@ -112,10 +112,11 @@ body {
   width: 253px;
   min-width: 253px;
   height: 100vh;
-  background: #0f2b4a;
-  color: #e2eaf3;
+  background: #122745;
+  color: #94a3b8;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logo {
@@ -125,24 +126,20 @@ body {
   display: flex;
   align-items: center;
 
-  padding: 0 28px;
+  padding: 0 20px;
 
   color: #ffffff;
+  background: #122745;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.logo-icon {
-  margin-right: 7px;
-
-  font-size: 25px;
-  line-height: 1;
-}
-
-.logo-text {
-  font-size: 25px;
-  font-weight: 600;
-  letter-spacing: -1px;
+.logo-img {
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .sidebar-scroll {
@@ -152,7 +149,7 @@ body {
 }
 
 .sidebar-scroll::-webkit-scrollbar {
-  width: 7px;
+  width: 6px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-track {
@@ -160,8 +157,12 @@ body {
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #9b9b9b;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .sidebar-section {
@@ -172,12 +173,12 @@ body {
   padding: 0 12px;
   margin-bottom: 8px;
 
-  color: #b8cbe0;
+  color: #62809e;
 
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
 
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
 .sidebar-item {
@@ -195,20 +196,30 @@ body {
 
   transition: 0.15s ease;
 
-  color: #e2eaf3;
+  color: #94a3b8;
 
-  font-size: 15px;
+  font-size: 14.5px;
+  font-weight: 500;
 }
 
 .sidebar-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 .sidebar-item.active {
-  background: #28547d;
-  color: white;
+  background: #1E3D58;
+  color: #ffffff;
   font-weight: 600;
+}
+
+.sidebar-item.active:hover {
+  background: #1E3D58;
+  color: #ffffff;
+}
+
+.sidebar-item.active .sidebar-item-left svg {
+  color: #5FB9C2;
 }
 
 .sidebar-item-left {
@@ -222,7 +233,7 @@ body {
 
   padding-left: 15px;
 
-  border-left: 1px solid #62809e;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .submenu-item {
@@ -232,22 +243,30 @@ body {
   align-items: center;
   gap: 8px;
 
-  padding: 6px 5px;
+  padding: 6px 10px;
 
-  color: #d4e2f0;
+  color: #8fa0b5;
 
-  font-size: 14px;
+  font-size: 13.5px;
 
   cursor: pointer;
+  border-radius: 6px;
+  transition: 0.15s ease;
 }
 
 .submenu-item:hover {
-  color: white;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .submenu-item.active {
-  color: white;
+  background: #1E3D58;
+  color: #ffffff;
   font-weight: 600;
+}
+
+.submenu-item.active svg {
+  color: #5FB9C2;
 }
 
 /* =========================
@@ -272,7 +291,7 @@ body {
   height: 66px;
   min-height: 66px;
 
-  background: #ffffff;
+  background: #122745;
 
   display: flex;
   align-items: center;
@@ -280,14 +299,15 @@ body {
 
   padding: 0 24px 0 27px;
 
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-hotel-name {
-  color: #41516d;
+  color: #ffffff;
 
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .header-actions {
@@ -295,6 +315,7 @@ body {
   align-items: center;
 
   gap: 19px;
+  color: #ffffff;
 }
 
 .notification {
@@ -308,6 +329,7 @@ body {
   justify-content: center;
 
   cursor: pointer;
+  color: #ffffff;
 }
 
 .notification-badge {
@@ -333,7 +355,7 @@ body {
   font-size: 11px;
   font-weight: 600;
 
-  border: 2px solid white;
+  border: 2px solid #122745;
 }
 
 .avatar {
@@ -342,7 +364,7 @@ body {
 
   border-radius: 50%;
 
-  background: #10172b;
+  background: rgba(255, 255, 255, 0.15);
 
   display: flex;
   align-items: center;
@@ -351,9 +373,15 @@ body {
   color: white;
 
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
 
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.avatar:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* =========================
@@ -365,7 +393,7 @@ body {
 
   overflow: auto;
 
-  background: #f7f6f2;
+  background: #ffffff;
 }
 
 /* =========================

@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  background: #ffffff;
 }
 
 /* =========================
@@ -550,7 +550,7 @@
   position: absolute;
   top: 6px;
   bottom: 6px;
-  border-radius: 7px;
+  border-radius: 20px;
   border-left: 3px solid transparent;
   font-size: 12px;
   font-weight: 700;
@@ -560,6 +560,14 @@
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(16, 24, 40, 0.16);
   transition: filter 0.1s ease, box-shadow 0.1s ease;
+}
+
+.barSourceLogoWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 
 .bookingBar:hover {
@@ -1189,7 +1197,7 @@
   z-index: 4;
   min-width: 4px;
   border: 1px solid var(--fd-primary);
-  border-radius: 6px;
+  border-radius: 20px;
   background: color-mix(in srgb, var(--fd-primary) 20%, transparent);
   pointer-events: none;
 }
