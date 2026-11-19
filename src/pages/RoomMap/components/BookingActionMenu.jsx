@@ -1,99 +1,125 @@
+import { Fragment } from "react";
 import {
-  BedDouble,
-  SprayCan,
-  CalendarClock,
-  CalendarX,
-  ClipboardCheck,
+  ArrowRightLeft,
+  Calendar,
+  CalendarPlus,
   Copy,
-  Info,
+  Eye,
   LogIn,
   LogOut,
-  ShoppingBag,
-  Unlink,
-  Undo2,
+  RotateCcw,
+  Sparkles,
+  Brush,
+  UserMinus,
   Wrench,
+  X,
+  XCircle,
+  Zap,
 } from "lucide-react";
 import styles from "../RoomMap.module.css";
 
+// Icon giỏ hàng có dấu cộng (+) chuyên dụng đúng theo thiết kế mẫu
+function ServiceBasketPlusIcon({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="8" cy="7.5" r="4.5" />
+      <line x1="8" y1="5.5" x2="8" y2="9.5" />
+      <line x1="6" y1="7.5" x2="10" y2="7.5" />
+      <path d="M6 13h13.5l-1.5 7a1.5 1.5 0 0 1-1.5 1.2H9a1.5 1.5 0 0 1-1.5-1.2L6 13z" />
+      <path d="M10 13l1.5-3" />
+      <path d="M15.5 13l-1.5-3" />
+    </svg>
+  );
+}
+
 const VACANT_CLEAN_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
-  ["reserve", "Đặt phòng", CalendarClock],
-  ["dirty", "Làm bẩn phòng", SprayCan, true],
-  ["maintenance", "Sửa phòng", Wrench],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["quickCheckin", "Nhận phòng nhanh", Zap, false, "#d97706", "#fef3c7"],
+  ["reserve", "Đặt phòng", CalendarPlus, false, "#0284c7", "#e0f2fe"],
+  ["dirty", "Làm bẩn phòng", Brush, true, "#d97706", "#fef3c7"],
+  ["maintenance", "Sửa phòng", Wrench, false, "#475569", "#f1f5f9"],
 ];
 
 const VACANT_DIRTY_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["quickCheckin", "Nhận phòng nhanh", ClipboardCheck],
-  ["clean", "Làm sạch phòng", SprayCan, true],
-  ["maintenance", "Sửa phòng", Wrench],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["quickCheckin", "Nhận phòng nhanh", Zap, false, "#d97706", "#fef3c7"],
+  ["clean", "Làm sạch phòng", Sparkles, true, "#16a34a", "#dcfce7"],
+  ["maintenance", "Sửa phòng", Wrench, false, "#475569", "#f1f5f9"],
 ];
 
 const BOOKED_FUTURE_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkin", "Nhận phòng", LogIn],
-  ["unassign", "Bỏ gán phòng", Unlink],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["cancel", "Hủy đặt phòng", CalendarX, true],
-  ["copy", "Sao chép", Copy],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkin", "Nhận phòng", LogIn, false, "#d97706", "#fef3c7"],
+  ["unassign", "Bỏ gán phòng", UserMinus, false, "#475569", "#e2e8f0"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["cancel", "Hủy đặt phòng", XCircle, true, "#dc2626", "#fee2e2", true],
 ];
 
 const ARRIVING_TODAY_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkin", "Nhận phòng", LogIn],
-  ["unassign", "Bỏ gán phòng", Unlink],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["cancel", "Hủy đặt phòng", CalendarX, true],
-  ["copy", "Sao chép", Copy],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkin", "Nhận phòng", LogIn, false, "#d97706", "#fef3c7"],
+  ["unassign", "Bỏ gán phòng", UserMinus, false, "#475569", "#e2e8f0"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["cancel", "Hủy đặt phòng", XCircle, true, "#dc2626", "#fee2e2", true],
 ];
 
 const IN_HOUSE_CLEAN_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkout", "Trả phòng", LogOut],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["undo", "Undo check-in", Undo2, true],
-  ["copy", "Sao chép", Copy],
-  ["dirty", "Báo bẩn / Yêu cầu dọn", SprayCan, true],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkout", "Trả phòng", LogOut, false, "#d97706", "#fef3c7"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["undo", "Undo check-in", RotateCcw, false, "#ea580c", "#ffedd5"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true, "#d97706", "#fef3c7"],
 ];
 
 const IN_HOUSE_DIRTY_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkout", "Trả phòng", LogOut],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["undo", "Undo check-in", Undo2, true],
-  ["copy", "Sao chép", Copy],
-  ["clean", "Làm sạch phòng", SprayCan, true],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkout", "Trả phòng", LogOut, false, "#d97706", "#fef3c7"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["undo", "Undo check-in", RotateCcw, false, "#ea580c", "#ffedd5"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["clean", "Làm sạch phòng", Sparkles, true, "#16a34a", "#dcfce7"],
 ];
 
 const OVERDUE_CLEAN_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkout", "Trả phòng", LogOut],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["undo", "Undo check-in", Undo2, true],
-  ["copy", "Sao chép", Copy],
-  ["dirty", "Báo bẩn / Yêu cầu dọn", SprayCan, true],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkout", "Trả phòng", LogOut, false, "#d97706", "#fef3c7"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["undo", "Undo check-in", RotateCcw, false, "#ea580c", "#ffedd5"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["dirty", "Báo bẩn / Yêu cầu dọn", Brush, true, "#d97706", "#fef3c7"],
 ];
 
 const OVERDUE_DIRTY_ACTIONS = [
-  ["detail", "Chi tiết", Info],
-  ["checkout", "Trả phòng", LogOut],
-  ["service", "Thêm dịch vụ", ShoppingBag, true],
-  ["change", "Đổi ngày ở", CalendarClock],
-  ["transfer", "Chuyển phòng", BedDouble],
-  ["undo", "Undo check-in", Undo2, true],
-  ["copy", "Sao chép", Copy],
-  ["clean", "Làm sạch phòng", SprayCan, true],
+  ["detail", "Chi tiết", Eye, false, "#0284c7", "#e0f2fe"],
+  ["checkout", "Trả phòng", LogOut, false, "#d97706", "#fef3c7"],
+  ["service", "Thêm dịch vụ", ServiceBasketPlusIcon, false, "#16a34a", "#dcfce7"],
+  ["change", "Đổi ngày ở", Calendar, false, "#9333ea", "#f3e8ff"],
+  ["transfer", "Chuyển phòng", ArrowRightLeft, false, "#4338ca", "#e0e7ff"],
+  ["undo", "Undo check-in", RotateCcw, false, "#ea580c", "#ffedd5"],
+  ["copy", "Sao chép", Copy, false, "#475569", "#f1f5f9"],
+  ["clean", "Làm sạch phòng", Sparkles, true, "#16a34a", "#dcfce7"],
 ];
 
 const ACTIONS_BY_STATUS = {
@@ -133,18 +159,34 @@ function BookingActionMenu({ menu, menuRef, onClose, onDetail, onAction, onToast
       role="menu"
       aria-label="Thao tác đặt phòng"
     >
+      <button
+        type="button"
+        className={styles.actionMenuCloseBtn}
+        onClick={onClose}
+        aria-label="Đóng"
+      >
+        <X size={13} strokeWidth={2.5} />
+      </button>
+
       <div className={styles.actionMenuItems}>
-        {actions.map(([key, label, Icon, divider]) => (
-          <button
-            key={key}
-            type="button"
-            className={`${styles.actionMenuItem} ${divider ? styles.actionMenuDivider : ""}`}
-            onClick={() => choose(key, label)}
-            role="menuitem"
-          >
-            <Icon size={18} />
-            <span>{label}</span>
-          </button>
+        {actions.map(([key, label, Icon, divider, color, bgColor, isDestructive]) => (
+          <Fragment key={key}>
+            {divider && <div className={styles.actionMenuDivider} />}
+            <button
+              type="button"
+              className={`${styles.actionMenuItem} ${isDestructive ? styles.actionMenuItemDestructive : ""}`}
+              onClick={() => choose(key, label)}
+              role="menuitem"
+            >
+              <div
+                className={styles.actionMenuIconBadge}
+                style={{ backgroundColor: bgColor, color: color }}
+              >
+                <Icon size={17} strokeWidth={2} />
+              </div>
+              <span className={styles.actionMenuLabel}>{label}</span>
+            </button>
+          </Fragment>
         ))}
       </div>
     </div>

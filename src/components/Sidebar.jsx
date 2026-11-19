@@ -44,6 +44,7 @@ const menuSections = [
       { label: "Danh sách đặt phòng", icon: ClipboardList },
       { label: "Sơ đồ phòng", icon: LayoutGrid },
       { label: "Khách", icon: Users },
+      { label: "Nhóm & Allotment", icon: Users },
       { label: "Bàn giao ca", icon: ArrowRightLeft },
     ],
   },

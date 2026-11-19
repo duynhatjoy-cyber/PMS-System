@@ -153,6 +153,17 @@ export function computeRoomStatusCounts(rooms, bookings, overrides, day) {
 
 export const WEEKDAY_HEAD = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
+const NOTE_POOL = [
+  "Khách yêu cầu tầng cao, yên tĩnh",
+  "Đã thanh toán trước qua OTA",
+  "Yêu cầu thêm 02 gối & chăn mềm",
+  "Check-in muộn sau 19:00",
+  "Khách VIP - hỗ trợ đón tại sảnh",
+  "Không hút thuốc, phòng thoáng gió",
+  "Khách công tác, cần xuất hóa đơn VAT",
+  "Gia đình có em bé, cần cũi em bé",
+];
+
 const GUEST_POOL = [
   "Phan Thành Nhân", "Vo Anh", "Nguyễn Tú", "Khánh Hà", "Nguyễn Thi Mười", "Võ Thị Ngọc",
   "Phan Đăng Thanh Hiền", "Danh Danh", "Ngọc Hà", "Nguyễn Thanh Bảo", "Cave Timothy Mark",
@@ -205,6 +216,13 @@ export function buildRoomMapBookings(today) {
     seq += 1;
     const sourceGroup = ["Traveloka", "Agoda", "Booking.com"].includes(source) ? "OTA" : "Trực tiếp";
     const guestNo = guestIdx + seq;
+    const isMaint = status === "maintenance";
+    const adults = isMaint ? 0 : (seq % 4 === 0) ? 3 : (seq % 3 === 0) ? 1 : 2;
+    const children = isMaint ? 0 : (seq % 5 === 0) ? 1 : 0;
+    const notes = isMaint
+      ? "Bảo trì định kỳ điều hòa & sơn sửa lại tường"
+      : NOTE_POOL[(seq + guestIdx) % NOTE_POOL.length];
+
     bookings.push({
       id: `RM-${seq}`,
       code: 45000 + seq,
@@ -218,6 +236,9 @@ export function buildRoomMapBookings(today) {
       segment: guestNo % 2 ? "Công tác" : "Khách lẻ",
       gender: guestNo % 2 ? "Nam" : "Nữ",
       nationality: guestNo % 3 ? "VN" : "US",
+      adults,
+      children,
+      notes,
     });
   }
 
