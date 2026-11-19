@@ -559,7 +559,10 @@
   align-items: center;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(16, 24, 40, 0.16);
-  transition: filter 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
 }
 
 .barSourceLogoWrap {
@@ -571,8 +574,15 @@
 }
 
 .bookingBar:hover {
-  filter: saturate(1.06) brightness(0.94);
-  box-shadow: 0 3px 8px rgba(16, 24, 40, 0.2);
+  z-index: 10;
+  transform: translateY(-2px);
+  filter: brightness(1.08) saturate(1.06);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.8), 0 8px 18px rgba(15, 23, 42, 0.28);
+}
+
+.bookingBar:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.22);
 }
 
 .barLabel {
@@ -628,6 +638,189 @@
 /* =========================
    HÀNG TỔNG (B: đã đặt / A: còn trống)
 ========================= */
+
+
+.barDimmed:hover {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   TOOLTIP HOVER DẢI PHÒNG (Gantt Booking Bar Hover Tooltip - Dark Translucent HUD)
+   ========================================================================== */
+
+.barHoverTooltip {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 8px 14px;
+  width: max-content;
+  min-width: 460px;
+  max-width: 580px;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 11.5px;
+  line-height: 1.4;
+  animation: barTooltipFade 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes barTooltipFade {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tooltipHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltipHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.tooltipGuest {
+  font-weight: 700;
+  font-size: 13px;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltipRoomMeta {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltipStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.5px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tooltipPrice {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+.tooltipPriceSub {
+  font-weight: 500;
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.tooltipInlineRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  font-size: 11.5px;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.tooltipItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.tooltipInlineIcon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.tooltipDividerDot {
+  color: #475569;
+  font-size: 10px;
+}
+
+.tooltipNightsBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.5px 5px;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+
+.tooltipNotesInline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #fde047;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 5px;
+  padding: 2.5px 7px;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltipNotesIcon {
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.tooltipNotesLabel {
+  font-weight: 700;
+  color: #fef08a;
+  flex-shrink: 0;
+}
+
+.tooltipNotesText {
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .summaryFooterRow {
   display: flex;
@@ -1264,65 +1457,115 @@
 
 .actionMenu {
   position: fixed;
-  z-index: 80;
-  width: 216px;
-  overflow: hidden;
-  background: var(--fd-surface);
-  border: 1px solid var(--fd-border);
-  border-radius: 12px;
-  box-shadow: var(--fd-shadow-pop);
-  color: var(--fd-text);
+  z-index: 1000;
+  width: 228px;
+  background: #ffffff;
+  border: 1px solid #f1f3f5;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 10px 8px;
+  color: #111827;
+  font-family: inherit;
+  animation: actionMenuPop 0.14s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.actionMenuHead {
+@keyframes actionMenuPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.actionMenuCloseBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  color: #9ca3af;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 11px 10px 9px;
-  border-bottom: 1px solid var(--fd-border);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  z-index: 2;
+  padding: 0;
 }
 
-.actionMenuHead strong {
-  font-size: 12px;
-}
-
-.actionMenuHead span {
-  color: var(--fd-text-muted);
-  font-size: 10.5px;
+.actionMenuCloseBtn:hover {
+  background: #e5e7eb;
+  color: #4b5563;
 }
 
 .actionMenuItems {
-  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .actionMenuItem {
   width: 100%;
-  height: 42px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 16px;
-  border: 0;
+  gap: 12px;
+  padding: 5px 6px;
+  border: none;
   background: transparent;
-  color: var(--fd-text);
-  text-align: left;
-  font: inherit;
-  font-size: 13.5px;
+  color: #1f2937;
+  border-radius: 9px;
   cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.12s ease;
 }
 
-.actionMenuItem svg {
-  flex: none;
-  color: var(--fd-text-muted);
+.actionMenuItem:hover {
+  background: #f8fafc;
 }
 
-.actionMenuItem:hover,
-.actionMenuItemActive {
-  background: var(--fd-surface-hover);
+.actionMenuItemDestructive {
+  color: #991b1b !important;
+}
+
+.actionMenuItemDestructive:hover {
+  background: #fef2f2;
+}
+
+.actionMenuIconBadge {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.12s ease;
+}
+
+.actionMenuItem:hover .actionMenuIconBadge {
+  transform: scale(1.05);
+}
+
+.actionMenuLabel {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.15px;
 }
 
 .actionMenuDivider {
-  border-top: 1px solid var(--fd-border);
+  height: 1px;
+  background: #f1f5f9;
+  margin: 6px 4px 6px;
+  border: none;
 }
 
 /* =========================

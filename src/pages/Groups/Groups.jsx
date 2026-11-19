@@ -1,198 +1,204 @@
 import { useMemo, useState } from "react";
-import { Plus, SlidersHorizontal, Trash2 } from "lucide-react";
+import { ChevronRight, Plus, RefreshCw, Users } from "lucide-react";
 import GroupFormModal from "./components/GroupFormModal";
 import ConfirmDialog from "../../components/ConfirmDialog";
-import EmptyState from "../../components/EmptyState";
 import Toast from "../FrontDesk/components/Toast";
-import StatCard from "../FrontDesk/components/StatCard";
 import WarehousePagination from "../Warehouse/components/WarehousePagination";
 import { paginate } from "../../utils/pagination";
 import { createIdSequence } from "../../utils/id";
-import { formatDMY } from "../../utils/format";
 import { GROUPS } from "../../data/groupData";
 import { useBookings } from "../../context/BookingsContext";
 import LodgingGroupDetail from "../FrontDesk/modals/LodgingGroupDetail";
 import { toRoomMapDetailBooking } from "../../utils/roomMapBookingAdapter";
-import { GUESTS } from "../../data/guestData";
 import styles from "./Groups.module.css";
 
 const nextNewId = createIdSequence();
 
 function Groups() {
   const { bookings, roomMapBookings, lodgingGroups } = useBookings();
-  const allLodgingBookings = useMemo(() => [...bookings, ...roomMapBookings.map(toRoomMapDetailBooking)], [bookings, roomMapBookings]);
+  const allLodgingBookings = useMemo(
+    () => [...bookings, ...roomMapBookings.map(toRoomMapDetailBooking)],
+    [bookings, roomMapBookings]
+  );
   const [openLodgingGroupId, setOpenLodgingGroupId] = useState(null);
   const [groups, setGroups] = useState(GROUPS);
-  const [nameQuery, setNameQuery] = useState("");
-  const [leaderQuery, setLeaderQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [formTarget, setFormTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
 
-  const guestById = useMemo(() => Object.fromEntries(GUESTS.map((g) => [g.id, g])), []);
-
-  const stats = useMemo(() => {
-    const uniqueGuests = new Set(groups.flatMap((g) => g.memberGuestIds));
-    const largest = groups.reduce((max, g) => Math.max(max, g.memberGuestIds.length), 0);
-    return { groupCount: groups.length, guestCount: uniqueGuests.size, largest };
-  }, [groups]);
+  // Hợp nhất lodgingGroups vào danh sách groups
+  const allGroups = useMemo(() => {
+    const extraLodging = lodgingGroups.map((lg) => {
+      const gBookings = allLodgingBookings.filter((b) => b.groupId === lg.id);
+      const firstCheckIn = gBookings[0]?.checkIn
+        ? new Date(gBookings[0].checkIn).toISOString().slice(0, 10)
+        : "2026-11-18";
+      const lastCheckOut = gBookings[0]?.checkOut
+        ? new Date(gBookings[0].checkOut).toISOString().slice(0, 10)
+        : "2026-11-20";
+      return {
+        id: lg.id,
+        name: lg.name,
+        company: lg.company || "",
+        checkIn: firstCheckIn,
+        checkOut: lastCheckOut,
+        rooms: gBookings.length || 1,
+        status: lg.status || "confirmed",
+        isLodging: true,
+      };
+    });
+    return [...groups, ...extraLodging];
+  }, [groups, lodgingGroups, allLodgingBookings]);
 
   const filteredGroups = useMemo(() => {
-    const q = nameQuery.trim().toLowerCase();
-    const leaderQ = leaderQuery.trim().toLowerCase();
-    return groups.filter((g) => {
-      if (q && !g.name.toLowerCase().includes(q)) return false;
-      if (leaderQ && !(guestById[g.leaderGuestId]?.name || "").toLowerCase().includes(leaderQ)) return false;
-      return true;
-    });
-  }, [groups, nameQuery, leaderQuery, guestById]);
+    if (statusFilter === "all") return allGroups;
+    return allGroups.filter((g) => g.status === statusFilter);
+  }, [allGroups, statusFilter]);
 
-  function handleClearFilters() {
-    setNameQuery("");
-    setLeaderQuery("");
+  const pagedGroups = useMemo(
+    () => paginate(filteredGroups, page, pageSize),
+    [filteredGroups, page, pageSize]
+  );
+
+  function handleRefresh() {
+    setStatusFilter("all");
     setPage(1);
+    setToastMsg("Đã làm mới danh sách nhóm");
   }
-
-  const pagedGroups = useMemo(() => paginate(filteredGroups, page, pageSize), [filteredGroups, page, pageSize]);
 
   function handleSaveGroup(form) {
     if (form.id) {
       setGroups((prev) => prev.map((g) => (g.id === form.id ? { ...g, ...form } : g)));
-      setToastMsg("Đã cập nhật thông tin đoàn");
+      setToastMsg("Đã cập nhật thông tin nhóm");
     } else {
-      setGroups((prev) => [...prev, { ...form, id: nextNewId("group-new"), createdDate: new Date() }]);
-      setToastMsg("Đã thêm đoàn mới");
+      setGroups((prev) => [
+        {
+          ...form,
+          id: nextNewId("group-new"),
+          checkIn: form.checkIn || new Date().toISOString().slice(0, 10),
+          checkOut: form.checkOut || new Date(Date.now() + 86400000).toISOString().slice(0, 10),
+          rooms: form.rooms || 1,
+          status: form.status || "confirmed",
+          createdDate: new Date(),
+        },
+        ...prev,
+      ]);
+      setToastMsg("Đã tạo nhóm mới thành công");
     }
     setFormTarget(null);
   }
 
   function handleDeleteConfirmed() {
     setGroups((prev) => prev.filter((g) => g.id !== deleteTarget.id));
-    setToastMsg(`Đã xoá đoàn "${deleteTarget.name}"`);
+    setToastMsg(`Đã xoá nhóm "${deleteTarget.name}"`);
     setDeleteTarget(null);
+  }
+
+  function handleRowClick(g) {
+    if (g.isLodging) {
+      setOpenLodgingGroupId(g.id);
+    } else {
+      setFormTarget(g);
+    }
+  }
+
+  function renderStatusBadge(status) {
+    if (status === "hold") {
+      return <span className={`${styles.statusBadge} ${styles.statusHold}`}>Tạm giữ</span>;
+    }
+    if (status === "in_house") {
+      return <span className={`${styles.statusBadge} ${styles.statusInHouse}`}>Đã nhận phòng</span>;
+    }
+    return <span className={`${styles.statusBadge} ${styles.statusConfirmed}`}>Xác nhận</span>;
   }
 
   return (
     <div className={styles.tabPanel}>
+      {/* Header đúng theo mẫu ảnh Nhóm & Allotment */}
       <div className={styles.headerRow}>
         <div>
-          <h1 className={styles.title}>Danh sách đoàn</h1>
-          <p className={styles.subtitle}>
-            Quản lý các đoàn khách (khách đoàn). Một khách có thể vừa là người đại diện của đoàn này, vừa là
-            thành viên đoàn khác, và vẫn có thể lưu trú một mình như khách lẻ.
-          </p>
+          <h1 className={styles.title}>Nhóm & Allotment</h1>
+          <p className={styles.subtitle}>Quản lý đặt phòng theo nhóm, tour, hội nghị.</p>
         </div>
-        <button type="button" className={styles.primaryBtn} onClick={() => setFormTarget({})}>
-          <Plus size={16} /> Thêm đoàn
-        </button>
-      </div>
 
-      <div className={styles.statsRow}>
-        <div className={styles.statAccent}>
-          <StatCard label="Tổng số đoàn" value={stats.groupCount} hint="đoàn" />
-        </div>
-        <div className={styles.statAccent}>
-          <StatCard label="Khách thuộc đoàn" value={stats.guestCount} hint="khách" />
-        </div>
-        <div className={styles.statAccent}>
-          <StatCard label="Đoàn đông nhất" value={stats.largest} hint="thành viên" />
-        </div>
-      </div>
+        <div className={styles.headerActions}>
+          <select
+            className={styles.statusSelect}
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="confirmed">Xác nhận</option>
+            <option value="hold">Tạm giữ</option>
+            <option value="in_house">Đã nhận phòng</option>
+          </select>
 
-      {lodgingGroups.length > 0 && <div className={styles.tableCard}>
-        <h2 className={styles.title}>Đoàn lưu trú</h2>
-        <div className={styles.tableWrap}><table className={styles.table}><thead><tr>
-          <th>Tên đoàn</th><th>Người đại diện</th><th>Số phòng</th><th>Ngày tạo</th>
-        </tr></thead><tbody>{lodgingGroups.map((group) => <tr key={group.id} onClick={() => setOpenLodgingGroupId(group.id)}>
-          <td className={styles.groupNameCell}>{group.name}</td><td>{group.leaderName}</td>
-          <td>{allLodgingBookings.filter((booking) => booking.groupId === group.id).length}</td>
-          <td>{formatDMY(group.createdDate)}</td>
-        </tr>)}</tbody></table></div>
-      </div>}
+          <button
+            type="button"
+            className={styles.iconBtn}
+            title="Làm mới"
+            onClick={handleRefresh}
+          >
+            <RefreshCw size={15} />
+          </button>
 
-      <div className={styles.filterBar}>
-        <div className={styles.filterHeadRow}>
-          <span className={styles.filterHeadLabel}>
-            <SlidersHorizontal size={14} /> Bộ lọc
-          </span>
-          <button type="button" className={styles.clearBtn} onClick={handleClearFilters}>
-            Xoá lọc
+          <button
+            type="button"
+            className={styles.secondaryBtn}
+            onClick={() => setFormTarget({ rooms: 2, status: "confirmed" })}
+          >
+            <Users size={15} /> Tạo phòng đoàn
+          </button>
+
+          <button
+            type="button"
+            className={styles.primaryBtn}
+            onClick={() => setFormTarget({})}
+          >
+            <Plus size={16} /> Tạo nhóm
           </button>
         </div>
-
-        <div className={styles.filterFieldsRow}>
-          <div className={styles.field}>
-            <span className={styles.fieldLabel}>Tên đoàn</span>
-            <input
-              className={styles.textBox}
-              placeholder="Tìm theo tên đoàn..."
-              value={nameQuery}
-              onChange={(e) => {
-                setNameQuery(e.target.value);
-                setPage(1);
-              }}
-            />
-          </div>
-          <div className={styles.field}>
-            <span className={styles.fieldLabel}>Người đại diện</span>
-            <input
-              className={styles.textBox}
-              placeholder="Tìm theo tên người đại diện..."
-              value={leaderQuery}
-              onChange={(e) => {
-                setLeaderQuery(e.target.value);
-                setPage(1);
-              }}
-            />
-          </div>
-        </div>
       </div>
 
+      {/* Bảng dữ liệu với đường viền rõ nét (các đường viền cần nhìn rõ hơn) */}
       <div className={styles.tableCard}>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Tên đoàn</th>
-                <th>Người đại diện</th>
-                <th>Số thành viên</th>
-                <th>Ngày tạo</th>
-                <th>Ghi chú</th>
-                <th className={styles.thActionCell} />
+                <th>Tên nhóm</th>
+                <th>Công ty</th>
+                <th>Ngày đến</th>
+                <th>Ngày đi</th>
+                <th>Phòng</th>
+                <th>Trạng thái</th>
+                <th className={styles.arrowCell} />
               </tr>
             </thead>
             <tbody>
               {pagedGroups.length === 0 ? (
-                <tr className={styles.emptyRow}>
-                  <td colSpan={6}>
-                    <EmptyState message="Chưa có đoàn nào" hint="Nhấn Thêm đoàn để tạo đoàn khách đầu tiên." />
+                <tr>
+                  <td colSpan={7} className={styles.emptyRow}>
+                    Không có nhóm nào phù hợp với bộ lọc.
                   </td>
                 </tr>
               ) : (
                 pagedGroups.map((g) => (
-                  <tr key={g.id} onClick={() => setFormTarget(g)}>
+                  <tr key={g.id} onClick={() => handleRowClick(g)}>
                     <td className={styles.groupNameCell}>{g.name}</td>
-                    <td>{guestById[g.leaderGuestId]?.name || <span className={styles.mutedCell}>—</span>}</td>
-                    <td className={styles.numCell}>{g.memberGuestIds.length}</td>
-                    <td>{g.createdDate ? formatDMY(g.createdDate) : <span className={styles.mutedCell}>—</span>}</td>
-                    <td className={styles.noteCell} title={g.note}>
-                      {g.note || <span className={styles.mutedCell}>—</span>}
-                    </td>
-                    <td className={styles.thActionCell}>
-                      <button
-                        type="button"
-                        className={styles.trashBtn}
-                        title="Xoá đoàn"
-                        aria-label="Xoá đoàn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDeleteTarget(g);
-                        }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    <td className={styles.companyCell}>{g.company || "—"}</td>
+                    <td className={styles.dateCell}>{g.checkIn || "—"}</td>
+                    <td className={styles.dateCell}>{g.checkOut || "—"}</td>
+                    <td className={styles.roomCountCell}>{g.rooms || 1}</td>
+                    <td>{renderStatusBadge(g.status)}</td>
+                    <td className={styles.arrowCell}>
+                      <ChevronRight size={16} className={styles.chevronIcon} />
                     </td>
                   </tr>
                 ))
@@ -201,18 +207,21 @@ function Groups() {
           </table>
         </div>
 
-        <WarehousePagination
-          page={page}
-          pageSize={pageSize}
-          total={filteredGroups.length}
-          onPageChange={setPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setPage(1);
-          }}
-        />
+        {filteredGroups.length > pageSize && (
+          <WarehousePagination
+            page={page}
+            pageSize={pageSize}
+            total={filteredGroups.length}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+          />
+        )}
       </div>
 
+      {/* Modals & Dialogs */}
       {formTarget && (
         <GroupFormModal
           group={formTarget.id ? formTarget : null}
@@ -223,8 +232,8 @@ function Groups() {
 
       {deleteTarget && (
         <ConfirmDialog
-          title="Xoá đoàn"
-          message={`Xoá đoàn "${deleteTarget.name}" khỏi danh sách? Các khách trong đoàn vẫn được giữ nguyên trong Danh sách khách.`}
+          title="Xoá nhóm"
+          message={`Xoá nhóm "${deleteTarget.name}" khỏi danh sách?`}
           confirmLabel="Xoá"
           danger
           onConfirm={handleDeleteConfirmed}
@@ -232,9 +241,13 @@ function Groups() {
         />
       )}
 
-      {openLodgingGroupId && <LodgingGroupDetail
-        group={lodgingGroups.find((group) => group.id === openLodgingGroupId)}
-        bookings={allLodgingBookings} onClose={() => setOpenLodgingGroupId(null)} />}
+      {openLodgingGroupId && (
+        <LodgingGroupDetail
+          group={lodgingGroups.find((group) => group.id === openLodgingGroupId)}
+          bookings={allLodgingBookings}
+          onClose={() => setOpenLodgingGroupId(null)}
+        />
+      )}
 
       <Toast message={toastMsg} onDismiss={() => setToastMsg("")} />
     </div>

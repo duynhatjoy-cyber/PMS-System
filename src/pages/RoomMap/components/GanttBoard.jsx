@@ -1,7 +1,17 @@
 import SourceLogo from "./SourceLogo";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { SprayCan, ChevronDown, ChevronRight, Wrench } from "lucide-react";
+import {
+  Calendar,
+  SprayCan,
+  ChevronDown,
+  ChevronRight,
+  Wrench,
+  Users,
+  CreditCard,
+  Building,
+  FileText,
+} from "lucide-react";
 import useOutsideClick from "../../../utils/useOutsideClick";
 import { useBookingCardFields } from "../../../utils/bookingCardConfig";
 import { extraLabels, guestLabel, priceLabel, timeLabel } from "../../../utils/bookingCardPresentation";
@@ -10,6 +20,9 @@ import {
   addDays,
   addMonths,
   formatCompactVND,
+  formatCurrency,
+  formatDMY,
+  formatDMYShort,
   formatTime,
   isSameDay,
   startOfDay,
@@ -115,6 +128,17 @@ function barLabel(booking) {
   return `${booking.source} - ${booking.guest}`;
 }
 
+
+const STATUS_LABELS = {
+  in_house: "Có khách",
+  booked_future: "Đặt trước",
+  arriving_today: "Chưa đến",
+  overdue: "Quá hạn",
+  checked_out: "Đã trả phòng",
+  maintenance: "Sửa phòng",
+  vacant: "Phòng trống",
+};
+
 function GanttBoard({
   bookings,
   selectedDate,
@@ -131,6 +155,7 @@ function GanttBoard({
   const [collapsedTypes, setCollapsedTypes] = useState(() => new Set());
   const [popover, setPopover] = useState(null);
   const [dragging, setDragging] = useState(null);
+  const [hoveredBar, setHoveredBar] = useState(null);
   const dragRef = useRef(null);
   const popoverRef = useRef(null);
   const scrollRef = useRef(null);
@@ -190,6 +215,7 @@ function GanttBoard({
 
   function handleBarClick(e, booking) {
     e.stopPropagation();
+    setHoveredBar(null);
     const room = ROOMS.find((item) => item.number === booking.room);
     if (booking.status === "maintenance") {
       onOpenMaintenance(room);
@@ -218,6 +244,27 @@ function GanttBoard({
     });
   }
 
+
+  function handleBarMouseEnter(e, booking, room) {
+    if (dragging || popover) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoveredBar({
+      booking,
+      room,
+      rect,
+      mouseX: e.clientX,
+    });
+  }
+
+  function handleBarMouseMove(e) {
+    if (dragging || popover) return;
+    setHoveredBar((prev) => (prev ? { ...prev, mouseX: e.clientX } : null));
+  }
+
+  function handleBarMouseLeave() {
+    setHoveredBar(null);
+  }
+
   function pointerPct(event) {
     const rect = event.currentTarget.getBoundingClientRect();
     return Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
@@ -236,6 +283,7 @@ function GanttBoard({
     event.currentTarget.setPointerCapture(event.pointerId);
     const pct = pointerPct(event);
     setPopover(null);
+    setHoveredBar(null);
     const next = { room, startPct: pct, currentPct: pct, startClientX: event.clientX };
     dragRef.current = next;
     setDragging(next);
@@ -415,9 +463,11 @@ function GanttBoard({
                                 borderLeftColor: statusColor,
                               }
                         }
-                        title={barLabel(b)}
                         onClick={(e) => handleBarClick(e, b)}
                         onPointerDown={(e) => e.stopPropagation()}
+                        onMouseEnter={(e) => handleBarMouseEnter(e, b, row.room)}
+                        onMouseMove={handleBarMouseMove}
+                        onMouseLeave={handleBarMouseLeave}
                       >
                         {b.source && !isMaintenance && (
                           <span className={styles.barSourceLogoWrap} title={b.source}>
@@ -456,6 +506,123 @@ function GanttBoard({
           </div>
         )}
       </div>
+
+      {hoveredBar && !popover && !dragging && (() => {
+        try {
+          const { booking, room, rect, mouseX } = hoveredBar;
+          if (!booking || !room || !rect) return null;
+
+          const isMaintenance = booking.status === "maintenance";
+          const statusColor = colorForStatus(booking.status, statusColors);
+          const statusName = STATUS_LABELS[booking.status] || booking.status || "Khác";
+          const tooltipWidth = 490;
+          const left = Math.max(12, Math.min(mouseX - tooltipWidth / 2, window.innerWidth - tooltipWidth - 16));
+          const spaceAbove = rect.top;
+          const placeBelow = spaceAbove < 110;
+          const top = placeBelow ? rect.bottom + 8 : rect.top - 8;
+          const transform = placeBelow ? "none" : "translateY(-100%)";
+
+          const checkIn = booking.checkIn ? new Date(booking.checkIn) : new Date();
+          const checkOut = booking.checkOut ? new Date(booking.checkOut) : new Date();
+          const nights = Math.max(1, Math.round((checkOut.getTime() - checkIn.getTime()) / 86400000));
+          const nightlyRate = (room?.typeKey && typeof getRateForDate === "function")
+            ? (getRateForDate(room.typeKey, checkIn) || 0)
+            : 0;
+          const totalPrice = nightlyRate * nights;
+
+          const inTimeStr = !isNaN(checkIn.getTime()) ? formatTime(checkIn) : "";
+          const inDateStr = !isNaN(checkIn.getTime()) ? formatDMY(checkIn) : "";
+          const outTimeStr = !isNaN(checkOut.getTime()) ? formatTime(checkOut) : "";
+          const outDateStr = !isNaN(checkOut.getTime()) ? formatDMY(checkOut) : "";
+
+          return createPortal(
+            <div
+              className={styles.barHoverTooltip}
+              style={{
+                left: `${left}px`,
+                top: `${top}px`,
+                transform,
+              }}
+            >
+              {isMaintenance ? (
+                <>
+                  <div className={styles.tooltipHeader}>
+                    <div className={styles.tooltipHeaderLeft}>
+                      <Wrench size={13} style={{ color: "#64748b" }} />
+                      <span className={styles.tooltipGuest}>Bảo trì / Sửa phòng</span>
+                      <span className={styles.tooltipRoomMeta}>· Phòng {room.number} ({room.typeKey || room.type})</span>
+                    </div>
+                    <span className={styles.tooltipStatusBadge} style={{ background: statusColor }}>
+                      Bảo trì
+                    </span>
+                  </div>
+                  <div className={styles.tooltipInlineRow}>
+                    <span className={styles.tooltipItem}>
+                      <Calendar size={12} className={styles.tooltipInlineIcon} />
+                      <span>{inTimeStr} {inDateStr} → {outTimeStr} {outDateStr}</span>
+                      <span className={styles.tooltipNightsBadge}>{nights} ngày</span>
+                    </span>
+                    <span className={styles.tooltipDividerDot}>•</span>
+                    <span className={styles.tooltipItem}>
+                      <FileText size={12} className={styles.tooltipNotesIcon} />
+                      <span style={{ fontStyle: "italic", color: "#78350f" }}>{booking.notes || "Bảo trì định kỳ điều hòa & sơn sửa lại tường"}</span>
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.tooltipHeader}>
+                    <div className={styles.tooltipHeaderLeft}>
+                      <span className={styles.tooltipGuest}>{booking.guest || "Khách lưu trú"}</span>
+                      <span className={styles.tooltipRoomMeta}>
+                        · Phòng {room.number} ({room.typeKey || room.type}) · #{booking.code || booking.id}
+                      </span>
+                    </div>
+                    <div className={styles.tooltipHeaderRight}>
+                      <span className={styles.tooltipStatusBadge} style={{ background: statusColor }}>
+                        {statusName}
+                      </span>
+                      <span className={styles.tooltipPrice}>
+                        {formatCurrency(totalPrice)}
+                        <span className={styles.tooltipPriceSub}> ({formatCurrency(nightlyRate)}/đêm)</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={styles.tooltipInlineRow}>
+                    <span className={styles.tooltipItem}>
+                      <Calendar size={12} className={styles.tooltipInlineIcon} />
+                      <strong>{inTimeStr} {inDateStr}</strong> → <strong>{outTimeStr} {outDateStr}</strong>
+                      <span className={styles.tooltipNightsBadge}>{nights} đêm</span>
+                    </span>
+                    <span className={styles.tooltipDividerDot}>•</span>
+                    <span className={styles.tooltipItem}>
+                      <Building size={12} className={styles.tooltipInlineIcon} />
+                      {booking.source && <SourceLogo source={booking.source} size={13} />}
+                      <span>{booking.source || "Trực tiếp"}{booking.sourceGroup ? ` (${booking.sourceGroup})` : ""}</span>
+                    </span>
+                    <span className={styles.tooltipDividerDot}>•</span>
+                    <span className={styles.tooltipItem}>
+                      <Users size={12} className={styles.tooltipInlineIcon} />
+                      <span>{booking.adults || 2} người lớn{booking.children ? `, ${booking.children} trẻ` : ""}</span>
+                    </span>
+                  </div>
+
+                  <div className={styles.tooltipNotesInline}>
+                    <FileText size={12} className={styles.tooltipNotesIcon} />
+                    <span className={styles.tooltipNotesLabel}>Ghi chú:</span>
+                    <span className={styles.tooltipNotesText}>{booking.notes || room.notes || "Không có ghi chú"}</span>
+                  </div>
+                </>
+              )}
+            </div>,
+            document.body
+          );
+        } catch (err) {
+          console.error("Error rendering booking hover tooltip:", err);
+          return null;
+        }
+      })()}
 
       {popover &&
         createPortal(
